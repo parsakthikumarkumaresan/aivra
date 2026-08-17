@@ -1,0 +1,35 @@
+import type { VoiceEmployeeConfig } from '@/types'
+
+export const mockVoiceConfig: VoiceEmployeeConfig = {
+  businessName: 'Acme Jewellery',
+  industry: 'Jewellery & Retail',
+  description: 'A premium jewellery retailer with 6 stores across South India, offering gold, diamond and custom bridal collections.',
+  timezone: 'Asia/Kolkata',
+  workingHours: '10:00 AM – 8:00 PM, all days',
+  language: 'English (India) + Hindi',
+  voice: 'Aria — Warm, Professional (Female)',
+  tone: 'Friendly and reassuring',
+  greeting: "Thanks for calling Acme Jewellery, this is Aria. How can I help you today?",
+  fallbackMessage: "I'm not fully sure about that — let me connect you with a team member who can help.",
+  speakingStyle: 'Concise, warm, avoids jargon',
+  knowledgeSourceIds: ['ks_1', 'ks_2', 'ks_4'],
+  capabilities: ['support', 'booking', 'enquiry', 'status_lookup', 'human_escalation'],
+  tools: [
+    { id: 'tool_1', name: 'Check Order Status', description: 'Look up an order by phone number or order ID.', permission: 'Read order records', risk: 'low', approvalRequired: false, connected: true },
+    { id: 'tool_2', name: 'Book Store Appointment', description: 'Schedule a store visit for custom or bridal consultations.', permission: 'Write calendar events', risk: 'low', approvalRequired: false, connected: true },
+    { id: 'tool_3', name: 'Cancel Order', description: 'Cancel an order that has not yet shipped.', permission: 'Modify order records', risk: 'high', approvalRequired: true, connected: true },
+    { id: 'tool_4', name: 'Apply Refund', description: 'Issue a refund to the original payment method.', permission: 'Modify payment records', risk: 'high', approvalRequired: true, connected: false },
+    { id: 'tool_5', name: 'Send SMS Confirmation', description: 'Send a booking or order confirmation via SMS.', permission: 'Send customer messages', risk: 'low', approvalRequired: false, connected: true },
+  ],
+  escalationRules: [
+    { trigger: 'low_confidence', label: 'Low confidence response', description: 'AI is not confident it understood the request correctly.', enabled: true },
+    { trigger: 'customer_request', label: 'Customer requests a human', description: 'Caller explicitly asks to speak with a person.', enabled: true },
+    { trigger: 'complaint', label: 'Complaint detected', description: 'Sentiment analysis detects frustration or a formal complaint.', enabled: true },
+    { trigger: 'sensitive_action', label: 'Sensitive action requested', description: 'High-risk actions like refunds or cancellations above a threshold.', enabled: true },
+    { trigger: 'repeated_failure', label: 'Repeated failure', description: 'The same intent fails to resolve after 2 attempts.', enabled: true },
+  ],
+  phoneProvider: 'Twilio',
+  phoneNumber: '+91 80 4718 2200',
+  inboundEnabled: true,
+  outboundEnabled: false,
+}

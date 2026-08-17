@@ -1,0 +1,55 @@
+import type { Approval } from '@/types'
+
+export const mockApprovals: Approval[] = [
+  {
+    id: 'appr_1', employeeType: 'voice', employeeName: 'AI Voice Employee',
+    requestedAction: 'Apply full refund of ₹18,500 for order #A4471',
+    affectedRecordLabel: 'Order #A4471 — Unknown Caller', affectedRecordHref: '/app/inbox/calls/call_2',
+    reason: 'Customer requested a refund outside the standard 7-day window. This exceeds the auto-approval threshold and requires human sign-off.',
+    evidence: ['Order delivered 14 days ago — outside the 7-day refund policy window.', 'Customer reported the item arrived damaged.', 'No prior refund requests on this account.'],
+    status: 'pending', risk: 'high', requestedAt: '2026-08-17T08:53:00Z', expiresAt: '2026-08-18T08:53:00Z',
+  },
+  {
+    id: 'appr_2', employeeType: 'voice', employeeName: 'AI Voice Employee',
+    requestedAction: 'Cancel order #A4610 and issue partial refund',
+    affectedRecordLabel: 'Order #A4610', affectedRecordHref: '/app/inbox',
+    reason: 'Order has already shipped, so cancellation requires manual carrier coordination outside AI Voice Employee tooling.',
+    evidence: ['Order shipped yesterday via courier.', 'Customer contacted within 1 hour of shipment.'],
+    status: 'pending', risk: 'medium', requestedAt: '2026-08-17T07:10:00Z', expiresAt: '2026-08-18T07:10:00Z',
+  },
+  {
+    id: 'appr_3', employeeType: 'hr', employeeName: 'AI HR Employee',
+    requestedAction: 'Send interview scheduling email to Ishaan Kapoor with 3 proposed slots',
+    affectedRecordLabel: 'Ishaan Kapoor — Backend Engineer', affectedRecordHref: '/app/employees/hr/candidates/cand_10',
+    reason: 'Candidate scored 86/100 and completed AI interview. Requires human confirmation before external communication is sent.',
+    evidence: ['AI interview score: 86/100', 'Recommended next step: Fast-track to human interview with engineering leadership.'],
+    status: 'pending', risk: 'low', requestedAt: '2026-08-17T09:40:00Z', expiresAt: '2026-08-19T09:40:00Z',
+  },
+  {
+    id: 'appr_4', employeeType: 'voice', employeeName: 'AI Voice Employee',
+    requestedAction: 'Cancel order #A4501',
+    affectedRecordLabel: 'Order #A4501 — Vikram T.', affectedRecordHref: '/app/inbox',
+    reason: 'Order had not yet shipped — within auto-approval policy.',
+    evidence: ['Order status: not shipped.', 'Cancellation requested within 2 hours of order placement.'],
+    status: 'approved', risk: 'low', requestedAt: '2026-08-16T14:06:00Z', expiresAt: '2026-08-17T14:06:00Z',
+    decidedAt: '2026-08-16T14:20:00Z', decidedBy: 'Karthik Iyer', decisionNote: 'Standard cancellation, approved.',
+  },
+  {
+    id: 'appr_5', employeeType: 'hr', employeeName: 'AI HR Employee',
+    requestedAction: 'Reject candidate Farhan Ahmed — below seniority bar',
+    affectedRecordLabel: 'Farhan Ahmed — Senior Product Designer', affectedRecordHref: '/app/employees/hr/candidates/cand_6',
+    reason: 'Resume evidence score of 41/100, well below the shortlist threshold for a senior-level role.',
+    evidence: ['Overall evidence score: 41/100', '1 year experience vs. 5-8 years required.'],
+    status: 'approved', risk: 'low', requestedAt: '2026-07-29T10:00:00Z', expiresAt: '2026-07-31T10:00:00Z',
+    decidedAt: '2026-07-29T15:00:00Z', decidedBy: 'Priya Nair', decisionNote: 'Confirmed — not a fit for the seniority level required.',
+  },
+  {
+    id: 'appr_6', employeeType: 'voice', employeeName: 'AI Voice Employee',
+    requestedAction: 'Apply loyalty discount override of 15% for repeat customer',
+    affectedRecordLabel: 'Order #A4388', affectedRecordHref: '/app/inbox',
+    reason: 'Discount exceeds the standard 10% ceiling configured for AI-initiated offers.',
+    evidence: ['Customer has 4 prior purchases.', 'Requested discount: 15% (ceiling: 10%).'],
+    status: 'rejected', risk: 'medium', requestedAt: '2026-08-14T12:00:00Z', expiresAt: '2026-08-15T12:00:00Z',
+    decidedAt: '2026-08-14T16:40:00Z', decidedBy: 'Rohan Mehta', decisionNote: 'Discount too high — offered standard 10% instead via manual follow-up.',
+  },
+]

@@ -1,0 +1,99 @@
+@theme {
+  /* ---------------------------------------------------------------------
+     Typography
+  --------------------------------------------------------------------- */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* ---------------------------------------------------------------------
+     Brand — AIVRA purple
+  --------------------------------------------------------------------- */
+  --color-brand-50: #f4f2ff;
+  --color-brand-100: #ece7ff;
+  --color-brand-200: #dad2ff;
+  --color-brand-300: #bcabff;
+  --color-brand-400: #9b7ffb;
+  --color-brand-500: #8259f6;
+  --color-brand-600: #6d3ef2;
+  --color-brand-700: #5c2fd6;
+  --color-brand-800: #4b28ab;
+  --color-brand-900: #3d2286;
+  --color-brand-950: #251458;
+
+  /* ---------------------------------------------------------------------
+     Neutral ink scale — cool slate, used for text & surfaces
+  --------------------------------------------------------------------- */
+  --color-ink-25: #fbfbfd;
+  --color-ink-50: #f6f6f9;
+  --color-ink-100: #eeeef3;
+  --color-ink-200: #e0e0e9;
+  --color-ink-300: #c7c7d6;
+  --color-ink-400: #9d9db3;
+  --color-ink-500: #75758f;
+  --color-ink-600: #585871;
+  --color-ink-700: #414157;
+  --color-ink-800: #2a2a3c;
+  --color-ink-900: #191926;
+  --color-ink-950: #0e0e17;
+
+  /* ---------------------------------------------------------------------
+     Semantic — status colors (used ONLY for state, never decoration)
+  --------------------------------------------------------------------- */
+  --color-success-50: #f0faf4;
+  --color-success-100: #dcf3e4;
+  --color-success-500: #1fa163;
+  --color-success-600: #178350;
+  --color-success-700: #146842;
+
+  --color-warning-50: #fef8ec;
+  --color-warning-100: #fcecc6;
+  --color-warning-500: #c8850c;
+  --color-warning-600: #a8690a;
+  --color-warning-700: #855109;
+
+  --color-danger-50: #fdf2f2;
+  --color-danger-100: #fbdfdf;
+  --color-danger-500: #d33d3d;
+  --color-danger-600: #b62c2c;
+  --color-danger-700: #932323;
+
+  --color-info-50: #f0f6fe;
+  --color-info-100: #dcebfc;
+  --color-info-500: #2170c9;
+  --color-info-600: #1a5aa3;
+  --color-info-700: #164a86;
+
+  /* ---------------------------------------------------------------------
+     Radius
+  --------------------------------------------------------------------- */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+
+  /* ---------------------------------------------------------------------
+     Shadows — subtle only, no heavy elevation
+  --------------------------------------------------------------------- */
+  --shadow-xs: 0 1px 2px 0 rgb(25 25 38 / 0.04);
+  --shadow-card: 0 1px 2px 0 rgb(25 25 38 / 0.04), 0 1px 6px -1px rgb(25 25 38 / 0.06);
+  --shadow-elevated: 0 4px 12px -2px rgb(25 25 38 / 0.08), 0 2px 4px -2px rgb(25 25 38 / 0.05);
+  --shadow-overlay: 0 12px 32px -8px rgb(25 25 38 / 0.18), 0 4px 10px -4px rgb(25 25 38 / 0.08);
+
+  /* ---------------------------------------------------------------------
+     Motion
+  --------------------------------------------------------------------- */
+  --default-transition-duration: 160ms;
+  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ---------------------------------------------------------------------
+     Breakpoints (align to spec: desktop 1280-1440, tablet, mobile)
+  --------------------------------------------------------------------- */
+  --breakpoint-xs: 30rem;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 90rem;
+}
