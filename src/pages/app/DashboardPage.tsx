@@ -8,7 +8,7 @@ import {
   PhoneMissed,
   PlugZap,
   AlertTriangle,
-  Settings2,
+  Brain,
   Mic,
   UploadCloud,
   Plug,
@@ -38,9 +38,9 @@ const ATTENTION_CONFIG = {
 }
 
 const QUICK_ACTIONS = [
-  { label: 'Configure HR Employee', description: 'Update rubric, interview or scheduling', icon: Settings2, href: '/app/employees/hr/setup' },
+  { label: 'Upload Resumes', description: 'Add candidates for AI screening', icon: UploadCloud, href: '/app/employees/hr/candidates/upload' },
   { label: 'Configure Voice Employee', description: 'Update business profile or capabilities', icon: Mic, href: '/app/employees/voice/setup' },
-  { label: 'Upload Knowledge', description: 'Add a file, URL or connected source', icon: UploadCloud, href: '/app/knowledge' },
+  { label: 'Upload Knowledge', description: 'Add a file, URL or connected source', icon: Brain, href: '/app/knowledge' },
   { label: 'Connect Integration', description: 'Calendar, CRM, telephony and more', icon: Plug, href: '/app/integrations' },
 ]
 

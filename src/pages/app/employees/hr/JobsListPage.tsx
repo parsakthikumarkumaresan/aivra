@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Plus, Briefcase, Users, MapPin } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { Plus, Briefcase, Users, MapPin, Upload } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useJobs } from '@/hooks/useHr'
 import { useToast } from '@/hooks/useToast'
@@ -15,6 +15,7 @@ import { Modal } from '@/components/ui/Modal'
 import { Input, Label, Select, Textarea } from '@/components/ui/Field'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { HrSubNav } from '@/components/employees/hr/HrSubNav'
 import type { EmploymentType, Job, JobStatus } from '@/types'
 import { formatDate } from '@/utils/format'
 
@@ -26,17 +27,31 @@ export default function JobsListPage() {
   useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI HR Employee', href: '/app/employees/hr' }, { label: 'Jobs' }])
   const jobs = useJobs()
   const { show } = useToast()
+  const [params, setParams] = useSearchParams()
   const [modalOpen, setModalOpen] = useState(false)
   const [creating, setCreating] = useState(false)
-  const [form, setForm] = useState({ title: '', department: '', location: '', employmentType: 'full_time' as EmploymentType, experienceLevel: '', description: '' })
+  const [form, setForm] = useState({ title: '', department: '', location: '', employmentType: 'full_time' as EmploymentType, experienceLevel: '', description: '', requiredSkills: '' })
+
+  useEffect(() => {
+    if (params.get('new') === '1') {
+      setModalOpen(true)
+      const next = new URLSearchParams(params)
+      next.delete('new')
+      setParams(next, { replace: true })
+    }
+  }, [])
 
   async function handleCreate() {
     if (!form.title || !form.department) return
     setCreating(true)
-    await hrService.createJob(form)
+    await hrService.createJob({
+      ...form,
+      requirements: [],
+      requiredSkills: form.requiredSkills.split(',').map((s) => s.trim()).filter(Boolean),
+    })
     setCreating(false)
     setModalOpen(false)
-    setForm({ title: '', department: '', location: '', employmentType: 'full_time', experienceLevel: '', description: '' })
+    setForm({ title: '', department: '', location: '', employmentType: 'full_time', experienceLevel: '', description: '', requiredSkills: '' })
     show({ tone: 'success', title: 'Job created', description: `${form.title} was added as a draft.` })
     jobs.refetch()
   }
@@ -46,7 +61,7 @@ export default function JobsListPage() {
       key: 'title',
       header: 'Job',
       render: (job) => (
-        <Link to={`/app/employees/hr/candidates?job=${job.id}`} className="flex items-center gap-2.5">
+        <Link to={`/app/employees/hr/jobs/${job.id}`} className="flex items-center gap-2.5">
           <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
             <Briefcase className="size-3.5" />
           </span>
@@ -73,7 +88,7 @@ export default function JobsListPage() {
       key: 'candidates',
       header: 'Candidates',
       render: (job) => (
-        <Link to={`/app/employees/hr/candidates?job=${job.id}`} className="flex items-center gap-1.5 text-[13px] font-medium text-brand-600 hover:text-brand-700">
+        <Link to={`/app/employees/hr/jobs/${job.id}`} className="flex items-center gap-1.5 text-[13px] font-medium text-brand-600 hover:text-brand-700">
           <Users className="size-3.5" />
           {job.candidateCount}
         </Link>
@@ -81,6 +96,17 @@ export default function JobsListPage() {
     },
     { key: 'created', header: 'Created', render: (job) => <span className="text-[13px] text-ink-500">{formatDate(job.createdAt)}</span> },
     { key: 'status', header: 'Status', render: (job) => <Badge tone={STATUS_TONE[job.status]} dot>{STATUS_LABEL[job.status]}</Badge> },
+    {
+      key: 'actions',
+      header: '',
+      render: (job) => (
+        <Link to={`/app/employees/hr/candidates/upload?job=${job.id}`} onClick={(e) => e.stopPropagation()}>
+          <Button size="sm" variant="outline" icon={<Upload className="size-3.5" />}>
+            Upload Resumes
+          </Button>
+        </Link>
+      ),
+    },
   ]
 
   return (
@@ -94,6 +120,8 @@ export default function JobsListPage() {
           </Button>
         }
       />
+
+      <HrSubNav />
 
       {/* Desktop / tablet table */}
       <div className="hidden sm:block">
@@ -126,7 +154,7 @@ export default function JobsListPage() {
           />
         ) : (
           jobs.data?.map((job) => (
-            <Link key={job.id} to={`/app/employees/hr/candidates?job=${job.id}`} className="block rounded-xl border border-ink-200 bg-white p-4">
+            <Link key={job.id} to={`/app/employees/hr/jobs/${job.id}`} className="block rounded-xl border border-ink-200 bg-white p-4">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <p className="truncate text-[13.5px] font-semibold text-ink-900">{job.title}</p>
@@ -190,6 +218,10 @@ export default function JobsListPage() {
               <Label>Experience level</Label>
               <Input value={form.experienceLevel} onChange={(e) => setForm({ ...form, experienceLevel: e.target.value })} placeholder="3-6 years" />
             </div>
+          </div>
+          <div>
+            <Label>Required skills</Label>
+            <Input value={form.requiredSkills} onChange={(e) => setForm({ ...form, requiredSkills: e.target.value })} placeholder="Python, AWS, PostgreSQL (comma-separated)" />
           </div>
           <div>
             <Label>Job description</Label>

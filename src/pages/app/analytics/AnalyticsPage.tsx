@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   Area,
   AreaChart,
@@ -25,16 +26,18 @@ import { KpiCard } from '@/components/ui/KpiCard'
 import { ChartCard } from '@/components/ui/ChartCard'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { CANDIDATE_STAGE_LABEL } from '@/types'
-import type { CandidateStage, CallIntent } from '@/types'
+import type { CallIntent, CandidateStage } from '@/types'
 import { formatDate } from '@/utils/format'
 
-const FUNNEL_STAGES: CandidateStage[] = ['applied', 'screening', 'shortlisted', 'ai_interview', 'human_interview', 'selected']
+const FUNNEL_STAGES: CandidateStage[] = ['uploaded', 'analyzed', 'hr_review', 'screening_approved', 'human_review', 'interview_scheduled', 'completed']
 const INTENT_LABEL: Record<CallIntent, string> = { faq: 'FAQ', booking: 'Booking', cancellation: 'Cancellation', status_lookup: 'Status Lookup', complaint: 'Complaint', unknown: 'Unknown' }
 const INTENT_COLORS = ['#6D3EF2', '#2170C9', '#178350', '#c8850c', '#d33d3d', '#9d9db3']
 
 export default function AnalyticsPage() {
   useSetBreadcrumbs([{ label: 'Analytics' }])
-  const [view, setView] = useState<'general' | 'hr' | 'voice'>('general')
+  const [params] = useSearchParams()
+  const initialTab = params.get('tab')
+  const [view, setView] = useState<'general' | 'hr' | 'voice'>(initialTab === 'hr' || initialTab === 'voice' ? initialTab : 'general')
   const [outcomeFilter, setOutcomeFilter] = useState('all')
 
   const chart = useActivityChart()
@@ -63,9 +66,9 @@ export default function AnalyticsPage() {
   const actionsCompleted = callData.reduce((sum, c) => sum + c.actionsTaken.length, 0)
 
   const screenedCount = candidateData.filter((c) => c.overallScore !== null).length
-  const interviewCompleted = candidateData.filter((c) => ['ai_interview', 'human_interview', 'selected'].includes(c.stage)).length
-  const scheduledInterviews = candidateData.filter((c) => c.stage === 'human_interview').length
-  const conversionRate = candidateData.length ? Math.round((candidateData.filter((c) => c.stage === 'selected').length / candidateData.length) * 100) : 0
+  const interviewCompleted = candidateData.filter((c) => ['screening_completed', 'human_review', 'interview_approved', 'interview_scheduled', 'completed'].includes(c.stage)).length
+  const scheduledInterviews = candidateData.filter((c) => c.stage === 'interview_scheduled').length
+  const conversionRate = candidateData.length ? Math.round((candidateData.filter((c) => c.stage === 'completed').length / candidateData.length) * 100) : 0
 
   return (
     <div className="space-y-5">

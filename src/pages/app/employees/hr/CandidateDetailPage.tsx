@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   Mail,
   Phone,
@@ -9,14 +9,20 @@ import {
   ArrowLeft,
   CheckCircle2,
   XCircle,
-  FlaskConical,
+  PauseCircle,
+  PhoneCall,
   FileText,
   MessageSquareText,
   Sparkles,
   AlertCircle,
+  Loader2,
+  RefreshCw,
+  Video,
 } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useCandidate, useInterview, useJob } from '@/hooks/useHr'
+import { useToast } from '@/hooks/useToast'
+import { hrService } from '@/services/api'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
@@ -29,8 +35,11 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { Timeline } from '@/components/ui/Timeline'
 import type { TimelineEntry } from '@/components/ui/Timeline'
 import { Textarea } from '@/components/ui/Field'
+import { Modal } from '@/components/ui/Modal'
+import { Transcript } from '@/components/ui/Transcript'
 import { EvidenceCard } from '@/components/employees/hr/EvidenceCard'
-import { CandidateScoreCard } from '@/components/employees/hr/CandidateScoreCard'
+import { ResumeAnalysisCard } from '@/components/employees/hr/ResumeAnalysisCard'
+import { JdMatchCard } from '@/components/employees/hr/JdMatchCard'
 import { CANDIDATE_STAGE_LABEL } from '@/types'
 import { formatDate, formatDateTime } from '@/utils/format'
 
@@ -38,18 +47,26 @@ const TABS = [
   { value: 'overview', label: 'Overview' },
   { value: 'resume', label: 'Resume Evidence' },
   { value: 'screening', label: 'Screening' },
-  { value: 'interview', label: 'AI Interview' },
+  { value: 'aiscreening', label: 'AI Screening' },
   { value: 'feedback', label: 'Human Feedback' },
   { value: 'timeline', label: 'Timeline' },
 ]
 
+type DecisionKind = 'reject' | 'hold'
+type DecisionGate = 'screening' | 'interview'
+
 export default function CandidateDetailPage() {
   const { id = '' } = useParams()
+  const navigate = useNavigate()
+  const { show } = useToast()
   const candidate = useCandidate(id)
   const job = useJob(candidate.data?.jobId ?? '')
   const interview = useInterview(id)
   const [tab, setTab] = useState('overview')
   const [feedbackDraft, setFeedbackDraft] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [decision, setDecision] = useState<{ kind: DecisionKind; gate: DecisionGate } | null>(null)
+  const [decisionNote, setDecisionNote] = useState('')
 
   useSetBreadcrumbs(
     [
@@ -76,13 +93,56 @@ export default function CandidateDetailPage() {
 
   const c = candidate.data
 
+  async function refreshAll() {
+    await Promise.all([candidate.refetch(), interview.refetch()])
+  }
+
+  async function handleApproveForScreening() {
+    setBusy(true)
+    await hrService.approveForScreening(c.id)
+    setBusy(false)
+    show({ tone: 'success', title: 'Approved for AI screening', description: `${c.name} can now be called by the AI HR Employee.` })
+    refreshAll()
+  }
+
+  async function handleApproveForInterview() {
+    setBusy(true)
+    await hrService.approveForInterview(c.id)
+    setBusy(false)
+    show({ tone: 'success', title: 'Approved for human interview', description: 'You can now schedule this candidate.' })
+    refreshAll()
+  }
+
+  async function handleStartScreening() {
+    setBusy(true)
+    await hrService.startScreeningCall(c.id)
+    setBusy(false)
+    navigate(`/app/employees/hr/screenings/${c.id}`)
+  }
+
+  async function submitDecision() {
+    if (!decision) return
+    setBusy(true)
+    if (decision.kind === 'reject') await hrService.rejectCandidate(c.id, decisionNote || undefined)
+    else await hrService.holdCandidate(c.id, decisionNote || undefined)
+    setBusy(false)
+    setDecision(null)
+    setDecisionNote('')
+    show({ tone: decision.kind === 'reject' ? 'info' : 'warning', title: decision.kind === 'reject' ? 'Candidate rejected' : 'Candidate on hold' })
+    refreshAll()
+  }
+
   const timelineEntries: TimelineEntry[] = [
-    { id: 'tl1', title: `Applied via ${c.source.replace('_', ' ')}`, timestamp: formatDateTime(c.appliedAt), iconTone: 'neutral' },
-    ...(c.resumeEvidence.length > 0 ? [{ id: 'tl2', title: 'AI resume screening completed', description: `Overall score ${c.overallScore}/100`, timestamp: formatDateTime(c.appliedAt), iconTone: 'brand' as const }] : []),
-    ...(interview.data ? [{ id: 'tl3', title: 'AI interview ' + (interview.data.status === 'completed' ? 'completed' : 'started'), timestamp: formatDateTime(interview.data.completedAt ?? c.appliedAt), iconTone: 'brand' as const }] : []),
-    ...(c.stage === 'human_interview' || c.stage === 'selected' ? [{ id: 'tl4', title: 'Moved to human interview', timestamp: formatDateTime(c.appliedAt), iconTone: 'warning' as const }] : []),
-    ...(c.stage === 'selected' ? [{ id: 'tl5', title: 'Candidate selected', timestamp: formatDateTime(c.appliedAt), iconTone: 'success' as const }] : []),
-    ...(c.stage === 'rejected' ? [{ id: 'tl5', title: 'Candidate rejected', timestamp: formatDateTime(c.appliedAt), iconTone: 'danger' as const }] : []),
+    { id: 'tl1', title: `Resume uploaded via ${c.source.replace('_', ' ')}`, timestamp: formatDateTime(c.uploadedAt), iconTone: 'neutral' },
+    ...(c.jdMatch ? [{ id: 'tl2', title: 'Resume analyzed and matched to job', description: `Overall JD match ${c.jdMatch.overallScore}%`, timestamp: formatDateTime(c.uploadedAt), iconTone: 'brand' as const }] : []),
+    ...(c.screeningApproval === 'approved' ? [{ id: 'tl3', title: 'Approved for AI screening', timestamp: formatDateTime(c.uploadedAt), iconTone: 'success' as const }] : []),
+    ...(interview.data?.completedAt ? [{ id: 'tl4', title: 'AI screening completed', timestamp: formatDateTime(interview.data.completedAt), iconTone: 'brand' as const }] : []),
+    ...(interview.data?.status === 'failed' ? [{ id: 'tl4b', title: 'AI screening call failed', timestamp: formatDateTime(c.uploadedAt), iconTone: 'danger' as const }] : []),
+    ...(c.interviewApproval === 'approved' ? [{ id: 'tl5', title: 'Approved for human interview', timestamp: formatDateTime(c.uploadedAt), iconTone: 'success' as const }] : []),
+    ...(c.stage === 'interview_scheduled' ? [{ id: 'tl6', title: 'Human interview scheduled', timestamp: formatDateTime(c.uploadedAt), iconTone: 'brand' as const }] : []),
+    ...(c.stage === 'completed' ? [{ id: 'tl7', title: 'Candidate marked completed', timestamp: formatDateTime(c.uploadedAt), iconTone: 'success' as const }] : []),
+    ...(c.stage === 'rejected' ? [{ id: 'tl8', title: 'Candidate rejected', description: c.attentionReason, timestamp: formatDateTime(c.uploadedAt), iconTone: 'danger' as const }] : []),
+    ...(c.stage === 'on_hold' ? [{ id: 'tl9', title: 'Candidate placed on hold', description: c.attentionReason, timestamp: formatDateTime(c.uploadedAt), iconTone: 'warning' as const }] : []),
   ]
 
   return (
@@ -107,24 +167,19 @@ export default function CandidateDetailPage() {
             {c.phone && <span className="flex items-center gap-1.5 text-xs text-ink-500"><Phone className="size-3.5" />{c.phone}</span>}
             <span className="flex items-center gap-1.5 text-xs text-ink-500"><MapPin className="size-3.5" />{c.location}</span>
             <span className="flex items-center gap-1.5 text-xs text-ink-500"><Briefcase className="size-3.5" />{job.data?.title ?? '—'}</span>
-            <span className="flex items-center gap-1.5 text-xs text-ink-500"><Calendar className="size-3.5" />Applied {formatDate(c.appliedAt)}</span>
+            <span className="flex items-center gap-1.5 text-xs text-ink-500"><Calendar className="size-3.5" />Uploaded {formatDate(c.uploadedAt)}</span>
           </>
         }
-        actions={
-          <>
-            <Link to={`/app/employees/hr/schedule?candidate=${c.id}`}>
-              <Button variant="outline" size="sm" icon={<Calendar className="size-3.5" />}>
-                Schedule Interview
-              </Button>
-            </Link>
-            <Button variant="outline" size="sm" icon={<XCircle className="size-3.5" />}>
-              Reject
-            </Button>
-            <Button size="sm" icon={<CheckCircle2 className="size-3.5" />}>
-              Advance Stage
-            </Button>
-          </>
-        }
+        actions={<CandidateActionBar
+          candidate={c}
+          interviewStatus={interview.data?.status}
+          busy={busy}
+          onApproveScreening={handleApproveForScreening}
+          onApproveInterview={handleApproveForInterview}
+          onStartScreening={handleStartScreening}
+          onReject={(gate) => setDecision({ kind: 'reject', gate })}
+          onHold={(gate) => setDecision({ kind: 'hold', gate })}
+        />}
       />
 
       {c.needsAttention && c.attentionReason && (
@@ -138,15 +193,22 @@ export default function CandidateDetailPage() {
 
       {tab === 'overview' && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader title="Resume Summary" />
-              <CardBody>
-                <p className="text-[13.5px] leading-relaxed text-ink-700">{c.resumeSummary}</p>
-              </CardBody>
-            </Card>
+          <div className="space-y-4 lg:col-span-2">
+            {c.extractedProfile ? (
+              <ResumeAnalysisCard profile={c.extractedProfile} />
+            ) : (
+              <EmptyState
+                icon={<Loader2 className="size-6 animate-spin" />}
+                title="Resume processing in progress"
+                description="Extracted candidate information will appear here once resume parsing completes."
+              />
+            )}
           </div>
-          <CandidateScoreCard overallScore={c.overallScore} evidence={c.resumeEvidence} />
+          {c.jdMatch ? (
+            <JdMatchCard match={c.jdMatch} jobTitle={job.data?.title ?? 'this role'} />
+          ) : (
+            <EmptyState compact icon={<Loader2 className="size-5 animate-spin" />} title="Matching…" description="JD match will appear once processing completes." />
+          )}
         </div>
       )}
 
@@ -182,29 +244,46 @@ export default function CandidateDetailPage() {
         </Card>
       )}
 
-      {tab === 'interview' && (
+      {tab === 'aiscreening' && (
         <div className="space-y-4">
           {interview.loading ? (
             <Skeleton className="h-48 w-full" />
           ) : !interview.data ? (
             <EmptyState
-              icon={<FlaskConical className="size-6" />}
-              title="AI interview not started"
-              description="Once the candidate is shortlisted, the AI HR Employee will conduct a structured interview here."
+              icon={<PhoneCall className="size-6" />}
+              title="AI screening not started"
+              description={
+                c.screeningApproval === 'approved'
+                  ? 'This candidate is approved — start the AI screening call to begin.'
+                  : 'Approve this candidate for AI screening to unlock the call.'
+              }
               action={
-                <Link to="/app/employees/hr/interview">
-                  <Button icon={<FlaskConical className="size-4" />}>Start AI Interview</Button>
-                </Link>
+                c.screeningApproval === 'approved' ? (
+                  <Button icon={<PhoneCall className="size-4" />} onClick={handleStartScreening} loading={busy}>
+                    Start AI Screening
+                  </Button>
+                ) : undefined
+              }
+            />
+          ) : interview.data.status === 'failed' ? (
+            <EmptyState
+              icon={<AlertCircle className="size-6" />}
+              title="AI screening call failed"
+              description="The AI Voice Employee could not connect to this candidate."
+              action={
+                <Button icon={<RefreshCw className="size-4" />} onClick={handleStartScreening} loading={busy}>
+                  Retry Screening Call
+                </Button>
               }
             />
           ) : !interview.data.report ? (
             <EmptyState
-              icon={<FlaskConical className="size-6" />}
-              title="Interview in progress"
-              description="This candidate's AI interview has not finished yet."
+              icon={<PhoneCall className="size-6" />}
+              title="AI screening in progress"
+              description="This candidate's AI screening call has not finished yet."
               action={
-                <Link to="/app/employees/hr/interview">
-                  <Button icon={<FlaskConical className="size-4" />}>Open Live Interview</Button>
+                <Link to={`/app/employees/hr/screenings/${c.id}`}>
+                  <Button icon={<PhoneCall className="size-4" />}>View Live Call</Button>
                 </Link>
               }
             />
@@ -217,7 +296,7 @@ export default function CandidateDetailPage() {
                 </span>
               </div>
               <Card>
-                <CardHeader title="Interview Summary" />
+                <CardHeader title="Screening Summary" />
                 <CardBody>
                   <p className="text-[13.5px] leading-relaxed text-ink-700">{interview.data.report.summary}</p>
                 </CardBody>
@@ -253,14 +332,8 @@ export default function CandidateDetailPage() {
               </div>
               <Card>
                 <CardHeader title="Transcript" />
-                <CardBody className="max-h-80 space-y-3 overflow-y-auto">
-                  {interview.data.transcript.map((t) => (
-                    <div key={t.id} className={t.speaker === 'ai' ? 'text-left' : 'text-right'}>
-                      <span className={`inline-block max-w-[80%] rounded-xl px-3.5 py-2 text-[13px] ${t.speaker === 'ai' ? 'bg-ink-100 text-ink-800' : 'bg-brand-600 text-white'}`}>
-                        {t.text}
-                      </span>
-                    </div>
-                  ))}
+                <CardBody className="max-h-80 overflow-y-auto">
+                  <Transcript turns={interview.data.transcript} />
                 </CardBody>
               </Card>
             </>
@@ -278,7 +351,7 @@ export default function CandidateDetailPage() {
                 <span className="text-[13px] font-semibold text-ink-800">Priya Nair</span>
                 <span className="text-xs text-ink-400">Talent Acquisition Lead</span>
               </div>
-              <p className="mt-2 text-[13px] text-ink-600">Strong communicator in the AI interview transcript — recommend moving forward to the panel round.</p>
+              <p className="mt-2 text-[13px] text-ink-600">Strong communicator in the AI screening transcript — recommend moving forward to the panel round.</p>
             </div>
             <div>
               <Textarea value={feedbackDraft} onChange={(e) => setFeedbackDraft(e.target.value)} placeholder="Add your feedback for the hiring team…" />
@@ -299,6 +372,141 @@ export default function CandidateDetailPage() {
           </CardBody>
         </Card>
       )}
+
+      <Modal
+        open={Boolean(decision)}
+        onClose={() => setDecision(null)}
+        title={decision?.kind === 'reject' ? `Reject ${c.name}?` : `Put ${c.name} on hold?`}
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setDecision(null)} disabled={busy}>
+              Cancel
+            </Button>
+            <Button variant={decision?.kind === 'reject' ? 'danger' : 'primary'} onClick={submitDecision} loading={busy}>
+              {decision?.kind === 'reject' ? 'Reject Candidate' : 'Place On Hold'}
+            </Button>
+          </>
+        }
+      >
+        <div>
+          <p className="mb-3 text-[13px] text-ink-600">
+            {decision?.kind === 'reject'
+              ? 'This candidate will be removed from the active pipeline. This is a human decision — the AI will not act on this candidate again.'
+              : 'This candidate will be paused in the pipeline until you resume them.'}
+          </p>
+          <Textarea value={decisionNote} onChange={(e) => setDecisionNote(e.target.value)} placeholder="Add a note (optional)…" />
+        </div>
+      </Modal>
     </div>
   )
+}
+
+interface ActionBarProps {
+  candidate: ReturnType<typeof useCandidate>['data']
+  interviewStatus?: string
+  busy: boolean
+  onApproveScreening: () => void
+  onApproveInterview: () => void
+  onStartScreening: () => void
+  onReject: (gate: DecisionGate) => void
+  onHold: (gate: DecisionGate) => void
+}
+
+function CandidateActionBar({ candidate, interviewStatus, busy, onApproveScreening, onApproveInterview, onStartScreening, onReject, onHold }: ActionBarProps) {
+  if (!candidate) return null
+  const c = candidate
+
+  if (c.stage === 'rejected') return <Badge tone="danger">Rejected</Badge>
+  if (c.stage === 'completed') return <Badge tone="success">Completed</Badge>
+  if (c.stage === 'on_hold') return <Badge tone="warning">On Hold</Badge>
+
+  if (c.stage === 'uploaded' || c.stage === 'processing') {
+    return (
+      <span className="flex items-center gap-1.5 text-[13px] text-ink-500">
+        <Loader2 className="size-3.5 animate-spin" />
+        Waiting for resume processing
+      </span>
+    )
+  }
+
+  // Gate 1 — HR review of resume analysis, before AI screening
+  if (c.screeningApproval === 'pending') {
+    return (
+      <>
+        <Button variant="ghost" size="sm" icon={<PauseCircle className="size-3.5" />} onClick={() => onHold('screening')} disabled={busy}>
+          Keep on Hold
+        </Button>
+        <Button variant="outline" size="sm" icon={<XCircle className="size-3.5" />} onClick={() => onReject('screening')} disabled={busy}>
+          Reject
+        </Button>
+        <Button size="sm" icon={<CheckCircle2 className="size-3.5" />} onClick={onApproveScreening} loading={busy}>
+          Approve for AI Screening
+        </Button>
+      </>
+    )
+  }
+
+  if (c.stage === 'screening_approved') {
+    return (
+      <Button size="sm" icon={<PhoneCall className="size-3.5" />} onClick={onStartScreening} loading={busy}>
+        Start AI Screening
+      </Button>
+    )
+  }
+
+  if (c.stage === 'ai_screening') {
+    if (interviewStatus === 'failed') {
+      return (
+        <Button size="sm" icon={<RefreshCw className="size-3.5" />} onClick={onStartScreening} loading={busy}>
+          Retry Screening Call
+        </Button>
+      )
+    }
+    return (
+      <Link to={`/app/employees/hr/screenings/${c.id}`}>
+        <Button size="sm" variant="outline" icon={<PhoneCall className="size-3.5" />}>
+          View Live Call
+        </Button>
+      </Link>
+    )
+  }
+
+  // Gate 2 — human review of the screening report, before scheduling an interview
+  if (c.interviewApproval === 'pending') {
+    return (
+      <>
+        <Button variant="ghost" size="sm" icon={<PauseCircle className="size-3.5" />} onClick={() => onHold('interview')} disabled={busy}>
+          Keep on Hold
+        </Button>
+        <Button variant="outline" size="sm" icon={<XCircle className="size-3.5" />} onClick={() => onReject('interview')} disabled={busy}>
+          Reject
+        </Button>
+        <Button size="sm" icon={<CheckCircle2 className="size-3.5" />} onClick={onApproveInterview} loading={busy}>
+          Approve for Human Interview
+        </Button>
+      </>
+    )
+  }
+
+  if (c.stage === 'interview_approved') {
+    return (
+      <Link to={`/app/employees/hr/schedule?candidate=${c.id}`}>
+        <Button size="sm" icon={<Calendar className="size-3.5" />}>
+          Schedule Interview
+        </Button>
+      </Link>
+    )
+  }
+
+  if (c.stage === 'interview_scheduled') {
+    return (
+      <Link to={`/app/employees/hr/schedule?candidate=${c.id}`}>
+        <Button size="sm" variant="outline" icon={<Video className="size-3.5" />}>
+          View Interview Details
+        </Button>
+      </Link>
+    )
+  }
+
+  return null
 }

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Users, Mic, Settings2, FlaskConical, Pause, Play, ArrowUpRight, Phone, MessageSquare, Mail, Globe } from 'lucide-react'
+import { Users, Mic, Settings2, FlaskConical, Pause, Play, ArrowUpRight, Phone, MessageSquare, Mail, Globe, Upload } from 'lucide-react'
 import type { AIEmployee, Channel } from '@/types'
 import { Card } from '@/components/ui/Card'
 import { Avatar } from '@/components/ui/Avatar'
@@ -28,6 +28,7 @@ export function EmployeeCard({ employee, onTogglePause, onTest, compact = false 
   const TypeIcon = TYPE_ICON[employee.type]
   const employeeHref = `/app/employees/${employee.type}`
   const isPaused = employee.status === 'paused'
+  const isHr = employee.type === 'hr'
 
   return (
     <Card className="flex flex-col p-5">
@@ -74,14 +75,23 @@ export function EmployeeCard({ employee, onTogglePause, onTest, compact = false 
       </div>
 
       <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-ink-100 pt-4">
-        <Link to={`${employeeHref}/setup`}>
-          <Button variant="outline" size="sm" icon={<Settings2 className="size-3.5" />}>
+        {isHr && (
+          <Link to={`${employeeHref}/candidates/upload`}>
+            <Button variant="outline" size="sm" icon={<Upload className="size-3.5" />}>
+              Upload Resumes
+            </Button>
+          </Link>
+        )}
+        <Link to={isHr ? `${employeeHref}/configuration` : `${employeeHref}/setup`}>
+          <Button variant={isHr ? 'ghost' : 'outline'} size="sm" icon={<Settings2 className="size-3.5" />}>
             Configure
           </Button>
         </Link>
-        <Button variant="outline" size="sm" icon={<FlaskConical className="size-3.5" />} onClick={() => onTest?.(employee)}>
-          Test
-        </Button>
+        {!isHr && (
+          <Button variant="outline" size="sm" icon={<FlaskConical className="size-3.5" />} onClick={() => onTest?.(employee)}>
+            Test
+          </Button>
+        )}
         <Button
           variant="ghost"
           size="sm"

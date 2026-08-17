@@ -48,6 +48,8 @@ export const mockInterviews: Record<string, Interview> = {
     ],
     completedAt: '2026-08-15T11:32:00Z',
     scheduledHumanInterviewAt: '2026-08-19T10:30:00Z',
+    scheduledInterviewer: 'Design Leadership Panel',
+    meetingLink: 'meet.google.com/arv-hire-042',
     report: {
       summary: 'Arvind demonstrates strong product thinking and clear leadership experience, backed by concrete examples across multiple 0-to-1 launches. Communication was structured and confident throughout.',
       strengths: ['Clear, structured storytelling with measurable outcomes', 'Demonstrated formal leadership of a 4-person design team', 'Strong grasp of tradeoffs between speed and craft'],
@@ -121,6 +123,8 @@ export const mockInterviews: Record<string, Interview> = {
     ],
     completedAt: '2026-08-14T09:38:00Z',
     scheduledHumanInterviewAt: '2026-08-18T15:00:00Z',
+    scheduledInterviewer: 'Rohan Mehta',
+    meetingLink: 'meet.google.com/isk-hire-107',
     report: {
       summary: 'Ishaan demonstrates deep, expert-level distributed systems experience at significant scale, with strong incident leadership. One of the strongest technical candidates screened for this role.',
       strengths: ['Expert-level distributed systems design at very large scale', 'Extensive incident leadership across multiple P0s', 'Deep CS fundamentals'],
@@ -132,6 +136,76 @@ export const mockInterviews: Record<string, Interview> = {
       recommendedNextStep: 'Fast-track to human interview with engineering leadership.',
       humanReviewRequired: true,
     },
+  },
+
+  int_5: {
+    id: 'int_5',
+    candidateId: 'cand_16',
+    jobId: 'job_1042',
+    status: 'completed',
+    template: 'Senior Product Design — Structured Interview v3',
+    durationMinutes: 28,
+    language: 'English (India)',
+    questionCategories: ['Product Thinking', 'UX Craft', 'Collaboration', 'Systems Thinking'],
+    questions: [
+      { id: 'q1', category: 'Systems Thinking', prompt: 'How did you get design system adoption across 5 product teams?', answered: true, candidateResponseSummary: 'Described a phased rollout with embedded design office hours and a contribution model.' },
+    ],
+    transcript: [
+      { id: 't1', speaker: 'ai', text: 'Hi Neha, thanks for joining — let\'s get started.', timestamp: '2026-08-12T10:00:00Z' },
+      { id: 't2', speaker: 'candidate', text: 'Happy to be here!', timestamp: '2026-08-12T10:00:05Z' },
+    ],
+    completedAt: '2026-08-12T10:29:00Z',
+    report: {
+      summary: 'Neha shows deep, hands-on design systems ownership with clear evidence of org-wide adoption. Strong communicator with a structured approach to research.',
+      strengths: ['Design system adopted across 5 product teams with a clear rollout plan', 'Strong research practice backing design decisions', 'Confident, structured communicator'],
+      gaps: ['Limited exposure to 0-to-1 product launches'],
+      unansweredQuestions: [],
+      criterionEvidence: [
+        { criterionId: 'crit_4', criterionLabel: 'Systems & Design Ops', score: 94, evidence: 'Drove design system adoption across 5 product teams with a documented contribution model.' },
+      ],
+      recommendedNextStep: 'Approve for human interview with design leadership.',
+      humanReviewRequired: true,
+    },
+  },
+
+  int_6: {
+    id: 'int_6',
+    candidateId: 'cand_17',
+    jobId: 'job_1043',
+    status: 'failed',
+    template: 'Backend Engineering — Structured Interview v2',
+    durationMinutes: 35,
+    language: 'English (India)',
+    questionCategories: ['Systems Design', 'Coding Proficiency', 'Ownership', 'Security'],
+    questions: [],
+    transcript: [
+      { id: 't1', speaker: 'system', text: 'Dialing +91 99887 12233…', timestamp: '2026-08-17T11:00:00Z' },
+      { id: 't2', speaker: 'system', text: 'Call failed — no answer after 3 attempts.', timestamp: '2026-08-17T11:02:30Z' },
+    ],
+  },
+
+  int_demo: {
+    id: 'int_demo',
+    candidateId: 'cand_demo',
+    jobId: 'job_1043',
+    status: 'not_started',
+    template: 'Backend Engineering — Structured Interview v2 (Sample)',
+    durationMinutes: 20,
+    language: 'English (India)',
+    questionCategories: ['Systems Design', 'Coding Proficiency'],
+    isDemo: true,
+    questions: [
+      { id: 'q1', category: 'Systems Design', prompt: 'Describe a distributed system you designed. What were the key scaling challenges?', answered: true, askedAt: '2026-08-17T10:00:10Z', candidateResponseSummary: 'Sample response describing a partitioning strategy for a high-throughput queue.' },
+      { id: 'q2', category: 'Coding Proficiency', prompt: 'How do you approach testing for services with complex async behavior?', answered: true, askedAt: '2026-08-17T10:03:40Z', candidateResponseSummary: 'Sample response describing contract and chaos testing.' },
+    ],
+    transcript: [
+      { id: 't1', speaker: 'ai', text: 'Hi, this is a preview of the AI screening call. Ready to begin?', timestamp: '2026-08-17T10:00:00Z' },
+      { id: 't2', speaker: 'candidate', text: 'Yes, ready!', timestamp: '2026-08-17T10:00:05Z' },
+      { id: 't3', speaker: 'ai', text: 'Describe a distributed system you designed. What were the key scaling challenges?', timestamp: '2026-08-17T10:00:10Z' },
+      { id: 't4', speaker: 'candidate', text: 'Sample answer: I designed an event-driven queue partitioned by tenant ID to balance throughput with per-tenant ordering guarantees.', timestamp: '2026-08-17T10:01:20Z' },
+      { id: 't5', speaker: 'ai', text: 'How do you approach testing for services with complex async behavior?', timestamp: '2026-08-17T10:03:40Z' },
+      { id: 't6', speaker: 'candidate', text: 'Sample answer: I rely on contract tests between services plus chaos testing that randomly delays or drops messages.', timestamp: '2026-08-17T10:04:50Z' },
+    ],
   },
 }
 

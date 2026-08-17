@@ -33,3 +33,11 @@ export function useScheduleSlots() {
 export function useHrConfig() {
   return useAsync(() => hrService.getConfig(), [])
 }
+
+export function useScreenings() {
+  return useAsync(() => hrService.listScreenings(), [])
+}
+
+export function useInterviewsList() {
+  return useAsync(() => hrService.listInterviews(), [])
+}

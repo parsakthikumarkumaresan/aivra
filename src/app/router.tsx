@@ -46,20 +46,48 @@ export const router = createBrowserRouter([
         element: lazyPage(() => import('@/pages/app/employees/hr/JobsListPage')),
       },
       {
+        path: 'employees/hr/jobs/:id',
+        element: lazyPage(() => import('@/pages/app/employees/hr/JobDetailPage')),
+      },
+      {
         path: 'employees/hr/candidates',
         element: lazyPage(() => import('@/pages/app/employees/hr/CandidatePipelinePage')),
+      },
+      {
+        path: 'employees/hr/candidates/upload',
+        element: lazyPage(() => import('@/pages/app/employees/hr/ResumeUploadPage')),
       },
       {
         path: 'employees/hr/candidates/:id',
         element: lazyPage(() => import('@/pages/app/employees/hr/CandidateDetailPage')),
       },
       {
-        path: 'employees/hr/interview',
-        element: lazyPage(() => import('@/pages/app/employees/hr/InterviewSimulatorPage')),
+        path: 'employees/hr/screenings',
+        element: lazyPage(() => import('@/pages/app/employees/hr/ScreeningsListPage')),
+      },
+      {
+        path: 'employees/hr/screenings/:candidateId',
+        element: lazyPage(() => import('@/pages/app/employees/hr/ScreeningCallPage')),
+      },
+      {
+        path: 'employees/hr/interviews',
+        element: lazyPage(() => import('@/pages/app/employees/hr/InterviewsListPage')),
       },
       {
         path: 'employees/hr/schedule',
         element: lazyPage(() => import('@/pages/app/employees/hr/SchedulingPage')),
+      },
+      {
+        path: 'employees/hr/reports',
+        element: lazyPage(() => import('@/pages/app/employees/hr/ReportsPage')),
+      },
+      {
+        path: 'employees/hr/configuration',
+        element: lazyPage(() => import('@/pages/app/employees/hr/ConfigurationPage')),
+      },
+      {
+        path: 'employees/hr/configuration/testing',
+        element: lazyPage(() => import('@/pages/app/employees/hr/TestingPreviewPage')),
       },
       {
         path: 'employees/voice',

@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Users2 } from 'lucide-react'
+import { Upload, Users2 } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useCandidates, useJobs } from '@/hooks/useHr'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { Button } from '@/components/ui/Button'
 import { DataTable } from '@/components/ui/DataTable'
 import type { DataTableColumn } from '@/components/ui/DataTable'
 import { FilterBar, FilterSelect } from '@/components/ui/FilterBar'
@@ -13,12 +14,14 @@ import { Avatar } from '@/components/ui/Avatar'
 import { ScoreRing } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { CANDIDATE_STAGE_LABEL } from '@/types'
+import { HrSubNav } from '@/components/employees/hr/HrSubNav'
+import { CANDIDATE_PIPELINE_STAGES, CANDIDATE_STAGE_LABEL } from '@/types'
 import type { Candidate, CandidateStage } from '@/types'
 import { formatDate } from '@/utils/format'
 
-const STAGES: CandidateStage[] = ['applied', 'screening', 'shortlisted', 'ai_interview', 'human_interview', 'selected', 'rejected', 'on_hold']
-const SOURCE_LABEL: Record<string, string> = { careers_site: 'Careers Site', referral: 'Referral', linkedin: 'LinkedIn', agency: 'Agency', job_board: 'Job Board' }
+const SOURCE_LABEL: Record<string, string> = {
+  careers_site: 'Careers Site', referral: 'Referral', linkedin: 'LinkedIn', agency: 'Agency', job_board: 'Job Board', direct_upload: 'Direct Upload',
+}
 
 export default function CandidatePipelinePage() {
   useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI HR Employee', href: '/app/employees/hr' }, { label: 'Candidates' }])
@@ -68,16 +71,26 @@ export default function CandidatePipelinePage() {
     { key: 'stage', header: 'Stage', render: (c) => <Badge tone="neutral">{CANDIDATE_STAGE_LABEL[c.stage]}</Badge> },
     {
       key: 'score',
-      header: 'Score',
-      render: (c) => (c.overallScore !== null ? <ScoreRing value={c.overallScore} size={36} /> : <span className="text-xs text-ink-400">Pending</span>),
+      header: 'JD Match',
+      render: (c) => (c.overallScore !== null ? <ScoreRing value={c.overallScore} size={36} /> : <span className="text-xs text-ink-400">Processing</span>),
     },
     { key: 'source', header: 'Source', render: (c) => <span className="text-[13px] text-ink-600">{SOURCE_LABEL[c.source]}</span> },
-    { key: 'applied', header: 'Applied', render: (c) => <span className="text-[13px] text-ink-500">{formatDate(c.appliedAt)}</span> },
+    { key: 'uploaded', header: 'Uploaded', render: (c) => <span className="text-[13px] text-ink-500">{formatDate(c.uploadedAt)}</span> },
   ]
 
   return (
     <div className="space-y-5">
-      <PageHeader title="Candidate Pipeline" description="Every candidate the AI HR Employee has screened, interviewed or scheduled." />
+      <PageHeader
+        title="Candidate Pipeline"
+        description="Every candidate resume the AI HR Employee has processed, matched or screened."
+        actions={
+          <Link to="/app/employees/hr/candidates/upload">
+            <Button icon={<Upload className="size-4" />}>Upload Resumes</Button>
+          </Link>
+        }
+      />
+
+      <HrSubNav />
 
       <FilterBar hasActiveFilters={hasFilters} onClear={() => setParams(new URLSearchParams(), { replace: true })}>
         <SearchInput value={search} onChange={setSearch} placeholder="Search candidates…" containerClassName="w-56" />
@@ -85,7 +98,7 @@ export default function CandidatePipelinePage() {
         <FilterSelect
           label="Stage"
           value={stage}
-          options={[{ value: 'all', label: 'All Stages' }, ...STAGES.map((s) => ({ value: s, label: CANDIDATE_STAGE_LABEL[s] }))]}
+          options={[{ value: 'all', label: 'All Stages' }, ...CANDIDATE_PIPELINE_STAGES.map((s) => ({ value: s, label: CANDIDATE_STAGE_LABEL[s] })), { value: 'rejected', label: 'Rejected' }, { value: 'on_hold', label: 'On Hold' }]}
           onChange={(v) => setParam('stage', v)}
         />
         <FilterSelect
@@ -133,13 +146,13 @@ export default function CandidatePipelinePage() {
                     <p className="truncate text-[13.5px] font-semibold text-ink-900">{c.name}</p>
                     <p className="truncate text-xs text-ink-500">{c.currentTitle}</p>
                   </div>
-                  {c.overallScore !== null ? <ScoreRing value={c.overallScore} size={32} /> : <span className="shrink-0 text-xs text-ink-400">Pending</span>}
+                  {c.overallScore !== null ? <ScoreRing value={c.overallScore} size={32} /> : <span className="shrink-0 text-xs text-ink-400">Processing</span>}
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-1.5">
                   <Badge tone="neutral">{CANDIDATE_STAGE_LABEL[c.stage]}</Badge>
                   <span className="text-xs text-ink-400">{jobs.data?.find((j) => j.id === c.jobId)?.title ?? '—'}</span>
                 </div>
-                <p className="mt-1.5 text-xs text-ink-400">Applied {formatDate(c.appliedAt)} · {SOURCE_LABEL[c.source]}</p>
+                <p className="mt-1.5 text-xs text-ink-400">Uploaded {formatDate(c.uploadedAt)} · {SOURCE_LABEL[c.source]}</p>
               </div>
             </Link>
           ))
