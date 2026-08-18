@@ -20,3 +20,15 @@ export interface User {
   title?: string
   lastActiveAt?: string
 }
+
+export interface NotificationPreferences {
+  escalations: boolean
+  approvals: boolean
+  dailyDigest: boolean
+  integrationFailures: boolean
+}
+
+export interface AiGovernancePreferences {
+  autoEscalateLowConfidence: boolean
+  confidenceThreshold: number
+}

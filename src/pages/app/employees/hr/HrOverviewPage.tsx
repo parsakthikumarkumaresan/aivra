@@ -14,9 +14,13 @@ import {
   FileCheck2,
   UserCheck,
 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useEmployeeByType } from '@/hooks/useEmployees'
 import { useJobs, useCandidates } from '@/hooks/useHr'
+import { useAppData } from '@/app/AppDataProvider'
+import { useToast } from '@/hooks/useToast'
+import { subscriptionService } from '@/services/api'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { EmployeeStatusBadge } from '@/components/ui/StatusBadge'
@@ -34,6 +38,16 @@ export default function HrOverviewPage() {
   const employee = useEmployeeByType('hr')
   const jobs = useJobs()
   const candidates = useCandidates({})
+  const { refetchEmployees } = useAppData()
+  const { show } = useToast()
+  const navigate = useNavigate()
+
+  async function pauseEmployee() {
+    await subscriptionService.pauseSubscription('hr')
+    refetchEmployees()
+    show({ tone: 'success', title: 'AI HR Employee paused', description: 'It will stop taking new work immediately.' })
+    navigate('/app/employees/hr')
+  }
 
   const loading = jobs.loading || candidates.loading
   const jobData = jobs.data ?? []
@@ -85,7 +99,7 @@ export default function HrOverviewPage() {
                 Configure
               </Button>
             </Link>
-            <Button variant="ghost" icon={<Pause className="size-4" />}>
+            <Button variant="ghost" icon={<Pause className="size-4" />} onClick={pauseEmployee}>
               Pause
             </Button>
           </>

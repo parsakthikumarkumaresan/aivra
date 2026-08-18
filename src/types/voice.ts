@@ -44,6 +44,19 @@ export interface EscalationRule {
   enabled: boolean
 }
 
+/** Customer-safe notification toggles — distinct from the technical EscalationRule engine below, which AIVRA manages. */
+export interface VoiceNotificationPreferences {
+  escalations: boolean
+  dailySummary: boolean
+  missedCalls: boolean
+}
+
+/** Customer-safe escalation preferences — a simplified subset of the full EscalationRule engine, which AIVRA manages. */
+export interface VoiceBasicEscalationPreferences {
+  upsetCaller: boolean
+  refundsOrCancellations: boolean
+}
+
 export interface VoiceEmployeeConfig {
   businessName: string
   industry: string
@@ -64,6 +77,11 @@ export interface VoiceEmployeeConfig {
   phoneNumber: string
   inboundEnabled: boolean
   outboundEnabled: boolean
+  // Customer-safe fields, editable from Voice Basic Settings — everything
+  // above this line is AIVRA-internal (see Advanced Setup).
+  employeeName: string
+  notificationPreferences: VoiceNotificationPreferences
+  basicEscalationPreferences: VoiceBasicEscalationPreferences
 }
 
 export type CallOutcome =

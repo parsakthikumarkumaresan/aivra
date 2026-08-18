@@ -1,28 +1,56 @@
+import { Link } from 'react-router-dom'
 import { Logo } from '@/components/ui/Logo'
-import { Globe, Link2, Rss } from 'lucide-react'
+import { useLeadFlow } from '@/app/LeadFlowContext'
 
-const FOOTER_COLUMNS = [
+interface FooterLink {
+  label: string
+  href?: string // internal route, or a homepage hash like "/#platform"
+  action?: 'demo' // opens the demo-request modal instead of navigating
+}
+
+// Every entry here points at a real destination. Items that had no real
+// page or section behind them (Solutions, Resources, About Us, Careers,
+// Pricing, Changelog, "Request a New Employee", legal pages, social links)
+// were removed rather than left as href="#" placeholders.
+const FOOTER_COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
     title: 'Product',
-    links: ['AI Workforce Platform', 'Company Brain', 'Integrations', 'Security & Governance', 'Changelog'],
+    links: [
+      { label: 'AI Workforce Platform', href: '/#platform' },
+      { label: 'Company Brain', href: '/#company-brain' },
+      { label: 'Integrations', href: '/#company-brain' },
+      { label: 'Security & Governance', href: '/#governance' },
+    ],
   },
   {
     title: 'AI Employees',
-    links: ['AI HR Employee', 'AI Voice Employee', 'Request a New Employee'],
-  },
-  {
-    title: 'Solutions',
-    links: ['Jewellery & Retail', 'Hotels', 'Restaurants', 'Real Estate', 'Automobile', 'Healthcare'],
-  },
-  {
-    title: 'Resources',
-    links: ['Documentation', 'API Reference', 'Case Studies', 'Blog', 'Help Center'],
+    links: [
+      { label: 'AI HR Employee', href: '/ai-employees/hr' },
+      { label: 'AI Voice Employee', href: '/ai-employees/voice' },
+    ],
   },
   {
     title: 'Company',
-    links: ['About Us', 'Careers', 'Pricing', 'Contact Sales'],
+    links: [{ label: 'Contact Sales', action: 'demo' }],
   },
 ]
+
+function FooterLinkItem({ link }: { link: FooterLink }) {
+  const { openDemoRequest } = useLeadFlow()
+  const className = 'text-[13px] text-ink-500 hover:text-ink-800'
+  if (link.action === 'demo') {
+    return (
+      <button type="button" onClick={() => openDemoRequest('hr')} className={className}>
+        {link.label}
+      </button>
+    )
+  }
+  return (
+    <Link to={link.href!} className={className}>
+      {link.label}
+    </Link>
+  )
+}
 
 export function MarketingFooter() {
   return (
@@ -34,40 +62,22 @@ export function MarketingFooter() {
             <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-ink-500">
               The AI Workforce Operating System. Deploy governed AI Employees across voice, chat and business systems.
             </p>
-            <div className="mt-5 flex items-center gap-3 text-ink-400">
-              <a href="#" aria-label="Company website" className="hover:text-ink-700">
-                <Globe className="size-4" />
-              </a>
-              <a href="#" aria-label="Blog" className="hover:text-ink-700">
-                <Rss className="size-4" />
-              </a>
-              <a href="#" aria-label="Social links" className="hover:text-ink-700">
-                <Link2 className="size-4" />
-              </a>
-            </div>
           </div>
           {FOOTER_COLUMNS.map((col) => (
             <div key={col.title}>
               <h4 className="text-[13px] font-semibold text-ink-900">{col.title}</h4>
               <ul className="mt-3 space-y-2.5">
                 {col.links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-[13px] text-ink-500 hover:text-ink-800">
-                      {link}
-                    </a>
+                  <li key={link.label}>
+                    <FooterLinkItem link={link} />
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-ink-100 pt-6 sm:flex-row">
+        <div className="mt-12 border-t border-ink-100 pt-6">
           <p className="text-xs text-ink-400">© {new Date().getFullYear()} AIVRA Technologies Inc. All rights reserved.</p>
-          <div className="flex items-center gap-5 text-xs text-ink-400">
-            <a href="#" className="hover:text-ink-700">Privacy Policy</a>
-            <a href="#" className="hover:text-ink-700">Terms of Service</a>
-            <a href="#" className="hover:text-ink-700">Security</a>
-          </div>
         </div>
       </div>
     </footer>

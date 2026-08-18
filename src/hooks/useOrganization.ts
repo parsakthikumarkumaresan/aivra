@@ -12,3 +12,11 @@ export function useCurrentUser() {
 export function useUsers() {
   return useAsync(() => organizationService.listUsers(), [])
 }
+
+export function useNotificationPreferences() {
+  return useAsync(() => organizationService.getNotificationPreferences(), [])
+}
+
+export function useAiPreferences() {
+  return useAsync(() => organizationService.getAiPreferences(), [])
+}

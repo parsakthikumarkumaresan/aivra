@@ -1,8 +1,13 @@
 export type EmployeeStatus =
+  | 'not_hired'
+  | 'pending_activation'
   | 'draft'
   | 'testing'
   | 'active'
   | 'paused'
+  | 'past_due'
+  | 'cancelled'
+  | 'expired'
   | 'needs_attention'
   | 'waiting_approval'
 
@@ -35,10 +40,15 @@ export interface Paginated<T> {
 }
 
 export const EMPLOYEE_STATUS_LABEL: Record<EmployeeStatus, string> = {
+  not_hired: 'Not Hired',
+  pending_activation: 'Activating',
   draft: 'Draft',
   testing: 'Testing',
   active: 'Active',
   paused: 'Paused',
+  past_due: 'Payment Issue',
+  cancelled: 'Cancelled',
+  expired: 'Expired',
   needs_attention: 'Needs Attention',
   waiting_approval: 'Waiting for Approval',
 }

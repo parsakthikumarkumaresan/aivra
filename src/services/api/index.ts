@@ -10,6 +10,10 @@
 
 export { organizationService } from '@/services/mock/organization.service'
 export { employeesService } from '@/services/mock/employees.service'
+export { subscriptionService } from '@/services/mock/subscription.service'
+export { leadsService } from '@/services/mock/leads.service'
+export { voiceAgentBuilderService } from '@/services/mock/voiceAgentBuilder.service'
+export { telephonyService } from '@/services/mock/telephony.service'
 export { dashboardService } from '@/services/mock/dashboard.service'
 export { hrService } from '@/services/mock/hr.service'
 export type { CandidateFilters } from '@/services/mock/hr.service'

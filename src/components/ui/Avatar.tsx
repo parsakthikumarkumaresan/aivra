@@ -16,7 +16,7 @@ interface AvatarProps {
   className?: string
 }
 
-const PALETTE = ['#6D3EF2', '#2170C9', '#178350', '#A8690A', '#B62C2C', '#5C2FD6']
+const PALETTE = ['#6D3EF2', '#2137C9', '#178350', '#A8690A', '#B62C2C', '#5C2FD6']
 
 function colorFromName(name: string) {
   let hash = 0

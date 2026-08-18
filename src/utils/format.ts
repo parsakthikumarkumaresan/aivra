@@ -30,6 +30,11 @@ export function formatCompactNumber(value: number): string {
   return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(value)
 }
 
+export function formatCurrency(value: number, currency = 'INR'): string {
+  if (currency === 'INR') return `₹${new Intl.NumberFormat('en-IN').format(value)}`
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(value)
+}
+
 export function initials(name: string): string {
   const parts = name.trim().split(/\s+/)
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()

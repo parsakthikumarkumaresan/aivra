@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   Settings as SettingsIcon,
   Building2,
@@ -11,10 +12,17 @@ import {
   ChevronDown,
   Plus,
   Mail,
+  CreditCard,
+  FlaskConical,
+  ShieldAlert,
+  Mic,
+  PhoneCall,
+  ArrowRight,
 } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useAppData } from '@/app/AppDataProvider'
-import { useUsers } from '@/hooks/useOrganization'
+import { useAiPreferences, useNotificationPreferences, useUsers } from '@/hooks/useOrganization'
+import { organizationService } from '@/services/api'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card, CardBody, CardHeader } from '@/components/ui/Card'
 import { Input, Label, Select, Switch } from '@/components/ui/Field'
@@ -23,10 +31,14 @@ import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
 import type { BadgeTone } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { LogoMark } from '@/components/ui/Logo'
+import { Logo } from '@/components/ui/Logo'
 import { useToast } from '@/hooks/useToast'
 import { cn } from '@/utils/cn'
 import type { UserRole } from '@/types'
+import { BillingSection } from './BillingSection'
+import { MOCK_SCENARIOS, getMockScenario, setMockScenario } from '@/services/mock/scenario'
+import { isInternalModeEnabled, setInternalMode } from '@/services/mock/internalMode'
+import { subscriptionService } from '@/services/api'
 
 const SECTIONS = [
   { id: 'organization', label: 'Organization', icon: Building2 },
@@ -36,6 +48,8 @@ const SECTIONS = [
   { id: 'branding', label: 'Branding', icon: Palette },
   { id: 'security', label: 'Security', icon: ShieldCheck },
   { id: 'ai', label: 'AI Preferences', icon: Sparkles },
+  { id: 'billing', label: 'Billing & Subscriptions', icon: CreditCard },
+  { id: 'developer', label: 'Developer', icon: FlaskConical },
 ] as const
 
 type SectionId = (typeof SECTIONS)[number]['id']
@@ -60,10 +74,40 @@ function Collapsible({ title, description, children, defaultOpen = false }: { ti
 
 export default function SettingsPage() {
   useSetBreadcrumbs([{ label: 'Settings' }])
-  const { organization } = useAppData()
+  const { organization, refetchOrganization } = useAppData()
   const users = useUsers()
+  const notificationPrefs = useNotificationPreferences()
+  const aiPreferences = useAiPreferences()
   const { show } = useToast()
-  const [section, setSection] = useState<SectionId>('organization')
+  const [searchParams] = useSearchParams()
+  const initialSection = SECTIONS.some((s) => s.id === searchParams.get('section')) ? (searchParams.get('section') as SectionId) : 'organization'
+  const [section, setSection] = useState<SectionId>(initialSection)
+
+  // Organization profile — controlled fields, seeded from AppData once loaded.
+  // Seeded exactly once (guarded by a ref, not just the effect dependency):
+  // the async data arrives asynchronously after mount, and if a user starts
+  // typing in that window, an unguarded effect would silently clobber their
+  // edit the moment the fetch resolves.
+  const [orgForm, setOrgForm] = useState({ name: '', slug: '', industry: '' })
+  const [savingOrg, setSavingOrg] = useState(false)
+  const orgSeeded = useRef(false)
+  useEffect(() => {
+    if (organization && !orgSeeded.current) {
+      orgSeeded.current = true
+      setOrgForm({ name: organization.name, slug: organization.slug, industry: organization.industry ?? '' })
+    }
+  }, [organization])
+
+  // Timezone lives on Organization too, but is edited from its own section.
+  const [timezone, setTimezone] = useState('')
+  const [savingTimezone, setSavingTimezone] = useState(false)
+  const timezoneSeeded = useRef(false)
+  useEffect(() => {
+    if (organization && !timezoneSeeded.current) {
+      timezoneSeeded.current = true
+      setTimezone(organization.timezone)
+    }
+  }, [organization])
 
   const [notifications, setNotifications] = useState({
     escalations: true,
@@ -71,14 +115,62 @@ export default function SettingsPage() {
     dailyDigest: false,
     integrationFailures: true,
   })
+  const [savingNotifications, setSavingNotifications] = useState(false)
+  const notificationsSeeded = useRef(false)
+  useEffect(() => {
+    if (notificationPrefs.data && !notificationsSeeded.current) {
+      notificationsSeeded.current = true
+      setNotifications(notificationPrefs.data)
+    }
+  }, [notificationPrefs.data])
+
   const [aiPrefs, setAiPrefs] = useState({
-    requireHumanReview: true,
     autoEscalateLowConfidence: true,
     confidenceThreshold: 70,
   })
+  const [savingAiPrefs, setSavingAiPrefs] = useState(false)
+  const aiPrefsSeeded = useRef(false)
+  useEffect(() => {
+    if (aiPreferences.data && !aiPrefsSeeded.current) {
+      aiPrefsSeeded.current = true
+      setAiPrefs(aiPreferences.data)
+    }
+  }, [aiPreferences.data])
 
   function saveToast(label: string) {
     show({ tone: 'success', title: `${label} saved` })
+  }
+
+  async function saveOrganization() {
+    setSavingOrg(true)
+    await organizationService.updateOrganization(orgForm)
+    setSavingOrg(false)
+    refetchOrganization()
+    saveToast('Organization profile')
+  }
+
+  async function saveTimezone() {
+    setSavingTimezone(true)
+    await organizationService.updateOrganization({ timezone })
+    setSavingTimezone(false)
+    refetchOrganization()
+    saveToast('Timezone')
+  }
+
+  async function saveNotifications() {
+    setSavingNotifications(true)
+    await organizationService.updateNotificationPreferences(notifications)
+    setSavingNotifications(false)
+    notificationPrefs.refetch()
+    saveToast('Notification preferences')
+  }
+
+  async function saveAiPreferences() {
+    setSavingAiPrefs(true)
+    await organizationService.updateAiPreferences(aiPrefs)
+    setSavingAiPrefs(false)
+    aiPreferences.refetch()
+    saveToast('AI preferences')
   }
 
   return (
@@ -110,17 +202,17 @@ export default function SettingsPage() {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <Label>Organization name</Label>
-                    <Input defaultValue={organization?.name} />
+                    <Input value={orgForm.name} onChange={(e) => setOrgForm({ ...orgForm, name: e.target.value })} />
                   </div>
                   <div>
                     <Label>Slug</Label>
-                    <Input defaultValue={organization?.slug} />
+                    <Input value={orgForm.slug} onChange={(e) => setOrgForm({ ...orgForm, slug: e.target.value })} />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <Label>Industry</Label>
-                    <Input defaultValue={organization?.industry} />
+                    <Input value={orgForm.industry} onChange={(e) => setOrgForm({ ...orgForm, industry: e.target.value })} />
                   </div>
                   <div>
                     <Label>Plan</Label>
@@ -130,7 +222,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <div className="flex justify-end">
-                  <Button onClick={() => saveToast('Organization profile')}>Save Changes</Button>
+                  <Button onClick={saveOrganization} loading={savingOrg}>Save Changes</Button>
                 </div>
               </CardBody>
             </Card>
@@ -177,7 +269,7 @@ export default function SettingsPage() {
                 <NotificationRow icon={<Mail className="size-4" />} label="Daily digest" description="A summary email each morning" checked={notifications.dailyDigest} onChange={(v) => setNotifications({ ...notifications, dailyDigest: v })} />
                 <NotificationRow icon={<Globe2 className="size-4" />} label="Integration failures" description="When a connected system stops syncing" checked={notifications.integrationFailures} onChange={(v) => setNotifications({ ...notifications, integrationFailures: v })} />
                 <div className="flex justify-end pt-1">
-                  <Button onClick={() => saveToast('Notification preferences')}>Save Changes</Button>
+                  <Button onClick={saveNotifications} loading={savingNotifications}>Save Changes</Button>
                 </div>
               </CardBody>
             </Card>
@@ -189,14 +281,14 @@ export default function SettingsPage() {
               <CardBody className="space-y-4">
                 <div>
                   <Label>Default timezone</Label>
-                  <Select defaultValue={organization?.timezone}>
+                  <Select value={timezone} onChange={(e) => setTimezone(e.target.value)}>
                     <option value="Asia/Kolkata">Asia/Kolkata (IST, UTC+5:30)</option>
                     <option value="America/New_York">America/New_York (ET)</option>
                     <option value="Europe/London">Europe/London (GMT)</option>
                   </Select>
                 </div>
                 <div className="flex justify-end">
-                  <Button onClick={() => saveToast('Timezone')}>Save Changes</Button>
+                  <Button onClick={saveTimezone} loading={savingTimezone}>Save Changes</Button>
                 </div>
               </CardBody>
             </Card>
@@ -207,7 +299,7 @@ export default function SettingsPage() {
               <CardHeader title="Branding" description="How AIVRA appears to your team and customers" />
               <CardBody className="space-y-4">
                 <div className="flex items-center gap-4">
-                  <LogoMark size={48} />
+                  <Logo markSize={40} />
                   <div>
                     <p className="text-[13px] font-medium text-ink-800">AIVRA Logo</p>
                     <p className="text-xs text-ink-500">Used across the app shell and public homepage.</p>
@@ -290,13 +382,169 @@ export default function SettingsPage() {
                   </div>
                 </Collapsible>
                 <div className="flex justify-end pt-1">
-                  <Button onClick={() => saveToast('AI preferences')}>Save Changes</Button>
+                  <Button onClick={saveAiPreferences} loading={savingAiPrefs}>Save Changes</Button>
                 </div>
               </CardBody>
             </Card>
           )}
+
+          {section === 'billing' && <BillingSection />}
+
+          {section === 'developer' && <DeveloperSection />}
         </div>
       </div>
+    </div>
+  )
+}
+
+function DeveloperSection() {
+  const { show } = useToast()
+  const { refetchEmployees } = useAppData()
+  const [current, setCurrent] = useState(getMockScenario())
+  const [businessName, setBusinessName] = useState('Acme Jewellery')
+  const [industry, setIndustry] = useState('Jewellery & Retail')
+  const [busy, setBusy] = useState(false)
+  const [internalMode, setInternalModeState] = useState(isInternalModeEnabled)
+
+  function toggleInternalMode(enabled: boolean) {
+    setInternalMode(enabled)
+    setInternalModeState(enabled)
+    show({
+      tone: 'info',
+      title: enabled ? 'AIVRA Internal Mode enabled' : 'AIVRA Internal Mode disabled',
+      description: enabled
+        ? 'Voice Advanced Setup is now reachable on this device — for internal testing only.'
+        : 'Voice Advanced Setup is blocked again, matching a normal customer session.',
+    })
+  }
+
+  function applyScenario(id: (typeof MOCK_SCENARIOS)[number]['id']) {
+    setMockScenario(id)
+    setCurrent(id)
+    show({ tone: 'info', title: `Switching to scenario ${id}`, description: 'Reloading the app with the new mock organization state…' })
+    window.setTimeout(() => window.location.reload(), 600)
+  }
+
+  async function startDeployment() {
+    setBusy(true)
+    await subscriptionService.startVoiceDeployment({ businessName, industry })
+    setBusy(false)
+    refetchEmployees()
+    show({ tone: 'info', title: 'Voice deployment started', description: `AIVRA is now "configuring" ${businessName}'s AI Voice Employee.` })
+  }
+
+  async function markLive() {
+    setBusy(true)
+    await subscriptionService.completeActivation('voice')
+    setBusy(false)
+    refetchEmployees()
+    show({ tone: 'success', title: 'Voice Employee deployed', description: `${businessName}'s AI Voice Employee is now active in the customer's workforce.` })
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-start gap-2.5 rounded-xl border border-warning-200 bg-warning-50 px-4 py-3.5 text-warning-800">
+        <ShieldAlert className="mt-0.5 size-4 shrink-0" />
+        <div>
+          <p className="text-[13px] font-semibold">Developer / AIVRA Internal Tools</p>
+          <p className="mt-0.5 text-[12.5px]">Not visible to customers in production. Everything on this page is a prototype stand-in for AIVRA's internal admin console.</p>
+        </div>
+      </div>
+
+      <Card>
+        <CardHeader
+          title="Voice Advanced Setup access"
+          description="Controls whether /app/employees/voice/setup/advanced (the full technical wizard) is reachable on this device"
+        />
+        <CardBody>
+          <div className="flex items-center justify-between rounded-lg border border-ink-200 p-3.5">
+            <div>
+              <p className="text-[13px] font-medium text-ink-800">Enable AIVRA Internal Mode</p>
+              <p className="text-xs text-ink-500">Off by default, matching a normal customer session — turn on only to test the internal wizard.</p>
+            </div>
+            <Switch checked={internalMode} onChange={toggleInternalMode} />
+          </div>
+        </CardBody>
+      </Card>
+
+      {internalMode && (
+        <Card>
+          <CardHeader
+            title="AIVRA Internal Consoles"
+            description="The technical builder and platform infrastructure AIVRA's team uses to configure and operate Voice Employees — not part of the customer experience."
+          />
+          <div className="divide-y divide-ink-100">
+            <Link to="/internal/voice-agents" className="flex items-center justify-between gap-3 px-5 py-3.5 transition-colors hover:bg-ink-25">
+              <div className="flex items-center gap-3">
+                <span className="flex size-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600"><Mic className="size-4" /></span>
+                <div>
+                  <p className="text-[13.5px] font-medium text-ink-900">Voice Agent Builder</p>
+                  <p className="text-xs text-ink-500">Prompt, Flow, Context, Library, Tools, Voice, Transcription and runtime configuration.</p>
+                </div>
+              </div>
+              <ArrowRight className="size-4 text-ink-400" />
+            </Link>
+            <Link to="/internal/telephony" className="flex items-center justify-between gap-3 px-5 py-3.5 transition-colors hover:bg-ink-25">
+              <div className="flex items-center gap-3">
+                <span className="flex size-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600"><PhoneCall className="size-4" /></span>
+                <div>
+                  <p className="text-[13.5px] font-medium text-ink-900">Telephony</p>
+                  <p className="text-xs text-ink-500">Numbers, providers, SIP/BYOC trunks, compliance, DND and call routing.</p>
+                </div>
+              </div>
+              <ArrowRight className="size-4 text-ink-400" />
+            </Link>
+          </div>
+        </Card>
+      )}
+
+      <Card>
+        <CardHeader
+          title="AIVRA Provisioning (simulate internal admin)"
+          description="Stands in for AIVRA's solution team turning a customization lead into a live Voice Employee — Lead → Deployment → Live."
+        />
+        <CardBody className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <Label>Business name</Label>
+              <Input value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
+            </div>
+            <div>
+              <Label>Industry</Label>
+              <Input value={industry} onChange={(e) => setIndustry(e.target.value)} />
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" loading={busy} onClick={startDeployment}>1. Start Deployment</Button>
+            <Button size="sm" loading={busy} onClick={markLive}>2. Mark Live</Button>
+          </div>
+        </CardBody>
+      </Card>
+
+      <Card>
+      <CardHeader title="Mock Organization State" description="Switch the mock org between subscription lifecycle states to test the hire/subscribe/activate flow" />
+      <CardBody className="space-y-2.5">
+        {MOCK_SCENARIOS.map((scenario) => (
+          <div
+            key={scenario.id}
+            className={cn(
+              'flex items-center justify-between gap-3 rounded-lg border p-3.5',
+              current === scenario.id ? 'border-brand-400 bg-brand-50/50' : 'border-ink-200',
+            )}
+          >
+            <div>
+              <p className="text-[13px] font-semibold text-ink-800">State {scenario.id} — {scenario.label}</p>
+              <p className="text-xs text-ink-500">{scenario.description}</p>
+            </div>
+            {current === scenario.id ? (
+              <Badge tone="brand">Current</Badge>
+            ) : (
+              <Button size="sm" variant="outline" onClick={() => applyScenario(scenario.id)}>Switch</Button>
+            )}
+          </div>
+        ))}
+      </CardBody>
+      </Card>
     </div>
   )
 }

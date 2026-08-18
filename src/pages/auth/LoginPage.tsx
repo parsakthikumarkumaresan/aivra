@@ -5,10 +5,12 @@ import { Logo } from '@/components/ui/Logo'
 import { Button } from '@/components/ui/Button'
 import { Input, Label } from '@/components/ui/Field'
 import { useToast } from '@/hooks/useToast'
+import { useLeadFlow } from '@/app/LeadFlowContext'
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const { show } = useToast()
+  const { openDemoRequest } = useLeadFlow()
   const [email, setEmail] = useState('rohan@acmecorp.com')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -55,14 +57,9 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password" required>
-                  Password
-                </Label>
-                <a href="#" className="text-xs font-medium text-brand-600 hover:text-brand-700">
-                  Forgot password?
-                </a>
-              </div>
+              <Label htmlFor="password" required>
+                Password
+              </Label>
               <Input
                 id="password"
                 type="password"
@@ -86,9 +83,9 @@ export default function LoginPage() {
 
           <p className="mt-8 text-center text-[13px] text-ink-500">
             Don't have an account?{' '}
-            <a href="#" className="font-semibold text-brand-600 hover:text-brand-700">
+            <button type="button" onClick={() => openDemoRequest('hr')} className="font-semibold text-brand-600 hover:text-brand-700">
               Book a demo
-            </a>
+            </button>
           </p>
         </div>
         <p className="text-xs text-ink-400">© {new Date().getFullYear()} AIVRA Technologies Inc.</p>

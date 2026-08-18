@@ -19,7 +19,7 @@ export interface NavItem {
 
 export const PRIMARY_NAV: NavItem[] = [
   { label: 'Dashboard', href: '/app', icon: LayoutDashboard },
-  { label: 'AI Employees', href: '/app/employees', icon: Users, matchPrefix: true },
+  { label: 'My Workforce', href: '/app/employees', icon: Users, matchPrefix: true },
   { label: 'Company Brain', href: '/app/knowledge', icon: Brain, matchPrefix: true },
   { label: 'Inbox', href: '/app/inbox', icon: Inbox, matchPrefix: true },
   { label: 'Approvals', href: '/app/approvals', icon: CheckSquare, matchPrefix: true },

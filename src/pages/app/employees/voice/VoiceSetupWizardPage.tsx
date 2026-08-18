@@ -43,7 +43,7 @@ const STEPS = [
 ]
 
 export default function VoiceSetupWizardPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI Voice Employee', href: '/app/employees/voice' }, { label: 'Setup' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI Voice Employee', href: '/app/employees/voice' }, { label: 'Advanced Setup (Internal)' }])
   const navigate = useNavigate()
   const { show } = useToast()
   const [stepIndex, setStepIndex] = useState(0)
@@ -88,6 +88,11 @@ export default function VoiceSetupWizardPage() {
         <ArrowLeft className="size-3.5" />
         Back to AI Voice Employee
       </Link>
+
+      <div className="flex items-center gap-2 rounded-lg border border-warning-200 bg-warning-50 px-3.5 py-2.5 text-[12.5px] font-medium text-warning-700">
+        <ShieldAlert className="size-3.5 shrink-0" />
+        AIVRA Internal Configuration — internal AIVRA team only. Not visible to customers.
+      </div>
 
       <PageHeader title="Voice Employee Setup" description="Configuration-driven — the same Voice Employee UI adapts to any industry." actions={<SaveStatus state={saveState} />} />
 

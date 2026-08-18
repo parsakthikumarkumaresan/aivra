@@ -4,10 +4,15 @@ import type { ApprovalStatus, EmployeeStatus, IntegrationStatus } from '@/types'
 import { EMPLOYEE_STATUS_LABEL } from '@/types'
 
 const EMPLOYEE_STATUS_TONE: Record<EmployeeStatus, BadgeTone> = {
+  not_hired: 'neutral',
+  pending_activation: 'info',
   draft: 'neutral',
   testing: 'info',
   active: 'success',
   paused: 'neutral',
+  past_due: 'danger',
+  cancelled: 'neutral',
+  expired: 'neutral',
   needs_attention: 'danger',
   waiting_approval: 'warning',
 }

@@ -32,4 +32,7 @@ export const mockVoiceConfig: VoiceEmployeeConfig = {
   phoneNumber: '+91 80 4718 2200',
   inboundEnabled: true,
   outboundEnabled: false,
+  employeeName: 'Acme Jewellery AI Customer Assistant',
+  notificationPreferences: { escalations: true, dailySummary: false, missedCalls: true },
+  basicEscalationPreferences: { upsetCaller: true, refundsOrCancellations: true },
 }

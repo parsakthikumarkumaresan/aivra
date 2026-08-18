@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import {
   ArrowRight,
-  PlayCircle,
+  ListChecks,
   ShieldCheck,
   Zap,
   Plug2,
@@ -25,6 +25,7 @@ import { MarketingFooter } from '@/components/marketing/MarketingFooter'
 import { DashboardPreview } from '@/components/marketing/DashboardPreview'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { useLeadFlow } from '@/app/LeadFlowContext'
 
 const TRUSTED_BY = ['ACME CORPORATION', 'QUICKSERVE', 'NEXORA', 'FINEDGE', 'BROADHOMES', 'SKYLINE REALTY']
 
@@ -82,6 +83,8 @@ const INTEGRATIONS = [
 ]
 
 export default function HomePage() {
+  const { openDemoRequest } = useLeadFlow()
+
   return (
     <div className="min-h-screen bg-white">
       <MarketingHeader />
@@ -104,12 +107,16 @@ export default function HomePage() {
               chat, email and your business systems — with human oversight and enterprise-grade governance.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button size="lg" iconRight={<ArrowRight className="size-4" />}>
-                Get Started Free
-              </Button>
-              <Button size="lg" variant="outline" icon={<PlayCircle className="size-4" />}>
-                Watch Overview
-              </Button>
+              <a href="#hr-employee">
+                <Button size="lg" iconRight={<ArrowRight className="size-4" />}>
+                  Get Started Free
+                </Button>
+              </a>
+              <a href="#platform">
+                <Button size="lg" variant="outline" icon={<ListChecks className="size-4" />}>
+                  See How It Works
+                </Button>
+              </a>
             </div>
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-ink-500">
               {['No Credit Card', 'Quick Setup', 'Enterprise Ready'].map((item) => (
@@ -194,7 +201,7 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <Link to="/login" className="mt-6 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-brand-700">
+              <Link to="/ai-employees/hr" className="mt-6 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-brand-700">
                 Explore AI HR Employee <ArrowRight className="size-3.5" />
               </Link>
             </div>
@@ -221,7 +228,7 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <Link to="/login" className="mt-6 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-brand-700">
+              <Link to="/ai-employees/voice" className="mt-6 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-brand-700">
                 Explore AI Voice Employee <ArrowRight className="size-3.5" />
               </Link>
             </div>
@@ -283,7 +290,7 @@ export default function HomePage() {
       </section>
 
       {/* Governance */}
-      <section className="mx-auto max-w-7xl px-6 py-20">
+      <section id="governance" className="mx-auto max-w-7xl px-6 py-20">
         <div className="rounded-2xl border border-ink-200 bg-white p-10 shadow-card lg:p-14">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
             <div>
@@ -322,10 +329,12 @@ export default function HomePage() {
             Set up AIVRA in minutes with realistic mock data, then connect your real systems when you're ready.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button size="lg" variant="secondary" className="bg-white text-brand-700 hover:bg-brand-50">
-              Get Started Free
-            </Button>
-            <Button size="lg" variant="ghost" className="text-white hover:bg-white/10">
+            <a href="#hr-employee">
+              <Button size="lg" variant="secondary" className="bg-white text-brand-700 hover:bg-brand-50">
+                Get Started Free
+              </Button>
+            </a>
+            <Button size="lg" variant="ghost" className="text-white hover:bg-white/10" onClick={() => openDemoRequest('hr')}>
               Book a Demo
             </Button>
           </div>

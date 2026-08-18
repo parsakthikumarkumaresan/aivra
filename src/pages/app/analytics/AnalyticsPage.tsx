@@ -31,7 +31,7 @@ import { formatDate } from '@/utils/format'
 
 const FUNNEL_STAGES: CandidateStage[] = ['uploaded', 'analyzed', 'hr_review', 'screening_approved', 'human_review', 'interview_scheduled', 'completed']
 const INTENT_LABEL: Record<CallIntent, string> = { faq: 'FAQ', booking: 'Booking', cancellation: 'Cancellation', status_lookup: 'Status Lookup', complaint: 'Complaint', unknown: 'Unknown' }
-const INTENT_COLORS = ['#6D3EF2', '#2170C9', '#178350', '#c8850c', '#d33d3d', '#9d9db3']
+const INTENT_COLORS = ['#6D3EF2', '#2137C9', '#178350', '#c8850c', '#d33d3d', '#9d9db3']
 
 export default function AnalyticsPage() {
   useSetBreadcrumbs([{ label: 'Analytics' }])

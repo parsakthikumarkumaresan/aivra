@@ -57,11 +57,13 @@
   --color-danger-600: #b62c2c;
   --color-danger-700: #932323;
 
-  --color-info-50: #f0f6fe;
-  --color-info-100: #dcebfc;
-  --color-info-500: #2170c9;
-  --color-info-600: #1a5aa3;
-  --color-info-700: #164a86;
+  /* Blue-violet/indigo (not flat blue) — reads as part of the AIVRA family,
+     used for informational states and the AI Voice Employee accent. */
+  --color-info-50: #f0f2fe;
+  --color-info-100: #dce0fc;
+  --color-info-500: #2137c9;
+  --color-info-600: #1a2ca3;
+  --color-info-700: #162586;
 
   /* ---------------------------------------------------------------------
      Radius

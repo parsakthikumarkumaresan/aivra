@@ -1,9 +1,11 @@
-import { Plus, Sparkles } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useAppData } from '@/app/AppDataProvider'
 import { useToast } from '@/hooks/useToast'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { SkeletonCard } from '@/components/ui/Skeleton'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { EmployeeCard } from '@/components/employees/EmployeeCard'
 import { Button } from '@/components/ui/Button'
 import { ConfirmationDialog } from '@/components/ui/ConfirmationDialog'
@@ -12,11 +14,16 @@ import type { AIEmployee } from '@/types'
 import { employeesService } from '@/services/api'
 
 export default function EmployeesCatalogPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees' }])
+  useSetBreadcrumbs([{ label: 'My AI Workforce' }])
   const { employees, loading, refetchEmployees } = useAppData()
   const { show } = useToast()
   const [pauseTarget, setPauseTarget] = useState<AIEmployee | null>(null)
   const [busy, setBusy] = useState(false)
+
+  // Only employees actually provisioned to this customer's account — the
+  // dashboard is a workforce workspace, not a marketplace. Discovery and
+  // purchase/customization happen on the public AIVRA website.
+  const workforce = employees.filter((e) => !['not_hired', 'cancelled', 'expired'].includes(e.status))
 
   async function confirmToggle() {
     if (!pauseTarget) return
@@ -36,34 +43,30 @@ export default function EmployeesCatalogPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="AI Employees"
-        description="Deploy and manage the AI Employees working across your business. AIVRA ships with two roles today — built to extend."
+        title="My AI Workforce"
+        description="The AI Employees provisioned to your organization."
       />
 
       {loading ? (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <SkeletonCard />
-          <SkeletonCard />
         </div>
+      ) : workforce.length === 0 ? (
+        <EmptyState
+          icon={<Sparkles className="size-6" />}
+          title="You haven't hired an AI Employee yet."
+          description="Build your AI workforce by hiring your first AI Employee."
+          action={
+            <Link to="/">
+              <Button icon={<Sparkles className="size-4" />}>Explore AI Employees</Button>
+            </Link>
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {employees.map((employee) => (
+          {workforce.map((employee) => (
             <EmployeeCard key={employee.id} employee={employee} onTogglePause={setPauseTarget} />
           ))}
-
-          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-ink-200 bg-white p-8 text-center">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-ink-100 text-ink-400">
-              <Sparkles className="size-5" />
-            </div>
-            <h3 className="mt-3.5 text-[15px] font-semibold text-ink-800">More AI Employees are on the way</h3>
-            <p className="mt-1.5 max-w-sm text-[13px] text-ink-500">
-              AIVRA's workforce is designed to grow — new roles like Sales, Support and Finance employees can be added
-              without changing how you manage the ones you already have.
-            </p>
-            <Button variant="outline" size="sm" className="mt-4" icon={<Plus className="size-3.5" />} disabled>
-              Request a new employee
-            </Button>
-          </div>
         </div>
       )}
 

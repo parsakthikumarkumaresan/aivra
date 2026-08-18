@@ -166,8 +166,8 @@ export default function VoiceSimulatorPage() {
       </Link>
 
       <PageHeader
-        title="Voice Simulator"
-        description="Test the AI Voice Employee in your browser before it ever takes a real call."
+        title="Preview Your AI Employee"
+        description="Try your AI Voice Employee in your browser. Deep technical testing and tuning happens on AIVRA's side before every deployment."
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <select

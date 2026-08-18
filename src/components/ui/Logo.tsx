@@ -1,10 +1,15 @@
 import { cn } from '@/utils/cn'
+import aivraLogo from '@/assets/be6218ac-8d51-44ec-8654-55daa950fc57.png'
 
 interface LogoMarkProps {
   className?: string
   size?: number
 }
 
+// Compact icon-only mark for slots the full AIVRA lockup can't occupy
+// without being cropped or squeezed into a square (collapsed sidebar,
+// tiny decorative previews). The supplied brand PNG is a wide horizontal
+// lockup, so this SVG approximation remains the icon-only treatment.
 export function LogoMark({ className, size = 32 }: LogoMarkProps) {
   return (
     <svg
@@ -26,22 +31,18 @@ export function LogoMark({ className, size = 32 }: LogoMarkProps) {
 interface LogoProps {
   className?: string
   markSize?: number
-  tagline?: boolean
-  wordmarkClassName?: string
 }
 
-export function Logo({ className, markSize = 30, tagline = false, wordmarkClassName }: LogoProps) {
+// Primary AIVRA brand lockup — the official supplied asset, rendered at its
+// native aspect ratio (never cropped/stretched). markSize sets the rendered
+// height in px; width follows automatically.
+export function Logo({ className, markSize = 30 }: LogoProps) {
   return (
-    <div className={cn('flex items-center gap-2.5', className)}>
-      <LogoMark size={markSize} />
-      <div className="flex flex-col leading-none">
-        <span className={cn('text-[17px] font-bold tracking-tight text-ink-900', wordmarkClassName)}>AIVRA</span>
-        {tagline && (
-          <span className="mt-0.5 text-[11px] font-medium tracking-wide text-ink-500">
-            AI Workforce Operating System
-          </span>
-        )}
-      </div>
-    </div>
+    <img
+      src={aivraLogo}
+      alt="AIVRA — AI Workforce Operating System"
+      className={cn('block w-auto shrink-0 object-contain', className)}
+      style={{ height: markSize }}
+    />
   )
 }

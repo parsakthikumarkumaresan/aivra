@@ -10,6 +10,7 @@ interface AppDataContextValue {
   employees: AIEmployee[]
   loading: boolean
   refetchEmployees: () => void
+  refetchOrganization: () => void
 }
 
 const AppDataContext = createContext<AppDataContextValue | null>(null)
@@ -25,6 +26,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     employees: employees.data ?? [],
     loading: org.loading || user.loading || employees.loading,
     refetchEmployees: employees.refetch,
+    refetchOrganization: org.refetch,
   }
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>

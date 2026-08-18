@@ -3,6 +3,9 @@ import { Mic, FlaskConical, Pause, Settings2, PhoneCall, Clock, CheckCircle2, Ph
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useEmployeeByType } from '@/hooks/useEmployees'
 import { useCalls, useVoiceConfig } from '@/hooks/useVoice'
+import { useAppData } from '@/app/AppDataProvider'
+import { useToast } from '@/hooks/useToast'
+import { subscriptionService } from '@/services/api'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { EmployeeStatusBadge } from '@/components/ui/StatusBadge'
@@ -21,6 +24,14 @@ export default function VoiceOverviewPage() {
   const employee = useEmployeeByType('voice')
   const config = useVoiceConfig()
   const calls = useCalls({})
+  const { refetchEmployees } = useAppData()
+  const { show } = useToast()
+
+  async function pauseEmployee() {
+    await subscriptionService.pauseSubscription('voice')
+    refetchEmployees()
+    show({ tone: 'success', title: 'AI Voice Employee paused', description: 'It will stop taking new work immediately.' })
+  }
 
   const data = calls.data ?? []
   const totalCalls = data.length
@@ -46,7 +57,7 @@ export default function VoiceOverviewPage() {
         icon={<Mic className="size-5" />}
         title={
           <span className="flex items-center gap-2.5">
-            AI Voice Employee
+            {employee.data?.name ?? 'AI Voice Employee'}
             {employee.data && <EmployeeStatusBadge status={employee.data.status} />}
           </span>
         }
@@ -66,15 +77,15 @@ export default function VoiceOverviewPage() {
           <>
             <Link to="/app/employees/voice/setup">
               <Button variant="outline" icon={<Settings2 className="size-4" />}>
-                Configure
+                Basic Settings
               </Button>
             </Link>
             <Link to="/app/employees/voice/simulator">
               <Button variant="outline" icon={<FlaskConical className="size-4" />}>
-                Test Call
+                Preview
               </Button>
             </Link>
-            <Button variant="ghost" icon={<Pause className="size-4" />}>
+            <Button variant="ghost" icon={<Pause className="size-4" />} onClick={pauseEmployee}>
               Pause
             </Button>
           </>

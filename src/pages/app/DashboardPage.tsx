@@ -38,10 +38,10 @@ const ATTENTION_CONFIG = {
 }
 
 const QUICK_ACTIONS = [
-  { label: 'Upload Resumes', description: 'Add candidates for AI screening', icon: UploadCloud, href: '/app/employees/hr/candidates/upload' },
-  { label: 'Configure Voice Employee', description: 'Update business profile or capabilities', icon: Mic, href: '/app/employees/voice/setup' },
-  { label: 'Upload Knowledge', description: 'Add a file, URL or connected source', icon: Brain, href: '/app/knowledge' },
-  { label: 'Connect Integration', description: 'Calendar, CRM, telephony and more', icon: Plug, href: '/app/integrations' },
+  { label: 'Upload Resumes', description: 'Add candidates for AI screening', icon: UploadCloud, href: '/app/employees/hr/candidates/upload', requiresType: 'hr' as const },
+  { label: 'Configure Voice Employee', description: 'Update business profile or capabilities', icon: Mic, href: '/app/employees/voice/setup', requiresType: 'voice' as const },
+  { label: 'Upload Knowledge', description: 'Add a file, URL or connected source', icon: Brain, href: '/app/knowledge', requiresType: undefined },
+  { label: 'Connect Integration', description: 'Calendar, CRM, telephony and more', icon: Plug, href: '/app/integrations', requiresType: undefined },
 ]
 
 export default function DashboardPage() {
@@ -52,16 +52,23 @@ export default function DashboardPage() {
   const attention = useNeedsAttention()
   const activity = useRecentActivity()
 
-  if (!appLoading && employees.length === 0) {
+  // "My AI Workforce" — only employees actually provisioned to this
+  // customer's account. Discovering and hiring new ones happens on the
+  // public AIVRA website, not inside the authenticated dashboard.
+  const workforce = employees.filter((e) => !['not_hired', 'cancelled', 'expired'].includes(e.status))
+  const activeCount = employees.filter((e) => e.status === 'active').length
+  const quickActions = QUICK_ACTIONS.filter((a) => !a.requiresType || workforce.some((e) => e.type === a.requiresType))
+
+  if (!appLoading && workforce.length === 0) {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center">
         <EmptyState
           icon={<Sparkles className="size-6" />}
           title={`Welcome to AIVRA, ${currentUser?.name?.split(' ')[0] ?? 'there'}`}
-          description="Your AI workforce is empty. Deploy your first AI Employee to start screening candidates or handling customer calls."
+          description="Build your AI workforce. You haven't added an AI Employee to your workforce yet — discover what AIVRA offers on our website."
           action={
-            <Link to="/app/employees">
-              <Button icon={<Sparkles className="size-4" />}>Deploy your first AI Employee</Button>
+            <Link to="/">
+              <Button icon={<Sparkles className="size-4" />}>Explore AI Employees</Button>
             </Link>
           }
         />
@@ -91,9 +98,9 @@ export default function DashboardPage() {
             <KpiCard
               key={kpi.id}
               label={kpi.label}
-              value={kpi.value}
+              value={kpi.id === 'active_employees' ? String(activeCount) : kpi.value}
               tooltip={kpi.tooltip}
-              trend={kpi.trend}
+              trend={kpi.id === 'active_employees' ? undefined : kpi.trend}
               trendGood={kpi.id === 'pending_approvals' ? 'down' : 'up'}
               icon={
                 kpi.id === 'active_employees' ? <Users className="size-4" /> :
@@ -106,10 +113,10 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* AI Employees */}
+      {/* My AI Workforce */}
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-[15px] font-semibold text-ink-900">Your AI Employees</h2>
+          <h2 className="text-[15px] font-semibold text-ink-900">My AI Workforce</h2>
           <Link to="/app/employees" className="flex items-center gap-1 text-[13px] font-medium text-brand-600 hover:text-brand-700">
             View all <ChevronRight className="size-3.5" />
           </Link>
@@ -121,7 +128,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {employees.map((employee) => (
+            {workforce.map((employee) => (
               <EmployeeCard key={employee.id} employee={employee} compact />
             ))}
           </div>
@@ -236,7 +243,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader title="Quick Actions" />
           <CardBody className="space-y-2 p-3">
-            {QUICK_ACTIONS.map((action) => (
+            {quickActions.map((action) => (
               <Link
                 key={action.label}
                 to={action.href}

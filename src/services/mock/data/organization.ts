@@ -1,4 +1,4 @@
-import type { Organization, User } from '@/types'
+import type { AiGovernancePreferences, NotificationPreferences, Organization, User } from '@/types'
 
 export const mockOrganization: Organization = {
   id: 'org_acme',
@@ -20,3 +20,17 @@ export const mockUsers: User[] = [
 ]
 
 export const mockCurrentUser: User = mockUsers[1]
+
+// Mutable, in-memory — mutated in place by organizationService so an update
+// is visible everywhere the same object is read from, without a page reload.
+export const mockNotificationPreferences: NotificationPreferences = {
+  escalations: true,
+  approvals: true,
+  dailyDigest: false,
+  integrationFailures: true,
+}
+
+export const mockAiPreferences: AiGovernancePreferences = {
+  autoEscalateLowConfidence: true,
+  confidenceThreshold: 70,
+}
