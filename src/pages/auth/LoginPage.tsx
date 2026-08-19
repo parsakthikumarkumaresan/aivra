@@ -6,17 +6,19 @@ import { Button } from '@/components/ui/Button'
 import { Input, Label } from '@/components/ui/Field'
 import { useToast } from '@/hooks/useToast'
 import { useLeadFlow } from '@/app/LeadFlowContext'
+import { authService } from '@/services/api'
+import { isApiError } from '@/services/api/errors'
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const { show } = useToast()
   const { openDemoRequest } = useLeadFlow()
-  const [email, setEmail] = useState('rohan@acmecorp.com')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     if (!email || !password) {
@@ -24,11 +26,15 @@ export default function LoginPage() {
       return
     }
     setLoading(true)
-    window.setTimeout(() => {
-      setLoading(false)
-      show({ tone: 'success', title: 'Welcome back', description: 'Signed in to Acme Corporation.' })
+    try {
+      const user = await authService.login(email, password)
+      show({ tone: 'success', title: 'Welcome back', description: `Signed in as ${user.fullName}.` })
       navigate('/app')
-    }, 700)
+    } catch (err) {
+      setError(isApiError(err) ? err.message : 'Sign in failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

@@ -272,6 +272,10 @@ export type ResumeUploadStatus =
   | 'matching'
   | 'completed'
   | 'failed'
+  // AI extraction ran but couldn't produce a usable name/email — paused for
+  // HR to review the extracted evidence and confirm/correct identity before
+  // a Candidate is created. See ResumeUploadPage.
+  | 'needs_review'
 
 export const RESUME_UPLOAD_STATUS_LABEL: Record<ResumeUploadStatus, string> = {
   queued: 'Queued',
@@ -282,14 +286,26 @@ export const RESUME_UPLOAD_STATUS_LABEL: Record<ResumeUploadStatus, string> = {
   matching: 'Matching Job',
   completed: 'Completed',
   failed: 'Failed',
+  needs_review: 'Needs Review',
 }
 
 export interface ResumeUploadItem {
   id: string
+  resumeId?: string
   fileName: string
   fileSizeLabel: string
   status: ResumeUploadStatus
   progress: number
   candidateId?: string
   errorMessage?: string
+  // Populated once a resume reaches 'needs_review' — whatever AI extraction
+  // could produce, shown so HR corrects/confirms it rather than retyping
+  // from scratch. Never sent anywhere until HR confirms it.
+  reviewDraft?: {
+    fullName: string
+    email: string
+    phone?: string
+    extractedProfile?: ExtractedResumeProfile
+    reason: string
+  }
 }
