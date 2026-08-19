@@ -157,6 +157,11 @@ export interface JdMatchBreakdown {
 
 export interface Candidate {
   id: string
+  // The shared person identity this application belongs to — the same
+  // candidate applying to a different job gets a different `id` here but
+  // the same `identityId` (see backend Candidate/CandidateIdentity split).
+  // Optional because mock/demo candidates don't model this.
+  identityId?: string
   jobId: string
   name: string
   email: string
@@ -179,6 +184,10 @@ export interface Candidate {
   location: string
   yearsExperience: number
   currentTitle: string
+  // Lifecycle visibility — orthogonal to `stage`. Set only once HR archives
+  // this application; never implies a rejection or any workflow change.
+  archivedAt?: string
+  archivedByUserId?: string
 }
 
 // ---------------------------------------------------------------------

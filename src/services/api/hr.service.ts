@@ -37,6 +37,15 @@ export interface CandidateFilters {
   stage?: CandidateStage | 'all'
   source?: string
   search?: string
+  // Lifecycle visibility — orthogonal to `stage`. Defaults to 'active' on
+  // the backend (archived candidates are hidden unless asked for).
+  status?: 'active' | 'archived' | 'all'
+}
+
+export interface BulkArchiveResult {
+  archived: Candidate[]
+  // candidateId -> reason it couldn't be archived (not_found, already_archived).
+  skipped: Record<string, string>
 }
 
 interface BackendResume {
@@ -203,6 +212,7 @@ export const hrService = {
     }
     if (filters.source && filters.source !== 'all') params.set('source', filters.source)
     if (filters.search) params.set('search', filters.search)
+    if (filters.status) params.set('status', filters.status)
     const query = params.toString()
     const candidates = await httpClient.get<BackendCandidate[]>(`/hr/candidates${query ? `?${query}` : ''}`)
     // List view intentionally does not enrich every row with an assessment +
@@ -235,6 +245,36 @@ export const hrService = {
   },
   approveForInterview(candidateId: string): Promise<Candidate | undefined> {
     return httpClient.post<BackendCandidate>(`/hr/candidates/${candidateId}/approve-for-interview`, {}).then((c) => mapCandidate(c))
+  },
+
+  // -------------------------------------------------------------------
+  // Reconsideration & archival lifecycle — real. Reconsider is a distinct
+  // action from Restore (see backend CandidateService docstrings): only a
+  // REJECTED application can be reconsidered, and reconsidering never
+  // touches archival state; restoring an archived application never
+  // touches its stage/decision.
+  // -------------------------------------------------------------------
+  reconsiderCandidate(candidateId: string, note?: string): Promise<Candidate | undefined> {
+    return httpClient
+      .post<BackendCandidate>(`/hr/candidates/${candidateId}/reconsider`, { note })
+      .then((c) => mapCandidate(c))
+  },
+  archiveCandidate(candidateId: string): Promise<Candidate | undefined> {
+    return httpClient
+      .post<BackendCandidate>(`/hr/candidates/${candidateId}/archive`, {})
+      .then((c) => mapCandidate(c))
+  },
+  restoreCandidate(candidateId: string): Promise<Candidate | undefined> {
+    return httpClient
+      .post<BackendCandidate>(`/hr/candidates/${candidateId}/restore`, {})
+      .then((c) => mapCandidate(c))
+  },
+  async bulkArchiveCandidates(candidateIds: string[]): Promise<BulkArchiveResult> {
+    const result = await httpClient.post<{ archived: BackendCandidate[]; skipped: Record<string, string> }>(
+      '/hr/candidates/archive',
+      { candidateIds },
+    )
+    return { archived: result.archived.map((c) => mapCandidate(c)), skipped: result.skipped }
   },
 
   // -------------------------------------------------------------------

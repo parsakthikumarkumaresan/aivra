@@ -15,7 +15,10 @@ export function useRubric(jobId: string) {
 }
 
 export function useCandidates(filters: CandidateFilters) {
-  return useAsync(() => hrService.listCandidates(filters), [filters.jobId, filters.stage, filters.source, filters.search])
+  return useAsync(
+    () => hrService.listCandidates(filters),
+    [filters.jobId, filters.stage, filters.source, filters.search, filters.status],
+  )
 }
 
 export function useCandidate(id: string) {

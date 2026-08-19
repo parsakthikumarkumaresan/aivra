@@ -18,6 +18,9 @@ import {
   Loader2,
   RefreshCw,
   Video,
+  Archive,
+  ArchiveRestore,
+  Undo2,
 } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useCandidate, useInterview, useJob } from '@/hooks/useHr'
@@ -67,6 +70,7 @@ export default function CandidateDetailPage() {
   const [busy, setBusy] = useState(false)
   const [decision, setDecision] = useState<{ kind: DecisionKind; gate: DecisionGate } | null>(null)
   const [decisionNote, setDecisionNote] = useState('')
+  const [lifecycleAction, setLifecycleAction] = useState<'reconsider' | 'archive' | 'restore' | null>(null)
 
   useSetBreadcrumbs(
     [
@@ -132,6 +136,32 @@ export default function CandidateDetailPage() {
     refreshAll()
   }
 
+  async function submitLifecycleAction() {
+    if (!lifecycleAction) return
+    setBusy(true)
+    if (lifecycleAction === 'reconsider') await hrService.reconsiderCandidate(c.id)
+    else if (lifecycleAction === 'archive') await hrService.archiveCandidate(c.id)
+    else await hrService.restoreCandidate(c.id)
+    setBusy(false)
+    setLifecycleAction(null)
+    show({
+      tone: lifecycleAction === 'archive' ? 'info' : 'success',
+      title:
+        lifecycleAction === 'reconsider'
+          ? 'Candidate reconsidered'
+          : lifecycleAction === 'archive'
+            ? 'Candidate archived'
+            : 'Candidate restored',
+      description:
+        lifecycleAction === 'reconsider'
+          ? `${c.name} is back in HR Review.`
+          : lifecycleAction === 'archive'
+            ? 'Their recruitment history has been preserved.'
+            : 'Their recruitment history is unchanged.',
+    })
+    refreshAll()
+  }
+
   const timelineEntries: TimelineEntry[] = [
     { id: 'tl1', title: `Resume uploaded via ${c.source.replace('_', ' ')}`, timestamp: formatDateTime(c.uploadedAt), iconTone: 'neutral' },
     ...(c.jdMatch ? [{ id: 'tl2', title: 'Resume analyzed and matched to job', description: `Overall JD match ${c.jdMatch.overallScore}%`, timestamp: formatDateTime(c.uploadedAt), iconTone: 'brand' as const }] : []),
@@ -157,6 +187,7 @@ export default function CandidateDetailPage() {
           <span className="flex items-center gap-3">
             {c.name}
             <Badge tone="neutral">{CANDIDATE_STAGE_LABEL[c.stage]}</Badge>
+            {c.archivedAt && <Badge tone="neutral">Archived</Badge>}
           </span>
         }
         description={`${c.currentTitle} · ${c.yearsExperience} years experience`}
@@ -179,6 +210,9 @@ export default function CandidateDetailPage() {
           onStartScreening={handleStartScreening}
           onReject={(gate) => setDecision({ kind: 'reject', gate })}
           onHold={(gate) => setDecision({ kind: 'hold', gate })}
+          onReconsider={() => setLifecycleAction('reconsider')}
+          onArchive={() => setLifecycleAction('archive')}
+          onRestore={() => setLifecycleAction('restore')}
         />}
       />
 
@@ -397,6 +431,36 @@ export default function CandidateDetailPage() {
           <Textarea value={decisionNote} onChange={(e) => setDecisionNote(e.target.value)} placeholder="Add a note (optional)…" />
         </div>
       </Modal>
+
+      <Modal
+        open={Boolean(lifecycleAction)}
+        onClose={() => setLifecycleAction(null)}
+        title={
+          lifecycleAction === 'reconsider'
+            ? `Reconsider ${c.name}?`
+            : lifecycleAction === 'archive'
+              ? `Archive ${c.name}?`
+              : `Restore ${c.name}?`
+        }
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setLifecycleAction(null)} disabled={busy}>
+              Cancel
+            </Button>
+            <Button variant={lifecycleAction === 'archive' ? 'outline' : 'primary'} onClick={submitLifecycleAction} loading={busy}>
+              {lifecycleAction === 'reconsider' ? 'Reconsider Candidate' : lifecycleAction === 'archive' ? 'Archive Candidate' : 'Restore Candidate'}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-[13px] text-ink-600">
+          {lifecycleAction === 'reconsider'
+            ? 'This moves the candidate back to HR Review so they can continue through the recruitment workflow. The original rejection stays on record.'
+            : lifecycleAction === 'archive'
+              ? 'Archive this candidate? Their recruitment history will be preserved and they can be restored later.'
+              : 'This restores the candidate to the active pipeline. Their stage and past decisions are unchanged.'}
+        </p>
+      </Modal>
     </div>
   )
 }
@@ -410,13 +474,39 @@ interface ActionBarProps {
   onStartScreening: () => void
   onReject: (gate: DecisionGate) => void
   onHold: (gate: DecisionGate) => void
+  onReconsider: () => void
+  onArchive: () => void
+  onRestore: () => void
 }
 
-function CandidateActionBar({ candidate, interviewStatus, busy, onApproveScreening, onApproveInterview, onStartScreening, onReject, onHold }: ActionBarProps) {
+function CandidateActionBar({ candidate, interviewStatus, busy, onApproveScreening, onApproveInterview, onStartScreening, onReject, onHold, onReconsider, onArchive, onRestore }: ActionBarProps) {
   if (!candidate) return null
   const c = candidate
 
-  if (c.stage === 'rejected') return <Badge tone="danger">Rejected</Badge>
+  if (c.archivedAt) {
+    return (
+      <>
+        <Badge tone="neutral">Archived</Badge>
+        <Button variant="outline" size="sm" icon={<ArchiveRestore className="size-3.5" />} onClick={onRestore} loading={busy}>
+          Restore
+        </Button>
+      </>
+    )
+  }
+
+  if (c.stage === 'rejected') {
+    return (
+      <>
+        <Badge tone="danger">Rejected</Badge>
+        <Button variant="outline" size="sm" icon={<Archive className="size-3.5" />} onClick={onArchive} disabled={busy}>
+          Archive
+        </Button>
+        <Button size="sm" icon={<Undo2 className="size-3.5" />} onClick={onReconsider} loading={busy}>
+          Reconsider
+        </Button>
+      </>
+    )
+  }
   if (c.stage === 'completed') return <Badge tone="success">Completed</Badge>
   if (c.stage === 'on_hold') return <Badge tone="warning">On Hold</Badge>
 

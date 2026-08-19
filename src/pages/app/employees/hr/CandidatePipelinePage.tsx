@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Upload, Users2 } from 'lucide-react'
+import { Archive, Upload, Users2 } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useCandidates, useJobs } from '@/hooks/useHr'
+import { useToast } from '@/hooks/useToast'
+import { hrService } from '@/services/api'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { DataTable } from '@/components/ui/DataTable'
@@ -14,6 +16,7 @@ import { Avatar } from '@/components/ui/Avatar'
 import { ScoreRing } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { Modal } from '@/components/ui/Modal'
 import { HrSubNav } from '@/components/employees/hr/HrSubNav'
 import { CANDIDATE_PIPELINE_STAGES, CANDIDATE_STAGE_LABEL } from '@/types'
 import type { Candidate, CandidateStage } from '@/types'
@@ -23,17 +26,28 @@ const SOURCE_LABEL: Record<string, string> = {
   careers_site: 'Careers Site', referral: 'Referral', linkedin: 'LinkedIn', agency: 'Agency', job_board: 'Job Board', direct_upload: 'Direct Upload',
 }
 
+const STATUS_OPTIONS = [
+  { value: 'active', label: 'Active' },
+  { value: 'archived', label: 'Archived' },
+  { value: 'all', label: 'All' },
+]
+
 export default function CandidatePipelinePage() {
   useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI HR Employee', href: '/app/employees/hr' }, { label: 'Candidates' }])
   const [params, setParams] = useSearchParams()
   const jobs = useJobs()
+  const { show } = useToast()
   const [search, setSearch] = useState('')
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [confirmingBulkArchive, setConfirmingBulkArchive] = useState(false)
+  const [bulkBusy, setBulkBusy] = useState(false)
 
   const jobId = params.get('job') ?? 'all'
   const stage = (params.get('stage') as CandidateStage | 'all') ?? 'all'
   const source = params.get('source') ?? 'all'
+  const status = (params.get('status') as 'active' | 'archived' | 'all') ?? 'active'
 
-  const candidates = useCandidates({ jobId, stage, source, search })
+  const candidates = useCandidates({ jobId, stage, source, search, status })
 
   const jobOptions = useMemo(
     () => [{ value: 'all', label: 'All Jobs' }, ...(jobs.data ?? []).map((j) => ({ value: j.id, label: j.title }))],
@@ -45,11 +59,70 @@ export default function CandidatePipelinePage() {
     if (value === 'all') next.delete(key)
     else next.set(key, value)
     setParams(next, { replace: true })
+    setSelected(new Set())
   }
 
-  const hasFilters = jobId !== 'all' || stage !== 'all' || source !== 'all' || Boolean(search)
+  const hasFilters = jobId !== 'all' || stage !== 'all' || source !== 'all' || status !== 'active' || Boolean(search)
+
+  function toggleSelected(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const visibleIds = (candidates.data ?? []).map((c) => c.id)
+  const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selected.has(id))
+
+  function toggleSelectAllVisible() {
+    setSelected(() => {
+      if (allVisibleSelected) return new Set()
+      return new Set(visibleIds)
+    })
+  }
+
+  async function submitBulkArchive() {
+    setBulkBusy(true)
+    const result = await hrService.bulkArchiveCandidates(Array.from(selected))
+    setBulkBusy(false)
+    setConfirmingBulkArchive(false)
+    setSelected(new Set())
+    const skippedCount = Object.keys(result.skipped).length
+    show({
+      tone: skippedCount > 0 ? 'warning' : 'success',
+      title: `${result.archived.length} candidate${result.archived.length === 1 ? '' : 's'} archived`,
+      description: skippedCount > 0 ? `${skippedCount} could not be archived.` : 'Their recruitment history has been preserved.',
+    })
+    candidates.refetch()
+  }
 
   const columns: DataTableColumn<Candidate>[] = [
+    {
+      key: 'select',
+      header: (
+        <input
+          type="checkbox"
+          checked={allVisibleSelected}
+          onChange={toggleSelectAllVisible}
+          onClick={(e) => e.stopPropagation()}
+          aria-label="Select all visible candidates"
+          className="size-4 rounded border-ink-300 text-brand-600 focus:ring-2 focus:ring-brand-500/30"
+        />
+      ),
+      headerClassName: 'w-10',
+      render: (c) => (
+        <input
+          type="checkbox"
+          checked={selected.has(c.id)}
+          onChange={() => toggleSelected(c.id)}
+          onClick={(e) => e.stopPropagation()}
+          aria-label={`Select ${c.name}`}
+          className="size-4 rounded border-ink-300 text-brand-600 focus:ring-2 focus:ring-brand-500/30"
+        />
+      ),
+    },
     {
       key: 'candidate',
       header: 'Candidate',
@@ -68,7 +141,16 @@ export default function CandidatePipelinePage() {
       header: 'Job',
       render: (c) => <span className="text-[13px] text-ink-600">{jobs.data?.find((j) => j.id === c.jobId)?.title ?? '—'}</span>,
     },
-    { key: 'stage', header: 'Stage', render: (c) => <Badge tone="neutral">{CANDIDATE_STAGE_LABEL[c.stage]}</Badge> },
+    {
+      key: 'stage',
+      header: 'Stage',
+      render: (c) => (
+        <div className="flex items-center gap-1.5">
+          <Badge tone="neutral">{CANDIDATE_STAGE_LABEL[c.stage]}</Badge>
+          {c.archivedAt && <Badge tone="neutral">Archived</Badge>}
+        </div>
+      ),
+    },
     {
       key: 'score',
       header: 'JD Match',
@@ -92,7 +174,7 @@ export default function CandidatePipelinePage() {
 
       <HrSubNav />
 
-      <FilterBar hasActiveFilters={hasFilters} onClear={() => setParams(new URLSearchParams(), { replace: true })}>
+      <FilterBar hasActiveFilters={hasFilters} onClear={() => { setParams(new URLSearchParams(), { replace: true }); setSelected(new Set()) }}>
         <SearchInput value={search} onChange={setSearch} placeholder="Search candidates…" containerClassName="w-56" />
         <FilterSelect label="Job" value={jobId} options={jobOptions} onChange={(v) => setParam('job', v)} />
         <FilterSelect
@@ -107,7 +189,22 @@ export default function CandidatePipelinePage() {
           options={[{ value: 'all', label: 'All Sources' }, ...Object.entries(SOURCE_LABEL).map(([value, label]) => ({ value, label }))]}
           onChange={(v) => setParam('source', v)}
         />
+        <FilterSelect label="Status" value={status} options={STATUS_OPTIONS} onChange={(v) => setParam('status', v)} />
       </FilterBar>
+
+      {selected.size > 0 && (
+        <div className="flex items-center justify-between rounded-xl border border-brand-200 bg-brand-50 px-4 py-3">
+          <span className="text-[13px] font-medium text-brand-800">{selected.size} candidate{selected.size === 1 ? '' : 's'} selected</span>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setSelected(new Set())}>
+              Clear
+            </Button>
+            <Button size="sm" icon={<Archive className="size-3.5" />} onClick={() => setConfirmingBulkArchive(true)}>
+              Archive Selected
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Desktop / tablet table */}
       <div className="hidden sm:block">
@@ -150,6 +247,7 @@ export default function CandidatePipelinePage() {
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-1.5">
                   <Badge tone="neutral">{CANDIDATE_STAGE_LABEL[c.stage]}</Badge>
+                  {c.archivedAt && <Badge tone="neutral">Archived</Badge>}
                   <span className="text-xs text-ink-400">{jobs.data?.find((j) => j.id === c.jobId)?.title ?? '—'}</span>
                 </div>
                 <p className="mt-1.5 text-xs text-ink-400">Uploaded {formatDate(c.uploadedAt)} · {SOURCE_LABEL[c.source]}</p>
@@ -158,6 +256,26 @@ export default function CandidatePipelinePage() {
           ))
         )}
       </div>
+
+      <Modal
+        open={confirmingBulkArchive}
+        onClose={() => setConfirmingBulkArchive(false)}
+        title={`Archive ${selected.size} candidate${selected.size === 1 ? '' : 's'}?`}
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setConfirmingBulkArchive(false)} disabled={bulkBusy}>
+              Cancel
+            </Button>
+            <Button onClick={submitBulkArchive} loading={bulkBusy}>
+              Archive Selected
+            </Button>
+          </>
+        }
+      >
+        <p className="text-[13px] text-ink-600">
+          Their recruitment history will be preserved and they can be restored later.
+        </p>
+      </Modal>
     </div>
   )
 }

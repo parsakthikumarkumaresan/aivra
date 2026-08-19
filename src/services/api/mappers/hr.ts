@@ -128,6 +128,7 @@ function deriveApprovals(backendStage: string): { screeningApproval: ApprovalGat
 // ---------------------------------------------------------------------
 export interface BackendCandidate {
   id: string
+  identityId: string
   jobId: string
   fullName: string
   email: string
@@ -136,6 +137,8 @@ export interface BackendCandidate {
   stage: string
   resumeId: string | null
   rejectedReason: string | null
+  archivedAt: string | null
+  archivedByUserId: string | null
 }
 
 // Backend CandidateSource (app/ai_employees/hr/models/candidate.py) is a
@@ -231,6 +234,7 @@ export function mapCandidate(
   const { screeningApproval, interviewApproval } = deriveApprovals(res.stage)
   return {
     id: res.id,
+    identityId: res.identityId,
     jobId: res.jobId,
     name: res.fullName,
     email: res.email,
@@ -250,6 +254,8 @@ export function mapCandidate(
     location: opts.extractedProfile?.location ?? '',
     yearsExperience: opts.extractedProfile?.yearsExperience ?? 0,
     currentTitle: opts.extractedProfile?.currentTitle ?? '',
+    archivedAt: res.archivedAt ?? undefined,
+    archivedByUserId: res.archivedByUserId ?? undefined,
   }
 }
 
