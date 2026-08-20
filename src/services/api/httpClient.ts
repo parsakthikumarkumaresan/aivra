@@ -139,6 +139,12 @@ export const httpClient = {
     request<T>(path, { ...options, method: 'PATCH', json }),
   postForm: <T>(path: string, formData: FormData, options?: Omit<RequestOptions, 'method' | 'body'>) =>
     request<T>(path, { ...options, method: 'POST', body: formData }),
-  /** Attempts to restore a session from the httpOnly refresh cookie (e.g. on page load). */
-  bootstrapSession: refreshSession,
+  /** Attempts to restore a session from localStorage or the httpOnly refresh cookie (e.g. on page load). */
+  async bootstrapSession(): Promise<boolean> {
+    const current = tokenStore.get()
+    if (current.accessToken && current.expiresAt && current.expiresAt > Date.now()) {
+      return true
+    }
+    return refreshSession()
+  },
 }

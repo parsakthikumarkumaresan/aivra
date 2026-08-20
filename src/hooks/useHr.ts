@@ -29,6 +29,10 @@ export function useInterview(candidateId: string) {
   return useAsync(() => hrService.getInterview(candidateId), [candidateId])
 }
 
+export function useScreeningPrompt(candidateId: string) {
+  return useAsync(() => hrService.getScreeningPrompt(candidateId), [candidateId])
+}
+
 export function useScheduleSlots() {
   return useAsync(() => hrService.listScheduleSlots(), [])
 }

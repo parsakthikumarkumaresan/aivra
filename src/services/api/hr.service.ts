@@ -12,7 +12,7 @@
 // rubric templates, schedule slots, hiring team roster, HR config, slot
 // booking, AI screening call simulation, resume sample preview/testing
 // tools, screenings/interviews list views.
-import type { Candidate, CandidateStage, ExtractedResumeProfile, Job, ResumeUploadStatus } from '@/types'
+import type { Candidate, CandidateStage, ExtractedResumeProfile, HrEmployeeConfig, Interview, Job, ResumeUploadStatus, ScheduleSlot } from '@/types'
 import { hrService as mockHrService } from '@/services/mock/hr.service'
 import { httpClient } from './httpClient'
 import { isApiError } from './errors'
@@ -21,6 +21,8 @@ import {
   mapExtractedProfile,
   mapJob,
   mapResumeStatus,
+  mapScheduleSlot,
+  mapScreeningAndInterview,
   mapStageToBackend,
   isResumeFailed,
   isResumeNeedsReview,
@@ -29,7 +31,10 @@ import {
   type BackendAssessment,
   type BackendCandidate,
   type BackendExtractedProfile,
+  type BackendInterview,
   type BackendJob,
+  type BackendScheduleSlot,
+  type BackendScreening,
 } from './mappers/hr'
 
 export interface CandidateFilters {
@@ -89,6 +94,24 @@ function formatFileSize(bytes: number): string {
 async function fetchAssessment(candidateId: string): Promise<BackendAssessment | undefined> {
   try {
     return await httpClient.get<BackendAssessment>(`/hr/resumes/candidates/${candidateId}/assessment`)
+  } catch (err) {
+    if (isApiError(err) && err.status === 404) return undefined
+    throw err
+  }
+}
+
+async function fetchScreening(candidateId: string): Promise<BackendScreening | undefined> {
+  try {
+    return await httpClient.get<BackendScreening>(`/hr/screenings/candidates/${candidateId}`)
+  } catch (err) {
+    if (isApiError(err) && err.status === 404) return undefined
+    throw err
+  }
+}
+
+async function fetchInterviewRecord(candidateId: string): Promise<BackendInterview | undefined> {
+  try {
+    return await httpClient.get<BackendInterview>(`/hr/candidates/${candidateId}/interview`)
   } catch (err) {
     if (isApiError(err) && err.status === 404) return undefined
     throw err
@@ -185,12 +208,14 @@ export const hrService = {
     }
   },
   createJob(
-    input: Pick<Job, 'title' | 'department' | 'location' | 'employmentType' | 'experienceLevel' | 'description'> &
+    input: Pick<Job, 'title' | 'companyName' | 'aiAgentName' | 'department' | 'location' | 'employmentType' | 'experienceLevel' | 'description'> &
       Partial<Pick<Job, 'requirements' | 'requiredSkills'>>,
   ): Promise<Job> {
     return httpClient
       .post<BackendJob>('/hr/jobs', {
         title: input.title,
+        companyName: input.companyName || null,
+        aiAgentName: input.aiAgentName || null,
         department: input.department || null,
         description: input.description || null,
         requirements: input.requirements ?? [],
@@ -339,21 +364,97 @@ export const hrService = {
   },
 
   // -------------------------------------------------------------------
+  // AI Screening call + human Interview — real. Composes the backend's
+  // separate Screening (AI call) + Interview (human meeting) resources into
+  // the frontend's single Interview shape (see mapScreeningAndInterview).
+  // -------------------------------------------------------------------
+  async getInterview(candidateId: string): Promise<Interview | undefined> {
+    const [screening, interviewRecord, candidateRes] = await Promise.all([
+      fetchScreening(candidateId),
+      fetchInterviewRecord(candidateId),
+      httpClient.get<BackendCandidate>(`/hr/candidates/${candidateId}`).catch(() => undefined),
+    ])
+    if (!screening && !interviewRecord) return undefined
+    let jobTitle = ''
+    if (candidateRes) {
+      const job = await httpClient.get<BackendJob>(`/hr/jobs/${candidateRes.jobId}`).catch(() => undefined)
+      jobTitle = job?.title ?? ''
+    }
+    return mapScreeningAndInterview(candidateId, candidateRes?.jobId ?? '', jobTitle, screening, interviewRecord)
+  },
+
+  // Generates the prompt on first call (lazy) and returns it thereafter —
+  // never blank, never a fallback/generic prompt (spec sections 2-4).
+  getScreeningPrompt(candidateId: string): Promise<{ promptText: string; promptGeneratedAt: string | null; promptEditedAt: string | null }> {
+    return httpClient.get(`/hr/screenings/candidates/${candidateId}/prompt`)
+  },
+  updateScreeningPrompt(
+    candidateId: string,
+    promptText: string,
+  ): Promise<{ promptText: string; promptGeneratedAt: string | null; promptEditedAt: string | null }> {
+    return httpClient.patch(`/hr/screenings/candidates/${candidateId}/prompt`, { promptText })
+  },
+  async startScreeningCall(candidateId: string): Promise<Interview | undefined> {
+    await httpClient.post(`/hr/screenings/candidates/${candidateId}/start`, {})
+    return hrService.getInterview(candidateId)
+  },
+
+  async listScheduleSlots(): Promise<ScheduleSlot[]> {
+    const slots = await httpClient.get<BackendScheduleSlot[]>('/hr/scheduling/availability')
+    return slots.map(mapScheduleSlot)
+  },
+  async getConfig(): Promise<HrEmployeeConfig> {
+    // hiringTeam/rubricVersion/interviewTemplate genuinely have no backend
+    // equivalent yet — only calendarConnected is made real here.
+    const [mockConfig, status] = await Promise.all([
+      mockHrService.getConfig(),
+      httpClient.get<{ connected: boolean }>('/hr/scheduling/calendar-status'),
+    ])
+    return { ...mockConfig, calendarConnected: status.connected }
+  },
+  async bookSlot(
+    slotId: string,
+    candidateId: string,
+    panelistEmails: string[] = [],
+  ): Promise<{ success: boolean; slot?: ScheduleSlot; error?: string }> {
+    try {
+      await httpClient.post('/hr/scheduling/book', { slotId, candidateId, panelistEmails })
+      return { success: true }
+    } catch (err) {
+      // The backend's message here is real, human-readable copy (e.g. "This
+      // slot has already been booked." vs. "Candidate has no approved
+      // interview ready to be scheduled.") — surface it rather than
+      // collapsing every failure into one generic guess.
+      return { success: false, error: err instanceof Error ? err.message : undefined }
+    }
+  },
+
+  // -------------------------------------------------------------------
+  // Screenings & Interviews list views — real. No bulk join endpoint exists
+  // yet, so each row's screening/interview is composed with one extra
+  // fetch per candidate (small lists — HR's current-in-flight candidates,
+  // not the full pipeline).
+  // -------------------------------------------------------------------
+  async listScreenings(): Promise<{ candidate: Candidate; interview?: Interview }[]> {
+    const stages: CandidateStage[] = ['screening_approved', 'ai_screening', 'screening_completed', 'human_review']
+    const candidates = (await hrService.listCandidates({})).filter((c) => stages.includes(c.stage))
+    return Promise.all(candidates.map(async (candidate) => ({ candidate, interview: await hrService.getInterview(candidate.id) })))
+  },
+  async listInterviews(): Promise<{ candidate: Candidate; interview?: Interview }[]> {
+    const stages: CandidateStage[] = ['interview_approved', 'interview_scheduled', 'completed']
+    const candidates = (await hrService.listCandidates({})).filter((c) => stages.includes(c.stage))
+    return Promise.all(candidates.map(async (candidate) => ({ candidate, interview: await hrService.getInterview(candidate.id) })))
+  },
+
+  // -------------------------------------------------------------------
   // Not yet connected to a backend endpoint — delegated to the mock so
   // these screens keep working, not represented as real backend data.
   // -------------------------------------------------------------------
   getRubric: mockHrService.getRubric,
-  getInterview: mockHrService.getInterview,
   getInterviewById: mockHrService.getInterviewById,
-  listScheduleSlots: mockHrService.listScheduleSlots,
   getHiringTeam: mockHrService.getHiringTeam,
-  getConfig: mockHrService.getConfig,
-  bookSlot: mockHrService.bookSlot,
-  startScreeningCall: mockHrService.startScreeningCall,
   completeScreeningCall: mockHrService.completeScreeningCall,
   uploadResumeStepOrder: mockHrService.uploadResumeStepOrder,
   listResumeSamples: mockHrService.listResumeSamples,
   previewResumeMatch: mockHrService.previewResumeMatch,
-  listScreenings: mockHrService.listScreenings,
-  listInterviews: mockHrService.listInterviews,
 }

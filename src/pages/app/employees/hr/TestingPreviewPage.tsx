@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, FlaskConical, PhoneCall, Target, Play } from 'lucide-react'
+import { ArrowLeft, FlaskConical, Target, Play } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useAsync } from '@/hooks/useAsync'
 import { useJobs } from '@/hooks/useHr'
@@ -41,19 +41,9 @@ export default function TestingPreviewPage() {
         Back to Configuration
       </Link>
 
-      <PageHeader icon={<FlaskConical className="size-5" />} title="Testing & Preview" description="Try resume parsing, candidate matching and a sample AI screening call — no real candidates are affected." />
+      <PageHeader icon={<FlaskConical className="size-5" />} title="Testing & Preview" description="Try resume parsing and candidate matching against a sample resume — no real candidates are affected." />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader title="AI Screening Call Simulation" description="Preview the live call experience end-to-end" />
-          <CardBody className="flex items-center justify-between gap-3">
-            <p className="text-[13px] text-ink-600">Runs the same call engine used for real candidates, with sample dialogue.</p>
-            <Link to="/app/employees/hr/screenings/cand_demo">
-              <Button icon={<PhoneCall className="size-4" />}>Preview Call</Button>
-            </Link>
-          </CardBody>
-        </Card>
-
         <Card>
           <CardHeader title="Resume Parsing & Matching Test" description="See extraction and JD matching for a sample resume" />
           <CardBody className="space-y-3">

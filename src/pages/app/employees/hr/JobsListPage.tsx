@@ -30,7 +30,7 @@ export default function JobsListPage() {
   const [params, setParams] = useSearchParams()
   const [modalOpen, setModalOpen] = useState(false)
   const [creating, setCreating] = useState(false)
-  const [form, setForm] = useState({ title: '', department: '', location: '', employmentType: 'full_time' as EmploymentType, experienceLevel: '', description: '', requiredSkills: '' })
+  const [form, setForm] = useState({ title: '', companyName: '', aiAgentName: '', department: '', location: '', employmentType: 'full_time' as EmploymentType, experienceLevel: '', description: '', requiredSkills: '' })
 
   useEffect(() => {
     if (params.get('new') === '1') {
@@ -51,7 +51,7 @@ export default function JobsListPage() {
     })
     setCreating(false)
     setModalOpen(false)
-    setForm({ title: '', department: '', location: '', employmentType: 'full_time', experienceLevel: '', description: '', requiredSkills: '' })
+    setForm({ title: '', companyName: '', aiAgentName: '', department: '', location: '', employmentType: 'full_time', experienceLevel: '', description: '', requiredSkills: '' })
     show({ tone: 'success', title: 'Job created', description: `${form.title} was added as a draft.` })
     jobs.refetch()
   }
@@ -194,6 +194,26 @@ export default function JobsListPage() {
           <div>
             <Label required>Job title</Label>
             <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g. Senior Product Designer" />
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <Label>Company name</Label>
+              <Input
+                value={form.companyName}
+                onChange={(e) => setForm({ ...form, companyName: e.target.value })}
+                placeholder="e.g. Infosys Pvt Ltd"
+              />
+              <p className="mt-1 text-xs text-ink-400">The AI agent says it's calling from this company.</p>
+            </div>
+            <div>
+              <Label>AI agent name</Label>
+              <Input
+                value={form.aiAgentName}
+                onChange={(e) => setForm({ ...form, aiAgentName: e.target.value })}
+                placeholder="e.g. Zara"
+              />
+              <p className="mt-1 text-xs text-ink-400">The name the AI screening assistant introduces itself with.</p>
+            </div>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>

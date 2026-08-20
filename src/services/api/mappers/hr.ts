@@ -10,11 +10,16 @@ import type {
   CandidateStage,
   EmploymentType,
   ExtractedResumeProfile,
+  Interview,
+  InterviewPanelist,
   Job,
   JobStatus,
   JdMatchBreakdown,
   MatchLabel,
   ResumeUploadStatus,
+  ScheduleSlot,
+  ScreeningResultSummary,
+  TranscriptTurn,
 } from '@/types'
 
 // ---------------------------------------------------------------------
@@ -23,6 +28,8 @@ import type {
 export interface BackendJob {
   id: string
   title: string
+  companyName: string | null
+  aiAgentName: string | null
   department: string | null
   description: string | null
   requirements: string[]
@@ -37,6 +44,8 @@ export function mapJob(res: BackendJob): Job {
   return {
     id: res.id,
     title: res.title,
+    companyName: res.companyName ?? '',
+    aiAgentName: res.aiAgentName ?? '',
     department: res.department ?? '',
     location: res.location ?? '',
     employmentType: res.employmentType as EmploymentType,
@@ -318,4 +327,199 @@ export function isResumeFailed(backendStatus: string): boolean {
 
 export function isResumeNeedsReview(backendStatus: string): boolean {
   return backendStatus === 'needs_identity_review'
+}
+
+// ---------------------------------------------------------------------
+// AI Screening call + human Interview — the backend cleanly separates
+// Screening (the AI call: app/ai_employees/hr/schemas/screening.py) from
+// Interview (the human meeting: app/ai_employees/hr/schemas/interview.py).
+// The frontend's pre-existing `Interview` type conflates both into one
+// object per candidate — these functions compose the two backend resources
+// into that shape rather than splitting the frontend type (lower risk,
+// consistent with this file's existing "translate, don't redesign" stance).
+// ---------------------------------------------------------------------
+export interface BackendTranscriptTurn {
+  speaker: string
+  text: string
+  isFinal: boolean
+  timestamp: string
+}
+
+export interface BackendScreeningResult {
+  recommendation: 'proceed' | 'hold' | 'reject' | 'candidate_unavailable'
+  recommendationRationale: string
+  introduction: string | null
+  currentRole: string | null
+  totalExperience: string | null
+  relevantExperience: string | null
+  currentCtc: string | null
+  expectedCtc: string | null
+  noticePeriod: string | null
+  immediateAvailability: boolean | null
+  joiningDate: string | null
+  interviewAvailability: string | null
+  candidateInterest: string | null
+  keyObservations: string[]
+  candidateQuestions: string[]
+  gaps: string[]
+  jdEvidence: { requirement: string; evidence: string; transcriptRef: string | null }[]
+}
+
+export interface BackendScreening {
+  id: string
+  candidateId: string
+  status: 'pending' | 'in_progress' | 'completed' | 'failed'
+  externalCallRef: string | null
+  resultSummary: string | null
+  startedAt: string | null
+  completedAt: string | null
+  promptText: string | null
+  promptGeneratedAt: string | null
+  promptEditedAt: string | null
+  failureReason: string | null
+  transcript: BackendTranscriptTurn[] | null
+  result: BackendScreeningResult | null
+}
+
+export interface BackendInterview {
+  id: string
+  candidateId: string
+  screeningId: string | null
+  status: string
+  scheduledSlotId: string | null
+  meetingLink: string | null
+  interviewerUserId: string | null
+  notes: string | null
+  candidateNotifiedAt: string | null
+  panelists: { email: string; name: string | null; notifiedAt: string | null }[]
+  scheduledStartTime: string | null
+  scheduledEndTime: string | null
+}
+
+const SCREENING_SPEAKER_TO_FRONTEND: Record<string, TranscriptTurn['speaker']> = {
+  assistant: 'ai',
+  candidate: 'candidate',
+}
+
+function mapTranscript(turns: BackendTranscriptTurn[] | null): TranscriptTurn[] {
+  return (turns ?? []).map((t, i) => ({
+    id: `t${i}`,
+    speaker: SCREENING_SPEAKER_TO_FRONTEND[t.speaker] ?? 'system',
+    text: t.text,
+    timestamp: t.timestamp,
+  }))
+}
+
+const RECOMMENDATION_NEXT_STEP: Record<BackendScreeningResult['recommendation'], string> = {
+  proceed: 'Proceed to human interview review.',
+  hold: 'Hold — review the transcript carefully before proceeding.',
+  reject: 'Not recommended to proceed — review the transcript and JD evidence.',
+  candidate_unavailable: 'Candidate was unavailable — follow up to reschedule the screening.',
+}
+
+function mapScreeningResult(result: BackendScreeningResult | null): ScreeningResultSummary | undefined {
+  if (!result) return undefined
+  return {
+    recommendation: result.recommendation,
+    recommendationRationale: result.recommendationRationale || undefined,
+    introduction: result.introduction ?? undefined,
+    currentRole: result.currentRole ?? undefined,
+    totalExperience: result.totalExperience ?? undefined,
+    relevantExperience: result.relevantExperience ?? undefined,
+    currentCtc: result.currentCtc ?? undefined,
+    expectedCtc: result.expectedCtc ?? undefined,
+    noticePeriod: result.noticePeriod ?? undefined,
+    immediateAvailability: result.immediateAvailability ?? undefined,
+    joiningDate: result.joiningDate ?? undefined,
+    interviewAvailability: result.interviewAvailability ?? undefined,
+    candidateInterest: result.candidateInterest ?? undefined,
+    keyObservations: result.keyObservations,
+    candidateQuestions: result.candidateQuestions,
+  }
+}
+
+/** Real (not simulated) AI-screening call status — never fakes speaking/listening
+ * states the backend doesn't actually expose (spec: only real provider state). */
+function mapScreeningStatus(screening: BackendScreening | undefined): Interview['status'] {
+  if (!screening) return 'not_started'
+  if (screening.status === 'pending') return 'not_started'
+  if (screening.status === 'in_progress') {
+    return (screening.transcript?.length ?? 0) > 0 ? 'in_progress' : 'calling'
+  }
+  return screening.status // 'completed' | 'failed'
+}
+
+export function mapScreeningAndInterview(
+  candidateId: string,
+  jobId: string,
+  jobTitle: string,
+  screening: BackendScreening | undefined,
+  interview: BackendInterview | undefined,
+): Interview {
+  const result = mapScreeningResult(screening?.result ?? null)
+  return {
+    id: screening?.id ?? interview?.id ?? candidateId,
+    candidateId,
+    jobId,
+    status: mapScreeningStatus(screening),
+    template: `${jobTitle} — AI Screening`,
+    durationMinutes: 0, // Real duration is started_at/completed_at-derived, shown directly from screening below.
+    language: 'English',
+    questionCategories: [],
+    questions: [],
+    transcript: mapTranscript(screening?.transcript ?? null),
+    report: result
+      ? {
+          summary: screening?.resultSummary ?? '',
+          strengths: (screening?.result?.jdEvidence ?? []).map((e) => e.evidence),
+          gaps: screening?.result?.gaps ?? [],
+          unansweredQuestions: [],
+          criterionEvidence: (screening?.result?.jdEvidence ?? []).map((e) => ({
+            criterionId: e.requirement,
+            criterionLabel: e.requirement,
+            score: 100,
+            evidence: e.evidence,
+          })),
+          recommendedNextStep: RECOMMENDATION_NEXT_STEP[result.recommendation],
+          humanReviewRequired: true as const,
+        }
+      : undefined,
+    screeningResult: result,
+    promptText: screening?.promptText ?? undefined,
+    promptGeneratedAt: screening?.promptGeneratedAt ?? undefined,
+    promptEditedAt: screening?.promptEditedAt ?? undefined,
+    failureReason: screening?.failureReason ?? undefined,
+    scheduledHumanInterviewAt: interview?.scheduledStartTime ?? undefined,
+    scheduledInterviewer: interview?.interviewerUserId ?? undefined,
+    meetingLink: interview?.meetingLink ?? undefined,
+    completedAt: screening?.completedAt ?? undefined,
+    candidateNotifiedAt: interview?.candidateNotifiedAt ?? undefined,
+    panelists: (interview?.panelists ?? []).map(
+      (p): InterviewPanelist => ({ email: p.email, name: p.name ?? undefined, notifiedAt: p.notifiedAt ?? undefined }),
+    ),
+  }
+}
+
+// ---------------------------------------------------------------------
+// Schedule slot
+// ---------------------------------------------------------------------
+export interface BackendScheduleSlot {
+  id: string
+  interviewerUserId: string
+  startTime: string
+  endTime: string
+  isBooked: boolean
+  candidateId: string | null
+}
+
+export function mapScheduleSlot(res: BackendScheduleSlot): ScheduleSlot {
+  return {
+    id: res.id,
+    startTime: res.startTime,
+    endTime: res.endTime,
+    interviewerId: res.interviewerUserId,
+    interviewerName: res.interviewerUserId, // Not modeled as a separate name on the backend yet.
+    timezone: 'UTC', // Not modeled on the backend yet.
+    available: !res.isBooked,
+  }
 }

@@ -4,6 +4,8 @@ export const mockJobs: Job[] = [
   {
     id: 'job_1042',
     title: 'Senior Product Designer',
+    companyName: 'AIVRA Technologies',
+    aiAgentName: 'Zara',
     department: 'Design',
     location: 'Bengaluru, India (Hybrid)',
     employmentType: 'full_time',
@@ -25,6 +27,8 @@ export const mockJobs: Job[] = [
   {
     id: 'job_1043',
     title: 'Backend Engineer',
+    companyName: 'AIVRA Technologies',
+    aiAgentName: 'Zara',
     department: 'Engineering',
     location: 'Remote (India)',
     employmentType: 'full_time',
@@ -45,6 +49,8 @@ export const mockJobs: Job[] = [
   {
     id: 'job_1044',
     title: 'Customer Success Manager',
+    companyName: 'AIVRA Technologies',
+    aiAgentName: 'Zara',
     department: 'Customer Success',
     location: 'Mumbai, India',
     employmentType: 'full_time',
@@ -64,6 +70,8 @@ export const mockJobs: Job[] = [
   {
     id: 'job_1045',
     title: 'Data Analyst',
+    companyName: 'AIVRA Technologies',
+    aiAgentName: 'Zara',
     department: 'Analytics',
     location: 'Bengaluru, India',
     employmentType: 'full_time',
@@ -78,6 +86,8 @@ export const mockJobs: Job[] = [
   {
     id: 'job_1046',
     title: 'Retail Store Associate',
+    companyName: 'Acme Jewellery',
+    aiAgentName: 'Zara',
     department: 'Retail Operations',
     location: 'Chennai, India',
     employmentType: 'part_time',

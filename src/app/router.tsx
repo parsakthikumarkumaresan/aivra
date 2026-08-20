@@ -123,8 +123,8 @@ export const router = createBrowserRouter([
                 element: lazyPage(() => import('@/pages/app/employees/hr/InterviewsListPage')),
               },
               {
-                path: 'schedule',
-                element: lazyPage(() => import('@/pages/app/employees/hr/SchedulingPage')),
+                path: 'interviews/:candidateId',
+                element: lazyPage(() => import('@/pages/app/employees/hr/InterviewDetailPage')),
               },
               {
                 path: 'reports',

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Archive, Upload, Users2 } from 'lucide-react'
+import { Archive, Trash2, Upload, Users2 } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useCandidates, useJobs } from '@/hooks/useHr'
 import { useToast } from '@/hooks/useToast'
@@ -22,10 +22,6 @@ import { CANDIDATE_PIPELINE_STAGES, CANDIDATE_STAGE_LABEL } from '@/types'
 import type { Candidate, CandidateStage } from '@/types'
 import { formatDate } from '@/utils/format'
 
-const SOURCE_LABEL: Record<string, string> = {
-  careers_site: 'Careers Site', referral: 'Referral', linkedin: 'LinkedIn', agency: 'Agency', job_board: 'Job Board', direct_upload: 'Direct Upload',
-}
-
 const STATUS_OPTIONS = [
   { value: 'active', label: 'Active' },
   { value: 'archived', label: 'Archived' },
@@ -41,13 +37,14 @@ export default function CandidatePipelinePage() {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [confirmingBulkArchive, setConfirmingBulkArchive] = useState(false)
   const [bulkBusy, setBulkBusy] = useState(false)
+  const [confirmingDelete, setConfirmingDelete] = useState<Candidate | null>(null)
+  const [deleteBusy, setDeleteBusy] = useState(false)
 
   const jobId = params.get('job') ?? 'all'
   const stage = (params.get('stage') as CandidateStage | 'all') ?? 'all'
-  const source = params.get('source') ?? 'all'
   const status = (params.get('status') as 'active' | 'archived' | 'all') ?? 'active'
 
-  const candidates = useCandidates({ jobId, stage, source, search, status })
+  const candidates = useCandidates({ jobId, stage, search, status })
 
   const jobOptions = useMemo(
     () => [{ value: 'all', label: 'All Jobs' }, ...(jobs.data ?? []).map((j) => ({ value: j.id, label: j.title }))],
@@ -62,7 +59,7 @@ export default function CandidatePipelinePage() {
     setSelected(new Set())
   }
 
-  const hasFilters = jobId !== 'all' || stage !== 'all' || source !== 'all' || status !== 'active' || Boolean(search)
+  const hasFilters = jobId !== 'all' || stage !== 'all' || status !== 'active' || Boolean(search)
 
   function toggleSelected(id: string) {
     setSelected((prev) => {
@@ -95,6 +92,22 @@ export default function CandidatePipelinePage() {
       title: `${result.archived.length} candidate${result.archived.length === 1 ? '' : 's'} archived`,
       description: skippedCount > 0 ? `${skippedCount} could not be archived.` : 'Their recruitment history has been preserved.',
     })
+    candidates.refetch()
+  }
+
+  // "Delete" in the HR UI is implemented as archival — the same
+  // production-grade mechanism bulk archive already uses — so candidate
+  // history, resumes, assessments, screenings and audit records are never
+  // destroyed. The label stays "Delete" because that's the mental model the
+  // HR user has (remove from the active pipeline), even though internally
+  // it's a reversible archive.
+  async function submitDelete() {
+    if (!confirmingDelete) return
+    setDeleteBusy(true)
+    await hrService.archiveCandidate(confirmingDelete.id)
+    setDeleteBusy(false)
+    setConfirmingDelete(null)
+    show({ tone: 'success', title: `${confirmingDelete.name} removed from the pipeline`, description: 'Their recruitment history has been preserved.' })
     candidates.refetch()
   }
 
@@ -156,8 +169,26 @@ export default function CandidatePipelinePage() {
       header: 'JD Match',
       render: (c) => (c.overallScore !== null ? <ScoreRing value={c.overallScore} size={36} /> : <span className="text-xs text-ink-400">Processing</span>),
     },
-    { key: 'source', header: 'Source', render: (c) => <span className="text-[13px] text-ink-600">{SOURCE_LABEL[c.source]}</span> },
     { key: 'uploaded', header: 'Uploaded', render: (c) => <span className="text-[13px] text-ink-500">{formatDate(c.uploadedAt)}</span> },
+    {
+      key: 'actions',
+      header: '',
+      headerClassName: 'w-10',
+      render: (c) => (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            setConfirmingDelete(c)
+          }}
+          aria-label={`Delete ${c.name}`}
+          title="Delete candidate"
+          className="rounded-lg p-1.5 text-ink-400 hover:bg-danger-50 hover:text-danger-600"
+        >
+          <Trash2 className="size-4" />
+        </button>
+      ),
+    },
   ]
 
   return (
@@ -182,12 +213,6 @@ export default function CandidatePipelinePage() {
           value={stage}
           options={[{ value: 'all', label: 'All Stages' }, ...CANDIDATE_PIPELINE_STAGES.map((s) => ({ value: s, label: CANDIDATE_STAGE_LABEL[s] })), { value: 'rejected', label: 'Rejected' }, { value: 'on_hold', label: 'On Hold' }]}
           onChange={(v) => setParam('stage', v)}
-        />
-        <FilterSelect
-          label="Source"
-          value={source}
-          options={[{ value: 'all', label: 'All Sources' }, ...Object.entries(SOURCE_LABEL).map(([value, label]) => ({ value, label }))]}
-          onChange={(v) => setParam('source', v)}
         />
         <FilterSelect label="Status" value={status} options={STATUS_OPTIONS} onChange={(v) => setParam('status', v)} />
       </FilterBar>
@@ -250,7 +275,7 @@ export default function CandidatePipelinePage() {
                   {c.archivedAt && <Badge tone="neutral">Archived</Badge>}
                   <span className="text-xs text-ink-400">{jobs.data?.find((j) => j.id === c.jobId)?.title ?? '—'}</span>
                 </div>
-                <p className="mt-1.5 text-xs text-ink-400">Uploaded {formatDate(c.uploadedAt)} · {SOURCE_LABEL[c.source]}</p>
+                <p className="mt-1.5 text-xs text-ink-400">Uploaded {formatDate(c.uploadedAt)}</p>
               </div>
             </Link>
           ))
@@ -274,6 +299,26 @@ export default function CandidatePipelinePage() {
       >
         <p className="text-[13px] text-ink-600">
           Their recruitment history will be preserved and they can be restored later.
+        </p>
+      </Modal>
+
+      <Modal
+        open={Boolean(confirmingDelete)}
+        onClose={() => setConfirmingDelete(null)}
+        title="Delete candidate?"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setConfirmingDelete(null)} disabled={deleteBusy}>
+              Cancel
+            </Button>
+            <Button variant="danger" onClick={submitDelete} loading={deleteBusy}>
+              Delete Candidate
+            </Button>
+          </>
+        }
+      >
+        <p className="text-[13px] text-ink-600">
+          {confirmingDelete?.name} will be removed from the active candidate pipeline. Historical records are retained for audit and compliance purposes.
         </p>
       </Modal>
     </div>

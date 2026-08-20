@@ -1,14 +1,17 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Briefcase, Users2, PhoneCall, CalendarCheck2, CalendarClock, BarChart3, Settings2 } from 'lucide-react'
+import { LayoutDashboard, Briefcase, Users2, PhoneCall, CalendarCheck2, BarChart3, Settings2 } from 'lucide-react'
 import { cn } from '@/utils/cn'
 
+// Scheduling was its own separate nav category, but every path that led to
+// it now schedules in place (a "Schedule Interview" button + modal on the
+// AI Screening page and on each row of Interviews) — a standalone page that
+// only ever did one modal's worth of work was redundant with those.
 const ITEMS = [
   { label: 'Overview', href: '/app/employees/hr', icon: LayoutDashboard, end: true },
   { label: 'Jobs', href: '/app/employees/hr/jobs', icon: Briefcase },
   { label: 'Candidates', href: '/app/employees/hr/candidates', icon: Users2 },
   { label: 'Screenings', href: '/app/employees/hr/screenings', icon: PhoneCall },
   { label: 'Interviews', href: '/app/employees/hr/interviews', icon: CalendarCheck2 },
-  { label: 'Scheduling', href: '/app/employees/hr/schedule', icon: CalendarClock },
   { label: 'Reports', href: '/app/employees/hr/reports', icon: BarChart3 },
   { label: 'Configuration', href: '/app/employees/hr/configuration', icon: Settings2 },
 ]

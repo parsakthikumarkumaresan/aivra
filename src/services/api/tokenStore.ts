@@ -8,7 +8,24 @@ interface SessionState {
   role: string | null
 }
 
-let state: SessionState = { accessToken: null, expiresAt: null, organizationId: null, role: null }
+const STORAGE_KEY = 'aivra_session'
+
+function loadInitial(): SessionState {
+  try {
+    const raw = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (parsed.expiresAt && parsed.expiresAt > Date.now()) {
+        return parsed
+      }
+    }
+  } catch {
+    // Fallthrough to empty state on error
+  }
+  return { accessToken: null, expiresAt: null, organizationId: null, role: null }
+}
+
+let state: SessionState = loadInitial()
 const listeners = new Set<() => void>()
 
 export const tokenStore = {
@@ -17,10 +34,24 @@ export const tokenStore = {
   },
   set(next: Partial<SessionState>): void {
     state = { ...state, ...next }
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+      }
+    } catch {
+      // Ignore quota errors
+    }
     listeners.forEach((listener) => listener())
   },
   clear(): void {
     state = { accessToken: null, expiresAt: null, organizationId: null, role: null }
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(STORAGE_KEY)
+      }
+    } catch {
+      // Ignore
+    }
     listeners.forEach((listener) => listener())
   },
   isAuthenticated(): boolean {

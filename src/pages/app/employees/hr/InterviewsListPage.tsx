@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CalendarCheck2, Video, Calendar as CalendarIcon } from 'lucide-react'
+import { CalendarCheck2, Video, Calendar as CalendarIcon, Eye } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useInterviewsList, useJobs } from '@/hooks/useHr'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -11,6 +12,7 @@ import { Button } from '@/components/ui/Button'
 import { Avatar } from '@/components/ui/Avatar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { HrSubNav } from '@/components/employees/hr/HrSubNav'
+import { ScheduleInterviewModal } from '@/components/employees/hr/ScheduleInterviewModal'
 import { CANDIDATE_STAGE_LABEL } from '@/types'
 import type { Candidate, CandidateStage, Interview } from '@/types'
 import { formatDateTime } from '@/utils/format'
@@ -25,6 +27,7 @@ export default function InterviewsListPage() {
   useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI HR Employee', href: '/app/employees/hr' }, { label: 'Interviews' }])
   const interviews = useInterviewsList()
   const jobs = useJobs()
+  const [scheduleFor, setScheduleFor] = useState<Candidate | null>(null)
 
   const columns: DataTableColumn<{ candidate: Candidate; interview?: Interview }>[] = [
     {
@@ -65,21 +68,28 @@ export default function InterviewsListPage() {
       key: 'actions',
       header: '',
       render: ({ candidate: c, interview }) => {
-        if (interview?.meetingLink) {
+        if (interview?.scheduledHumanInterviewAt) {
           return (
-            <a href={`https://${interview.meetingLink}`} target="_blank" rel="noreferrer">
-              <Button size="sm" variant="outline" icon={<Video className="size-3.5" />}>
-                Join Link
-              </Button>
-            </a>
+            <div className="flex items-center gap-2">
+              <Link to={`/app/employees/hr/interviews/${c.id}`}>
+                <Button size="sm" variant="outline" icon={<Eye className="size-3.5" />}>
+                  View Details
+                </Button>
+              </Link>
+              {interview.meetingLink && (
+                <a href={`https://${interview.meetingLink}`} target="_blank" rel="noreferrer">
+                  <Button size="sm" variant="ghost" icon={<Video className="size-3.5" />}>
+                    Join
+                  </Button>
+                </a>
+              )}
+            </div>
           )
         }
         return (
-          <Link to={`/app/employees/hr/schedule?candidate=${c.id}`}>
-            <Button size="sm" icon={<CalendarIcon className="size-3.5" />}>
-              Schedule
-            </Button>
-          </Link>
+          <Button size="sm" icon={<CalendarIcon className="size-3.5" />} onClick={() => setScheduleFor(c)}>
+            Schedule
+          </Button>
         )
       },
     },
@@ -101,6 +111,14 @@ export default function InterviewsListPage() {
             description="Approve a candidate for a human interview after AI screening to see it here."
           />
         }
+      />
+
+      <ScheduleInterviewModal
+        open={Boolean(scheduleFor)}
+        onClose={() => setScheduleFor(null)}
+        candidateId={scheduleFor?.id ?? ''}
+        candidateName={scheduleFor?.name ?? ''}
+        onScheduled={() => interviews.refetch()}
       />
     </div>
   )

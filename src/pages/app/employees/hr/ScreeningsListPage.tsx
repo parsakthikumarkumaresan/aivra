@@ -2,8 +2,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { PhoneCall, Clock, RefreshCw, Eye } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useJobs, useScreenings } from '@/hooks/useHr'
-import { useToast } from '@/hooks/useToast'
-import { hrService } from '@/services/api'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { DataTable } from '@/components/ui/DataTable'
 import type { DataTableColumn } from '@/components/ui/DataTable'
@@ -45,11 +43,10 @@ export default function ScreeningsListPage() {
   const screenings = useScreenings()
   const jobs = useJobs()
   const navigate = useNavigate()
-  const { show } = useToast()
 
-  async function startScreening(candidate: Candidate) {
-    await hrService.startScreeningCall(candidate.id)
-    show({ tone: 'info', title: `Calling ${candidate.name}…` })
+  function startScreening(candidate: Candidate) {
+    // Prompt review/edit + the actual Start Screening action happen on the
+    // screening detail page — never started sight-unseen from this list.
     navigate(`/app/employees/hr/screenings/${candidate.id}`)
   }
 

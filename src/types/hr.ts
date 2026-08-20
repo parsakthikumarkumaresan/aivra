@@ -5,6 +5,10 @@ export type EmploymentType = 'full_time' | 'part_time' | 'contract' | 'internshi
 export interface Job {
   id: string
   title: string
+  companyName: string
+  // Per-job override for the AI screening agent's spoken display name
+  // (e.g. "Zara") — falls back to the org-wide default when empty.
+  aiAgentName: string
   department: string
   location: string
   employmentType: EmploymentType
@@ -223,6 +227,12 @@ export interface InterviewReport {
   humanReviewRequired: true
 }
 
+export interface InterviewPanelist {
+  email: string
+  name?: string
+  notifiedAt?: string
+}
+
 export interface Interview {
   id: string
   candidateId: string
@@ -240,6 +250,35 @@ export interface Interview {
   meetingLink?: string
   completedAt?: string
   isDemo?: boolean
+  // Real backend fields (AI screening call) — see app/ai_employees/hr/schemas/screening.py.
+  promptText?: string
+  promptGeneratedAt?: string
+  promptEditedAt?: string
+  failureReason?: string
+  // Real backend fields (human interview) — see app/ai_employees/hr/schemas/interview.py.
+  candidateNotifiedAt?: string
+  panelists?: InterviewPanelist[]
+  screeningResult?: ScreeningResultSummary
+}
+
+/** Structured, advisory-only screening outcome (spec section 14) — never an
+ * autonomous hiring decision, always reviewed by HR. */
+export interface ScreeningResultSummary {
+  recommendation: 'proceed' | 'hold' | 'reject' | 'candidate_unavailable'
+  recommendationRationale?: string
+  introduction?: string
+  currentRole?: string
+  totalExperience?: string
+  relevantExperience?: string
+  currentCtc?: string
+  expectedCtc?: string
+  noticePeriod?: string
+  immediateAvailability?: boolean
+  joiningDate?: string
+  interviewAvailability?: string
+  candidateInterest?: string
+  keyObservations: string[]
+  candidateQuestions: string[]
 }
 
 export interface TranscriptTurn {

@@ -6,14 +6,13 @@ import {
   MapPin,
   Briefcase,
   Calendar,
+  CalendarClock,
   ArrowLeft,
   CheckCircle2,
   XCircle,
   PauseCircle,
   PhoneCall,
   FileText,
-  MessageSquareText,
-  Sparkles,
   AlertCircle,
   Loader2,
   RefreshCw,
@@ -21,6 +20,7 @@ import {
   Archive,
   ArchiveRestore,
   Undo2,
+  Eye,
 } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useCandidate, useInterview, useJob } from '@/hooks/useHr'
@@ -39,17 +39,16 @@ import { Timeline } from '@/components/ui/Timeline'
 import type { TimelineEntry } from '@/components/ui/Timeline'
 import { Textarea } from '@/components/ui/Field'
 import { Modal } from '@/components/ui/Modal'
-import { Transcript } from '@/components/ui/Transcript'
 import { EvidenceCard } from '@/components/employees/hr/EvidenceCard'
 import { ResumeAnalysisCard } from '@/components/employees/hr/ResumeAnalysisCard'
 import { JdMatchCard } from '@/components/employees/hr/JdMatchCard'
+import { ScheduleInterviewModal } from '@/components/employees/hr/ScheduleInterviewModal'
 import { CANDIDATE_STAGE_LABEL } from '@/types'
 import { formatDate, formatDateTime } from '@/utils/format'
 
 const TABS = [
   { value: 'overview', label: 'Overview' },
   { value: 'resume', label: 'Resume Evidence' },
-  { value: 'screening', label: 'Screening' },
   { value: 'aiscreening', label: 'AI Screening' },
   { value: 'feedback', label: 'Human Feedback' },
   { value: 'timeline', label: 'Timeline' },
@@ -71,6 +70,7 @@ export default function CandidateDetailPage() {
   const [decision, setDecision] = useState<{ kind: DecisionKind; gate: DecisionGate } | null>(null)
   const [decisionNote, setDecisionNote] = useState('')
   const [lifecycleAction, setLifecycleAction] = useState<'reconsider' | 'archive' | 'restore' | null>(null)
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false)
 
   useSetBreadcrumbs(
     [
@@ -117,10 +117,9 @@ export default function CandidateDetailPage() {
     refreshAll()
   }
 
-  async function handleStartScreening() {
-    setBusy(true)
-    await hrService.startScreeningCall(c.id)
-    setBusy(false)
+  function handleStartScreening() {
+    // The actual call is placed from the screening page itself, after HR
+    // reviews/edits the auto-generated prompt — never started sight-unseen.
     navigate(`/app/employees/hr/screenings/${c.id}`)
   }
 
@@ -208,6 +207,7 @@ export default function CandidateDetailPage() {
           onApproveScreening={handleApproveForScreening}
           onApproveInterview={handleApproveForInterview}
           onStartScreening={handleStartScreening}
+          onScheduleInterview={() => setScheduleModalOpen(true)}
           onReject={(gate) => setDecision({ kind: 'reject', gate })}
           onHold={(gate) => setDecision({ kind: 'hold', gate })}
           onReconsider={() => setLifecycleAction('reconsider')}
@@ -261,23 +261,6 @@ export default function CandidateDetailPage() {
         </div>
       )}
 
-      {tab === 'screening' && (
-        <Card>
-          {c.screeningAnswers && c.screeningAnswers.length > 0 ? (
-            <CardBody className="space-y-4">
-              {c.screeningAnswers.map((qa, i) => (
-                <div key={i}>
-                  <p className="text-[13px] font-medium text-ink-800">{qa.question}</p>
-                  <p className="mt-1 text-[13.5px] text-ink-600">{qa.answer}</p>
-                </div>
-              ))}
-            </CardBody>
-          ) : (
-            <EmptyState icon={<MessageSquareText className="size-6" />} title="No screening questions on file" description="This candidate has not completed a screening questionnaire." />
-          )}
-        </Card>
-      )}
-
       {tab === 'aiscreening' && (
         <div className="space-y-4">
           {interview.loading ? (
@@ -299,18 +282,7 @@ export default function CandidateDetailPage() {
                 ) : undefined
               }
             />
-          ) : interview.data.status === 'failed' ? (
-            <EmptyState
-              icon={<AlertCircle className="size-6" />}
-              title="AI screening call failed"
-              description="The AI Voice Employee could not connect to this candidate."
-              action={
-                <Button icon={<RefreshCw className="size-4" />} onClick={handleStartScreening} loading={busy}>
-                  Retry Screening Call
-                </Button>
-              }
-            />
-          ) : !interview.data.report ? (
+          ) : !interview.data.report && interview.data.status !== 'failed' ? (
             <EmptyState
               icon={<PhoneCall className="size-6" />}
               title="AI screening in progress"
@@ -322,56 +294,45 @@ export default function CandidateDetailPage() {
               }
             />
           ) : (
-            <>
-              <div className="flex items-start gap-2.5 rounded-xl border border-brand-100 bg-brand-50 px-4 py-3 text-[13px] text-brand-800">
-                <Sparkles className="mt-0.5 size-4 shrink-0" />
-                <span>
-                  <span className="font-semibold">Human review required.</span> Recommended next step: {interview.data.report.recommendedNextStep}
-                </span>
-              </div>
-              <Card>
-                <CardHeader title="Screening Summary" />
-                <CardBody>
-                  <p className="text-[13.5px] leading-relaxed text-ink-700">{interview.data.report.summary}</p>
-                </CardBody>
-              </Card>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <Card>
-                  <CardHeader title="Strengths" />
-                  <CardBody className="space-y-2">
-                    {interview.data.report.strengths.map((s, i) => (
-                      <p key={i} className="flex items-start gap-2 text-[13px] text-ink-700">
-                        <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-success-600" />
-                        {s}
-                      </p>
-                    ))}
-                  </CardBody>
-                </Card>
-                <Card>
-                  <CardHeader title="Gaps" />
-                  <CardBody className="space-y-2">
-                    {interview.data.report.gaps.map((s, i) => (
-                      <p key={i} className="flex items-start gap-2 text-[13px] text-ink-700">
-                        <AlertCircle className="mt-0.5 size-3.5 shrink-0 text-warning-600" />
-                        {s}
-                      </p>
-                    ))}
-                  </CardBody>
-                </Card>
-              </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                {interview.data.report.criterionEvidence.map((e) => (
-                  <EvidenceCard key={e.criterionId} evidence={e} />
-                ))}
-              </div>
-              <Card>
-                <CardHeader title="Transcript" />
-                <CardBody className="max-h-80 overflow-y-auto">
-                  <Transcript turns={interview.data.transcript} />
-                </CardBody>
-              </Card>
-            </>
+            // Not the first call — a brief summary of the previous attempt on
+            // the left, "Call Again" + "View Report" on the right. Full
+            // detail (prompt, transcript, JD evidence, structured fields)
+            // lives on the screening page itself — "View Report" makes it
+            // obvious that page has more than just a way to place a new call.
+            <Card>
+              <CardBody className="flex items-start justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <p className="mb-1 text-xs font-medium uppercase tracking-wide text-ink-400">Previous Call Summary</p>
+                  <p className="text-[13.5px] leading-relaxed text-ink-700">
+                    {interview.data.status === 'failed'
+                      ? interview.data.failureReason || 'The call could not be completed.'
+                      : interview.data.screeningResult?.recommendation === 'candidate_unavailable'
+                        ? 'Candidate was unavailable to talk — no screening details were collected.'
+                        : interview.data.report?.summary || 'No summary available.'}
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <Link to={`/app/employees/hr/screenings/${c.id}`}>
+                    <Button variant="outline" icon={<Eye className="size-4" />}>
+                      View Report
+                    </Button>
+                  </Link>
+                  <Button icon={<PhoneCall className="size-4" />} onClick={handleStartScreening} loading={busy}>
+                    Call Again
+                  </Button>
+                </div>
+              </CardBody>
+            </Card>
           )}
+
+          {/* Available regardless of screening progress — HR can move a
+              candidate straight to a human interview even if some AI
+              screening details are missing or incomplete. */}
+          <div>
+            <Button variant="outline" icon={<CalendarClock className="size-4" />} onClick={() => setScheduleModalOpen(true)}>
+              Schedule Interview
+            </Button>
+          </div>
         </div>
       )}
 
@@ -461,6 +422,14 @@ export default function CandidateDetailPage() {
               : 'This restores the candidate to the active pipeline. Their stage and past decisions are unchanged.'}
         </p>
       </Modal>
+
+      <ScheduleInterviewModal
+        open={scheduleModalOpen}
+        onClose={() => setScheduleModalOpen(false)}
+        candidateId={c.id}
+        candidateName={c.name}
+        onScheduled={refreshAll}
+      />
     </div>
   )
 }
@@ -472,6 +441,7 @@ interface ActionBarProps {
   onApproveScreening: () => void
   onApproveInterview: () => void
   onStartScreening: () => void
+  onScheduleInterview: () => void
   onReject: (gate: DecisionGate) => void
   onHold: (gate: DecisionGate) => void
   onReconsider: () => void
@@ -479,7 +449,7 @@ interface ActionBarProps {
   onRestore: () => void
 }
 
-function CandidateActionBar({ candidate, interviewStatus, busy, onApproveScreening, onApproveInterview, onStartScreening, onReject, onHold, onReconsider, onArchive, onRestore }: ActionBarProps) {
+function CandidateActionBar({ candidate, interviewStatus, busy, onApproveScreening, onApproveInterview, onStartScreening, onScheduleInterview, onReject, onHold, onReconsider, onArchive, onRestore }: ActionBarProps) {
   if (!candidate) return null
   const c = candidate
 
@@ -580,17 +550,15 @@ function CandidateActionBar({ candidate, interviewStatus, busy, onApproveScreeni
 
   if (c.stage === 'interview_approved') {
     return (
-      <Link to={`/app/employees/hr/schedule?candidate=${c.id}`}>
-        <Button size="sm" icon={<Calendar className="size-3.5" />}>
-          Schedule Interview
-        </Button>
-      </Link>
+      <Button size="sm" icon={<Calendar className="size-3.5" />} onClick={onScheduleInterview}>
+        Schedule Interview
+      </Button>
     )
   }
 
   if (c.stage === 'interview_scheduled') {
     return (
-      <Link to={`/app/employees/hr/schedule?candidate=${c.id}`}>
+      <Link to={`/app/employees/hr/interviews/${c.id}`}>
         <Button size="sm" variant="outline" icon={<Video className="size-3.5" />}>
           View Interview Details
         </Button>

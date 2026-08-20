@@ -65,7 +65,7 @@ export const hrService = {
   getConfig(): Promise<HrEmployeeConfig> {
     return delay(mockHrConfig)
   },
-  createJob(input: Pick<Job, 'title' | 'department' | 'location' | 'employmentType' | 'experienceLevel' | 'description'> & Partial<Pick<Job, 'requirements' | 'requiredSkills'>>): Promise<Job> {
+  createJob(input: Pick<Job, 'title' | 'companyName' | 'aiAgentName' | 'department' | 'location' | 'employmentType' | 'experienceLevel' | 'description'> & Partial<Pick<Job, 'requirements' | 'requiredSkills'>>): Promise<Job> {
     const job: Job = {
       id: nextId('job'),
       status: 'draft',
@@ -74,6 +74,8 @@ export const hrService = {
       requirements: input.requirements ?? [],
       requiredSkills: input.requiredSkills ?? [],
       ...input,
+      companyName: input.companyName || 'AIVRA Tech',
+      aiAgentName: input.aiAgentName || 'Zara',
     }
     mockJobs.unshift(job)
     return delay(job, 600)
