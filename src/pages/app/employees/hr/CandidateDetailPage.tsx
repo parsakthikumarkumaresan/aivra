@@ -75,7 +75,7 @@ export default function CandidateDetailPage() {
   useSetBreadcrumbs(
     [
       { label: 'AI Employees', href: '/app/employees' },
-      { label: 'AI HR Employee', href: '/app/employees/hr' },
+      { label: 'Aivra Hr', href: '/app/employees/hr' },
       { label: 'Candidates', href: '/app/employees/hr/candidates' },
       { label: candidate.data?.name ?? '…' },
     ],
@@ -105,7 +105,7 @@ export default function CandidateDetailPage() {
     setBusy(true)
     await hrService.approveForScreening(c.id)
     setBusy(false)
-    show({ tone: 'success', title: 'Approved for AI screening', description: `${c.name} can now be called by the AI HR Employee.` })
+    show({ tone: 'success', title: 'Approved for AI screening', description: `${c.name} can now be called by Aivra Hr.` })
     refreshAll()
   }
 
@@ -428,6 +428,7 @@ export default function CandidateDetailPage() {
         onClose={() => setScheduleModalOpen(false)}
         candidateId={c.id}
         candidateName={c.name}
+        candidateEmail={c.email}
         onScheduled={refreshAll}
       />
     </div>
@@ -489,8 +490,8 @@ function CandidateActionBar({ candidate, interviewStatus, busy, onApproveScreeni
     )
   }
 
-  // Gate 1 — HR review of resume analysis, before AI screening
-  if (c.screeningApproval === 'pending') {
+  // Gate 1 — HR review of resume analysis
+  if (c.screeningApproval === 'pending' || c.stage === 'hr_review' || c.stage === 'analyzed') {
     return (
       <>
         <Button variant="ghost" size="sm" icon={<PauseCircle className="size-3.5" />} onClick={() => onHold('screening')} disabled={busy}>
@@ -499,8 +500,11 @@ function CandidateActionBar({ candidate, interviewStatus, busy, onApproveScreeni
         <Button variant="outline" size="sm" icon={<XCircle className="size-3.5" />} onClick={() => onReject('screening')} disabled={busy}>
           Reject
         </Button>
-        <Button size="sm" icon={<CheckCircle2 className="size-3.5" />} onClick={onApproveScreening} loading={busy}>
+        <Button variant="outline" size="sm" icon={<PhoneCall className="size-3.5" />} onClick={onApproveScreening} loading={busy}>
           Approve for AI Screening
+        </Button>
+        <Button size="sm" icon={<CheckCircle2 className="size-3.5" />} onClick={onApproveInterview} loading={busy}>
+          Approve for Interview
         </Button>
       </>
     )
@@ -508,18 +512,34 @@ function CandidateActionBar({ candidate, interviewStatus, busy, onApproveScreeni
 
   if (c.stage === 'screening_approved') {
     return (
-      <Button size="sm" icon={<PhoneCall className="size-3.5" />} onClick={onStartScreening} loading={busy}>
-        Start AI Screening
-      </Button>
+      <>
+        <Button variant="ghost" size="sm" icon={<PauseCircle className="size-3.5" />} onClick={() => onHold('screening')} disabled={busy}>
+          Keep on Hold
+        </Button>
+        <Button variant="outline" size="sm" icon={<XCircle className="size-3.5" />} onClick={() => onReject('screening')} disabled={busy}>
+          Reject
+        </Button>
+        <Button size="sm" icon={<PhoneCall className="size-3.5" />} onClick={onStartScreening} loading={busy}>
+          Start AI Screening
+        </Button>
+        <Button variant="outline" size="sm" icon={<CheckCircle2 className="size-3.5" />} onClick={onApproveInterview} loading={busy}>
+          Approve for Interview
+        </Button>
+      </>
     )
   }
 
   if (c.stage === 'ai_screening') {
     if (interviewStatus === 'failed') {
       return (
-        <Button size="sm" icon={<RefreshCw className="size-3.5" />} onClick={onStartScreening} loading={busy}>
-          Retry Screening Call
-        </Button>
+        <>
+          <Button size="sm" icon={<RefreshCw className="size-3.5" />} onClick={onStartScreening} loading={busy}>
+            Retry Screening Call
+          </Button>
+          <Button variant="outline" size="sm" icon={<CheckCircle2 className="size-3.5" />} onClick={onApproveInterview} loading={busy}>
+            Approve for Interview
+          </Button>
+        </>
       )
     }
     return (
@@ -531,8 +551,8 @@ function CandidateActionBar({ candidate, interviewStatus, busy, onApproveScreeni
     )
   }
 
-  // Gate 2 — human review of the screening report, before scheduling an interview
-  if (c.interviewApproval === 'pending') {
+  // Gate 2 — human review of screening report or direct interview approval
+  if (c.interviewApproval === 'pending' || c.stage === 'human_review' || c.stage === 'screening_completed') {
     return (
       <>
         <Button variant="ghost" size="sm" icon={<PauseCircle className="size-3.5" />} onClick={() => onHold('interview')} disabled={busy}>
@@ -542,13 +562,13 @@ function CandidateActionBar({ candidate, interviewStatus, busy, onApproveScreeni
           Reject
         </Button>
         <Button size="sm" icon={<CheckCircle2 className="size-3.5" />} onClick={onApproveInterview} loading={busy}>
-          Approve for Human Interview
+          Approve for Interview
         </Button>
       </>
     )
   }
 
-  if (c.stage === 'interview_approved') {
+  if (c.stage === 'interview_approved' || c.interviewApproval === 'approved') {
     return (
       <Button size="sm" icon={<Calendar className="size-3.5" />} onClick={onScheduleInterview}>
         Schedule Interview

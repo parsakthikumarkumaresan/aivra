@@ -185,7 +185,7 @@ export default function HomePage() {
                   <Users className="size-5" />
                 </div>
                 <div>
-                  <h3 className="text-[17px] font-semibold text-ink-900">AI HR Employee</h3>
+                  <h3 className="text-[17px] font-semibold text-ink-900">Aivra Hr</h3>
                   <p className="text-[13px] text-ink-500">Recruiting & Interview Copilot</p>
                 </div>
               </div>
@@ -202,7 +202,7 @@ export default function HomePage() {
                 ))}
               </ul>
               <Link to="/ai-employees/hr" className="mt-6 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-brand-700">
-                Explore AI HR Employee <ArrowRight className="size-3.5" />
+                Explore Aivra Hr <ArrowRight className="size-3.5" />
               </Link>
             </div>
 

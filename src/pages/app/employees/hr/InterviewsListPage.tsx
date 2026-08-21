@@ -24,7 +24,7 @@ const STAGE_TONE: Record<CandidateStage, BadgeTone> = {
 }
 
 export default function InterviewsListPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI HR Employee', href: '/app/employees/hr' }, { label: 'Interviews' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr', href: '/app/employees/hr' }, { label: 'Interviews' }])
   const interviews = useInterviewsList()
   const jobs = useJobs()
   const [scheduleFor, setScheduleFor] = useState<Candidate | null>(null)

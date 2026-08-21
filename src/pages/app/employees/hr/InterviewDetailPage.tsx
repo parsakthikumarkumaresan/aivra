@@ -36,7 +36,7 @@ export default function InterviewDetailPage() {
   useSetBreadcrumbs(
     [
       { label: 'AI Employees', href: '/app/employees' },
-      { label: 'AI HR Employee', href: '/app/employees/hr' },
+      { label: 'Aivra Hr', href: '/app/employees/hr' },
       { label: 'Interviews', href: '/app/employees/hr/interviews' },
       { label: candidate.data?.name ?? '…' },
     ],

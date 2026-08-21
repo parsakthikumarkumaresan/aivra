@@ -30,7 +30,7 @@ export default function HrEmployeePage() {
             <Users className="size-6" />
           </div>
           <Badge tone="brand" className="mt-5 uppercase tracking-wide">Self-Service AI Employee</Badge>
-          <h1 className="mt-4 text-[36px] font-bold leading-[1.1] tracking-tight text-ink-900 sm:text-[44px]">AI HR Employee</h1>
+          <h1 className="mt-4 text-[36px] font-bold leading-[1.1] tracking-tight text-ink-900 sm:text-[44px]">Aivra Hr</h1>
           <p className="mt-2 text-[17px] font-medium text-brand-600">Recruiting & Interview Copilot</p>
           <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-ink-600">
             Your AI HR team member for candidate screening, AI interviews and interview scheduling. Purchase it, configure
@@ -74,7 +74,7 @@ export default function HrEmployeePage() {
         )}
 
         <p className="mt-6 text-center text-[13px] text-ink-400">
-          Already purchased? <Link to="/login" className="font-medium text-brand-600 hover:text-brand-700">Sign in</Link> to configure your AI HR Employee.
+          Already purchased? <Link to="/login" className="font-medium text-brand-600 hover:text-brand-700">Sign in</Link> to configure Aivra Hr.
         </p>
       </section>
 

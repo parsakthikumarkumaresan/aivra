@@ -19,7 +19,7 @@ import { EmployeeStatusBadge } from '@/components/ui/StatusBadge'
 import { EmployeeProductContent } from '@/components/employees/EmployeeProductContent'
 
 const REQUIRED_COPY: Record<EmployeeType, { title: string; body: string }> = {
-  hr: { title: 'AI HR Employee Required', body: 'You need to hire the AI HR Employee to access candidate screening, AI interviews and recruitment automation.' },
+  hr: { title: 'Aivra Hr Required', body: 'You need to enable Aivra Hr to access candidate screening, AI interviews and recruitment automation.' },
   voice: { title: 'AI Voice Employee Not Yet Provisioned', body: "You don't have an AI Voice Employee yet. It's customized and deployed by AIVRA for your business — request a demo or tell us what you need." },
 }
 
@@ -41,7 +41,7 @@ function AccessBanner({ type, status }: { type: EmployeeType; status: string }) 
               </>
             ) : (
               <>
-                <p className="text-[14px] font-semibold text-ink-900">Activating your AI HR Employee</p>
+                <p className="text-[14px] font-semibold text-ink-900">Activating Aivra Hr</p>
                 <p className="mt-0.5 text-[13px] text-ink-600">Setup is finishing up — this usually takes a moment. Refresh in a bit.</p>
               </>
             )}

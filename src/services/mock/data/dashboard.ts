@@ -78,5 +78,5 @@ export const recentActivity: ActivityEvent[] = [
   { id: 'ev5', type: 'call_escalated', employeeType: 'voice', title: 'Call escalated to human agent', description: 'Low confidence on complaint handling.', timestamp: '2026-08-17T08:55:00Z', href: '/app/inbox' },
   { id: 'ev6', type: 'knowledge_synced', title: 'Company Brain synced — Product Catalog 2026', description: '212 documents indexed successfully.', timestamp: '2026-08-17T06:15:00Z', href: '/app/knowledge' },
   { id: 'ev7', type: 'integration_failed', title: 'Integration sync failed — Google Calendar', description: 'Token expired, reconnect required.', timestamp: '2026-08-17T07:20:00Z', href: '/app/integrations' },
-  { id: 'ev8', type: 'employee_status_changed', employeeType: 'hr', title: 'AI HR Employee activated', description: 'Rubric v3 and interview template approved.', timestamp: '2026-08-16T14:00:00Z', href: '/app/employees/hr' },
+  { id: 'ev8', type: 'employee_status_changed', employeeType: 'hr', title: 'Aivra Hr activated', description: 'Rubric v3 and interview template approved.', timestamp: '2026-08-16T14:00:00Z', href: '/app/employees/hr' },
 ]

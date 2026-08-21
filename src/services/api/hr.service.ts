@@ -416,15 +416,29 @@ export const hrService = {
     slotId: string,
     candidateId: string,
     panelistEmails: string[] = [],
-  ): Promise<{ success: boolean; slot?: ScheduleSlot; error?: string }> {
+  ): Promise<{ success: boolean; slot?: ScheduleSlot; error?: string; candidateNotified?: boolean; panelistsNotified?: boolean; interviewId?: string }> {
     try {
-      await httpClient.post('/hr/scheduling/book', { slotId, candidateId, panelistEmails })
-      return { success: true }
+      const res = await httpClient.post<BackendInterview>('/hr/scheduling/book', { slotId, candidateId, panelistEmails })
+      const candidateNotified = Boolean(res.candidateNotifiedAt)
+      const panelistsNotified = res.panelists ? res.panelists.every((p) => Boolean(p.notifiedAt)) : true
+      return { success: true, candidateNotified, panelistsNotified, interviewId: res.id }
     } catch (err) {
       // The backend's message here is real, human-readable copy (e.g. "This
       // slot has already been booked." vs. "Candidate has no approved
       // interview ready to be scheduled.") — surface it rather than
       // collapsing every failure into one generic guess.
+      return { success: false, error: err instanceof Error ? err.message : undefined }
+    }
+  },
+  async resendInterviewInvitations(
+    interviewId: string,
+  ): Promise<{ success: boolean; candidateNotified?: boolean; panelistsNotified?: boolean; error?: string }> {
+    try {
+      const res = await httpClient.post<BackendInterview>(`/hr/interviews/${interviewId}/resend-invitations`, {})
+      const candidateNotified = Boolean(res.candidateNotifiedAt)
+      const panelistsNotified = res.panelists ? res.panelists.every((p) => Boolean(p.notifiedAt)) : true
+      return { success: true, candidateNotified, panelistsNotified }
+    } catch (err) {
       return { success: false, error: err instanceof Error ? err.message : undefined }
     }
   },

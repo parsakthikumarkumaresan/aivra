@@ -24,7 +24,7 @@ const STATUS_TONE: Record<KnowledgeSource['status'], BadgeTone> = { synced: 'suc
 const STATUS_LABEL: Record<KnowledgeSource['status'], string> = { synced: 'Synced', syncing: 'Syncing', failed: 'Failed', stale: 'Stale' }
 const TYPE_LABEL: Record<KnowledgeSource['type'], string> = { file: 'File', url: 'URL', connected_source: 'Connected Source' }
 const EMPLOYEE_ICON = { hr: Users, voice: Mic }
-const EMPLOYEE_LABEL = { hr: 'AI HR Employee', voice: 'AI Voice Employee' }
+const EMPLOYEE_LABEL = { hr: 'Aivra Hr', voice: 'AI Voice Employee' }
 
 export default function CompanyBrainPage() {
   useSetBreadcrumbs([{ label: 'Company Brain' }])

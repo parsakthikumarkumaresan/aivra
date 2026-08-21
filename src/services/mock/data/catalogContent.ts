@@ -41,9 +41,9 @@ export const employeeCatalogContent: EmployeeCatalogContent[] = [
     ],
     faq: [
       { question: 'Does the AI make final hiring decisions?', answer: 'No. AI-generated assessments are evidence-backed recommendations — final hiring decisions always remain with your authorized HR personnel.' },
-      { question: 'Can I cancel anytime?', answer: 'Yes, you can pause or cancel the AI HR Employee subscription anytime from Billing & Subscriptions. Your data is retained if you reactivate later.' },
+      { question: 'Can I cancel anytime?', answer: 'Yes, you can pause or cancel the Aivra Hr subscription anytime from Billing & Subscriptions. Your data is retained if you reactivate later.' },
       { question: 'What happens if I go over my candidate limit?', answer: 'You will be notified before hitting your plan limit and can upgrade at any time.' },
-      { question: 'Is this self-service?', answer: 'Yes — the AI HR Employee is a self-service subscription. Purchase it, configure your hiring team, jobs and rubric, and start screening candidates immediately.' },
+      { question: 'Is this self-service?', answer: 'Yes — Aivra Hr is a self-service subscription. Purchase it, configure your hiring team, jobs and rubric, and start screening candidates immediately.' },
     ],
   },
   {

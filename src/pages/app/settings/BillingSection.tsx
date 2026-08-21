@@ -220,7 +220,7 @@ export function BillingSection() {
             emptyState={<div className="p-8 text-center text-[13px] text-ink-500">No invoices yet.</div>}
             columns={[
               { key: 'id', header: 'Invoice', render: (row) => <span className="font-medium text-ink-800">{row.id.toUpperCase()}</span> },
-              { key: 'employee', header: 'AI Employee', render: (row) => <span className="capitalize">{row.employeeType === 'hr' ? 'AI HR Employee' : 'AI Voice Employee'}</span> },
+              { key: 'employee', header: 'AI Employee', render: (row) => <span className="capitalize">{row.employeeType === 'hr' ? 'Aivra Hr' : 'AI Voice Employee'}</span> },
               { key: 'period', header: 'Period', render: (row) => row.periodLabel },
               { key: 'amount', header: 'Amount', render: (row) => formatCurrency(row.amount, row.currency) },
               { key: 'status', header: 'Status', render: (row) => <Badge tone={row.status === 'paid' ? 'success' : row.status === 'failed' ? 'danger' : 'warning'} dot className="capitalize">{row.status}</Badge> },

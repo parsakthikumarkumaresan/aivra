@@ -5,7 +5,7 @@ import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmployeeDetailPage } from '@/pages/app/employees/EmployeeDetailPage'
 
-const EMPLOYEE_LABEL: Record<EmployeeType, string> = { hr: 'AI HR Employee', voice: 'AI Voice Employee' }
+const EMPLOYEE_LABEL: Record<EmployeeType, string> = { hr: 'Aivra Hr', voice: 'AI Voice Employee' }
 
 // Layout-route guard mounted at employees/hr and employees/voice. Only a fully
 // active subscription renders the operational child routes (Outlet) — every

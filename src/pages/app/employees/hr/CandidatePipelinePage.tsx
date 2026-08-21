@@ -29,7 +29,7 @@ const STATUS_OPTIONS = [
 ]
 
 export default function CandidatePipelinePage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI HR Employee', href: '/app/employees/hr' }, { label: 'Candidates' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr', href: '/app/employees/hr' }, { label: 'Candidates' }])
   const [params, setParams] = useSearchParams()
   const jobs = useJobs()
   const { show } = useToast()
@@ -195,7 +195,7 @@ export default function CandidatePipelinePage() {
     <div className="space-y-5">
       <PageHeader
         title="Candidate Pipeline"
-        description="Every candidate resume the AI HR Employee has processed, matched or screened."
+        description="Every candidate resume Aivra Hr has processed, matched or screened."
         actions={
           <Link to="/app/employees/hr/candidates/upload">
             <Button icon={<Upload className="size-4" />}>Upload Resumes</Button>

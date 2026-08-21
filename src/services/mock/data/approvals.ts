@@ -18,7 +18,7 @@ export const mockApprovals: Approval[] = [
     status: 'pending', risk: 'medium', requestedAt: '2026-08-17T07:10:00Z', expiresAt: '2026-08-18T07:10:00Z',
   },
   {
-    id: 'appr_3', employeeType: 'hr', employeeName: 'AI HR Employee',
+    id: 'appr_3', employeeType: 'hr', employeeName: 'Aivra Hr',
     requestedAction: 'Send interview scheduling email to Ishaan Kapoor with 3 proposed slots',
     affectedRecordLabel: 'Ishaan Kapoor — Backend Engineer', affectedRecordHref: '/app/employees/hr/candidates/cand_10',
     reason: 'Candidate scored 86/100 and completed AI interview. Requires human confirmation before external communication is sent.',
@@ -35,7 +35,7 @@ export const mockApprovals: Approval[] = [
     decidedAt: '2026-08-16T14:20:00Z', decidedBy: 'Karthik Iyer', decisionNote: 'Standard cancellation, approved.',
   },
   {
-    id: 'appr_5', employeeType: 'hr', employeeName: 'AI HR Employee',
+    id: 'appr_5', employeeType: 'hr', employeeName: 'Aivra Hr',
     requestedAction: 'Reject candidate Farhan Ahmed — below seniority bar',
     affectedRecordLabel: 'Farhan Ahmed — Senior Product Designer', affectedRecordHref: '/app/employees/hr/candidates/cand_6',
     reason: 'Resume evidence score of 41/100, well below the shortlist threshold for a senior-level role.',

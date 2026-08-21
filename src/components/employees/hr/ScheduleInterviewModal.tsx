@@ -17,12 +17,14 @@ export function ScheduleInterviewModal({
   onClose,
   candidateId,
   candidateName,
+  candidateEmail,
   onScheduled,
 }: {
   open: boolean
   onClose: () => void
   candidateId: string
   candidateName: string
+  candidateEmail?: string
   onScheduled: () => void
 }) {
   const { show } = useToast()
@@ -54,10 +56,23 @@ export function ScheduleInterviewModal({
     if (!selectedSlotId) return
     setBooking(true)
     const emails = panelistEmails.map((e) => e.trim()).filter(Boolean)
+    try {
+      await hrService.approveForInterview(candidateId)
+    } catch {
+      // Ignored if already approved or in interview stage
+    }
     const result = await hrService.bookSlot(selectedSlotId, candidateId, emails)
     setBooking(false)
     if (result.success) {
-      show({ tone: 'success', title: 'Interview scheduled', description: `${candidateName} has been booked for a human interview.` })
+      if (result.candidateNotified !== false && result.panelistsNotified !== false) {
+        show({ tone: 'success', title: 'Interview scheduled', description: `${candidateName} and panel members have been sent invitation emails.` })
+      } else {
+        show({
+          tone: 'warning',
+          title: 'Interview scheduled (Email Warning)',
+          description: 'The interview was booked successfully, but invitation email(s) could not be sent. Check your SMTP configuration.',
+        })
+      }
       onScheduled()
       onClose()
     } else {
@@ -78,7 +93,11 @@ export function ScheduleInterviewModal({
       open={open}
       onClose={onClose}
       title={`Schedule interview — ${candidateName}`}
-      description="The candidate's email is taken automatically from their profile — you only need to add the interview panel."
+      description={
+        candidateEmail
+          ? `Candidate invitation email will be sent automatically to ${candidateEmail}.`
+          : "The candidate's email is taken automatically from their profile — you only need to add the interview panel."
+      }
       footer={
         <>
           <Button variant="outline" onClick={onClose} disabled={booking}>

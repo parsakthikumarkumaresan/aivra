@@ -28,7 +28,7 @@ export default function JobDetailPage() {
   useSetBreadcrumbs(
     [
       { label: 'AI Employees', href: '/app/employees' },
-      { label: 'AI HR Employee', href: '/app/employees/hr' },
+      { label: 'Aivra Hr', href: '/app/employees/hr' },
       { label: 'Jobs', href: '/app/employees/hr/jobs' },
       { label: job.data?.title ?? '…' },
     ],
@@ -185,6 +185,8 @@ export default function JobDetailPage() {
 
           <Card>
             <CardBody className="space-y-1.5 text-[13px] text-ink-500">
+              <p>Company: <span className="font-medium text-ink-800">{j.companyName || '—'}</span></p>
+              <p>AI Agent Name: <span className="font-medium text-ink-800">{j.aiAgentName || 'Zara'}</span></p>
               <p>Employment type: <span className="font-medium text-ink-800">{j.employmentType.replace('_', ' ')}</span></p>
               <p>Created: <span className="font-medium text-ink-800">{formatDate(j.createdAt)}</span></p>
               {j.openSince && <p>Open since: <span className="font-medium text-ink-800">{formatDate(j.openSince)}</span></p>}

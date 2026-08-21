@@ -7,7 +7,7 @@ import { ActivityItem } from '@/components/ui/ActivityItem'
 import { UserMenu } from './UserMenu'
 
 const MOCK_NOTIFICATIONS = [
-  { id: 'n1', icon: <CheckSquare className="size-4" />, tone: 'warning' as const, title: 'New approval requested', description: 'AI HR Employee needs approval to send an offer.', timestamp: '2026-08-17T09:40:00Z' },
+  { id: 'n1', icon: <CheckSquare className="size-4" />, tone: 'warning' as const, title: 'New approval requested', description: 'Aivra Hr needs approval to send an offer.', timestamp: '2026-08-17T09:40:00Z' },
   { id: 'n2', icon: <PhoneMissed className="size-4" />, tone: 'danger' as const, title: 'Call escalated to human', description: 'A customer requested a human agent.', timestamp: '2026-08-17T08:55:00Z' },
   { id: 'n3', icon: <FileWarning className="size-4" />, tone: 'neutral' as const, title: 'Knowledge source sync failed', description: 'Returns Policy PDF failed to re-index.', timestamp: '2026-08-16T17:10:00Z' },
 ]

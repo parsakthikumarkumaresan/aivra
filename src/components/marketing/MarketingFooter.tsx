@@ -25,7 +25,7 @@ const FOOTER_COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
     title: 'AI Employees',
     links: [
-      { label: 'AI HR Employee', href: '/ai-employees/hr' },
+      { label: 'Aivra Hr', href: '/ai-employees/hr' },
       { label: 'AI Voice Employee', href: '/ai-employees/voice' },
     ],
   },

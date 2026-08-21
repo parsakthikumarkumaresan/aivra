@@ -24,7 +24,7 @@ const STATUS_LABEL: Record<JobStatus, string> = { draft: 'Draft', open: 'Open', 
 const EMPLOYMENT_LABEL: Record<EmploymentType, string> = { full_time: 'Full-time', part_time: 'Part-time', contract: 'Contract', internship: 'Internship' }
 
 export default function JobsListPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI HR Employee', href: '/app/employees/hr' }, { label: 'Jobs' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr', href: '/app/employees/hr' }, { label: 'Jobs' }])
   const jobs = useJobs()
   const { show } = useToast()
   const [params, setParams] = useSearchParams()

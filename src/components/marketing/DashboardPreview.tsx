@@ -12,7 +12,7 @@ const MINI_KPIS = [
 ]
 
 const MINI_EMPLOYEES = [
-  { name: 'AI HR Employee', status: 'Screening candidates', color: '#6D3EF2' },
+  { name: 'Aivra Hr', status: 'Screening candidates', color: '#6D3EF2' },
   { name: 'AI Voice Employee', status: 'Handling enquiries', color: '#2137C9' },
 ]
 

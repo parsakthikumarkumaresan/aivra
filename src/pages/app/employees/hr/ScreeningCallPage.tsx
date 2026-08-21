@@ -71,7 +71,7 @@ export default function ScreeningCallPage() {
   useSetBreadcrumbs(
     [
       { label: 'AI Employees', href: '/app/employees' },
-      { label: 'AI HR Employee', href: '/app/employees/hr' },
+      { label: 'Aivra Hr', href: '/app/employees/hr' },
       { label: 'Screenings', href: '/app/employees/hr/screenings' },
       { label: candidate.data?.name ?? '…' },
     ],
@@ -407,6 +407,7 @@ export default function ScreeningCallPage() {
         onClose={() => setScheduleModalOpen(false)}
         candidateId={candidateId}
         candidateName={candidate.data.name}
+        candidateEmail={candidate.data.email}
         onScheduled={() => interview.refetch()}
       />
     </div>

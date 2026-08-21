@@ -16,7 +16,7 @@ import { JdMatchCard } from '@/components/employees/hr/JdMatchCard'
 import type { ExtractedResumeProfile, JdMatchBreakdown } from '@/types'
 
 export default function TestingPreviewPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI HR Employee', href: '/app/employees/hr' }, { label: 'Configuration', href: '/app/employees/hr/configuration' }, { label: 'Testing & Preview' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr', href: '/app/employees/hr' }, { label: 'Configuration', href: '/app/employees/hr/configuration' }, { label: 'Testing & Preview' }])
   const jobs = useJobs()
   const samples = useAsync(() => hrService.listResumeSamples(), [])
 

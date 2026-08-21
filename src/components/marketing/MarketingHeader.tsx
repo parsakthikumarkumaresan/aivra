@@ -20,7 +20,7 @@ const PRODUCT_LINKS: NavLinkItem[] = [
 ]
 
 const EMPLOYEE_LINKS: NavLinkItem[] = [
-  { label: 'AI HR Employee', href: '/ai-employees/hr', description: 'Screens, interviews and schedules candidates', icon: <Users className="size-4" /> },
+  { label: 'Aivra Hr', href: '/ai-employees/hr', description: 'Screens, interviews and schedules candidates', icon: <Users className="size-4" /> },
   { label: 'AI Voice Employee', href: '/ai-employees/voice', description: 'Handles calls, bookings and support', icon: <Mic className="size-4" /> },
 ]
 

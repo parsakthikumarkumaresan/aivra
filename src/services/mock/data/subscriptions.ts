@@ -6,11 +6,11 @@ export type MockScenarioId = 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
 
 export const MOCK_SCENARIOS: { id: MockScenarioId; label: string; description: string }[] = [
   { id: 'A', label: 'New Customer', description: 'No AI Employees provisioned yet' },
-  { id: 'B', label: 'HR Active', description: 'AI HR Employee purchased and active' },
+  { id: 'B', label: 'HR Active', description: 'Aivra Hr active' },
   { id: 'C', label: 'Voice Deployment Pending', description: 'Customer requested a custom AI Voice Employee — AIVRA is configuring it' },
   { id: 'D', label: 'Voice Active', description: 'AI Voice Employee deployed and live, branded for the customer' },
   { id: 'E', label: 'HR + Voice Active', description: 'Both AI Employees provisioned and active' },
-  { id: 'F', label: 'HR Paused', description: 'AI HR Employee subscription paused' },
+  { id: 'F', label: 'HR Paused', description: 'Aivra Hr subscription paused' },
 ]
 
 const ORG_ID = 'org_acme'

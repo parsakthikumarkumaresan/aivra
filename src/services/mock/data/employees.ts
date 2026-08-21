@@ -8,7 +8,7 @@ export const employeeCatalog: Omit<AIEmployee, 'status' | 'kpis' | 'lastActivity
   {
     id: 'emp_hr',
     type: 'hr',
-    name: 'AI HR Employee',
+    name: 'Aivra Hr',
     tagline: 'Recruiting & Interview Copilot',
     description: 'Screens candidates, conducts structured AI interviews and schedules human interviews.',
     avatarColor: '#6D3EF2',
