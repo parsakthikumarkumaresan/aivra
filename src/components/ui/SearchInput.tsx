@@ -16,7 +16,7 @@ export function SearchInput({ value, onChange, className, containerClassName, ..
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          'h-9 w-full rounded-lg border border-ink-200 bg-white pl-9 pr-8 text-sm text-ink-900 placeholder:text-ink-400 transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30',
+          'h-9 w-full rounded-lg border border-ink-200 bg-surface pl-9 pr-8 text-sm text-ink-900 placeholder:text-ink-400 transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30',
           className,
         )}
         {...props}

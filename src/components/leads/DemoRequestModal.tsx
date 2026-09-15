@@ -6,7 +6,7 @@ import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
 import { Input, Label, Select, Textarea } from '@/components/ui/Field'
 
-const EMPLOYEE_LABEL: Record<EmployeeType, string> = { hr: 'Aivra Hr', voice: 'AI Voice Employee' }
+const EMPLOYEE_LABEL: Record<EmployeeType, string> = { hr: 'Jexa HR', voice: 'Jaan' }
 
 const EMPTY: Omit<DemoLeadInput, 'interestedIn'> = {
   fullName: '',

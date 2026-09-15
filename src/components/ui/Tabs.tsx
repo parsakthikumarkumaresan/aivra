@@ -66,7 +66,7 @@ export function PillTabs({ items, value, onChange, className }: PillTabsProps) {
             onClick={() => onChange(item.value)}
             className={cn(
               'rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors duration-150',
-              active ? 'bg-white text-ink-900 shadow-xs' : 'text-ink-500 hover:text-ink-800',
+              active ? 'bg-brand-600 text-white shadow-xs' : 'text-ink-500 hover:text-ink-800',
             )}
           >
             {item.label}

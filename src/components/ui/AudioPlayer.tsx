@@ -32,7 +32,10 @@ export function AudioPlayer({ durationSeconds, className }: { durationSeconds: n
       <button
         onClick={() => setPlaying((p) => !p)}
         aria-label={playing ? 'Pause recording' : 'Play recording'}
-        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white hover:bg-brand-700"
+        className={cn(
+          'flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white transition-colors duration-200 hover:bg-brand-700',
+          playing && 'status-dot-live-red',
+        )}
       >
         {playing ? <Pause className="size-4" /> : <Play className="ml-0.5 size-4" />}
       </button>

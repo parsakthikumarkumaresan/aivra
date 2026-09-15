@@ -19,8 +19,8 @@ import { EmployeeStatusBadge } from '@/components/ui/StatusBadge'
 import { EmployeeProductContent } from '@/components/employees/EmployeeProductContent'
 
 const REQUIRED_COPY: Record<EmployeeType, { title: string; body: string }> = {
-  hr: { title: 'Aivra Hr Required', body: 'You need to enable Aivra Hr to access candidate screening, AI interviews and recruitment automation.' },
-  voice: { title: 'AI Voice Employee Not Yet Provisioned', body: "You don't have an AI Voice Employee yet. It's customized and deployed by AIVRA for your business — request a demo or tell us what you need." },
+  hr: { title: 'Jexa HR Required', body: 'You need to enable Jexa HR to access candidate screening, AI interviews and recruitment automation.' },
+  voice: { title: 'Jaan Not Yet Provisioned', body: "You don't have Jaan yet. It's customized and deployed by JEXA.AI for your business — request a demo or tell us what you need." },
 }
 
 function AccessBanner({ type, status }: { type: EmployeeType; status: string }) {
@@ -36,12 +36,12 @@ function AccessBanner({ type, status }: { type: EmployeeType; status: string }) 
           <div>
             {type === 'voice' ? (
               <>
-                <p className="text-[14px] font-semibold text-ink-900">Your AI Voice Employee is being configured by AIVRA</p>
+                <p className="text-[14px] font-semibold text-ink-900">Your Jaan is being configured by JEXA.AI</p>
                 <p className="mt-0.5 text-[13px] text-ink-600">Our solution team is setting up your custom deployment. We'll notify you the moment it goes live.</p>
               </>
             ) : (
               <>
-                <p className="text-[14px] font-semibold text-ink-900">Activating Aivra Hr</p>
+                <p className="text-[14px] font-semibold text-ink-900">Activating Jexa HR</p>
                 <p className="mt-0.5 text-[13px] text-ink-600">Setup is finishing up — this usually takes a moment. Refresh in a bit.</p>
               </>
             )}
@@ -93,7 +93,7 @@ function AccessBanner({ type, status }: { type: EmployeeType; status: string }) 
         ) : (
           <div className="flex flex-wrap items-center gap-2">
             <Button size="sm" variant="outline" onClick={() => openDemoRequest('voice')}>Request Demo</Button>
-            <Button size="sm" icon={<PhoneCall className="size-3.5" />} onClick={openCustomizationRequest}>Contact AIVRA for Customization</Button>
+            <Button size="sm" icon={<PhoneCall className="size-3.5" />} onClick={openCustomizationRequest}>Contact JEXA.AI for Customization</Button>
           </div>
         )}
       </CardBody>
@@ -181,7 +181,7 @@ export function EmployeeDetailPage({ type }: { type: EmployeeType }) {
           ) : (
             <div className="flex flex-wrap items-center gap-2">
               <Button size="lg" variant="outline" onClick={() => openDemoRequest('voice')}>Request Demo</Button>
-              <Button size="lg" icon={<PhoneCall className="size-4" />} onClick={openCustomizationRequest}>Contact AIVRA for Customization</Button>
+              <Button size="lg" icon={<PhoneCall className="size-4" />} onClick={openCustomizationRequest}>Contact JEXA.AI for Customization</Button>
             </div>
           )
         }
@@ -194,7 +194,7 @@ export function EmployeeDetailPage({ type }: { type: EmployeeType }) {
             ) : (
               <div className="flex flex-wrap items-center justify-center gap-2">
                 <Button size="lg" variant="outline" onClick={() => openDemoRequest('voice')}>Request Demo</Button>
-                <Button size="lg" icon={<PhoneCall className="size-4" />} onClick={openCustomizationRequest}>Contact AIVRA for Customization</Button>
+                <Button size="lg" icon={<PhoneCall className="size-4" />} onClick={openCustomizationRequest}>Contact JEXA.AI for Customization</Button>
               </div>
             )
           ) : undefined

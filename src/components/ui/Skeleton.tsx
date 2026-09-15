@@ -1,7 +1,11 @@
 import { cn } from '@/utils/cn'
 
 export function Skeleton({ className }: { className?: string }) {
-  return <div className={cn('animate-pulse rounded-md bg-ink-100', className)} />
+  return (
+    <div className={cn('relative overflow-hidden rounded-md bg-ink-100', className)}>
+      <div className="shimmer absolute inset-0" />
+    </div>
+  )
 }
 
 export function SkeletonText({ lines = 3, className }: { lines?: number; className?: string }) {
@@ -16,7 +20,7 @@ export function SkeletonText({ lines = 3, className }: { lines?: number; classNa
 
 export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn('rounded-xl border border-ink-200 bg-white p-5', className)}>
+    <div className={cn('rounded-xl border border-ink-200 bg-surface p-5', className)}>
       <div className="flex items-center gap-3">
         <Skeleton className="size-10 rounded-full" />
         <div className="flex-1 space-y-2">

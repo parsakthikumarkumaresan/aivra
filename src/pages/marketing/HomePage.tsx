@@ -25,6 +25,7 @@ import { MarketingFooter } from '@/components/marketing/MarketingFooter'
 import { DashboardPreview } from '@/components/marketing/DashboardPreview'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { Reveal } from '@/components/ui/Reveal'
 import { useLeadFlow } from '@/app/LeadFlowContext'
 
 const TRUSTED_BY = ['ACME CORPORATION', 'QUICKSERVE', 'NEXORA', 'FINEDGE', 'BROADHOMES', 'SKYLINE REALTY']
@@ -86,29 +87,44 @@ export default function HomePage() {
   const { openDemoRequest } = useLeadFlow()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-ink-25">
       <MarketingHeader />
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[560px] bg-gradient-to-b from-brand-50/70 via-white to-white" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-20 h-[560px] bg-gradient-to-b from-brand-50/80 via-ink-25 to-ink-25" />
+        <div className="glow-pulse pointer-events-none absolute left-1/2 top-[-120px] -z-10 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-brand-600/10 blur-[120px]" />
+        {/* extremely subtle grid + drifting light trails — decorative only, hidden on small screens to keep mobile light */}
+        <div
+          className="bg-grid-pan pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-[560px] opacity-[0.05] sm:block"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
+          }}
+        />
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-[560px] overflow-hidden sm:block">
+          <span className="light-trail absolute left-[10%] top-[18%] h-px w-1/3 bg-gradient-to-r from-transparent via-brand-600/50 to-transparent blur-[1px]" style={{ animationDelay: '0s' }} />
+          <span className="light-trail absolute left-[45%] top-[38%] h-px w-1/4 bg-gradient-to-r from-transparent via-brand-500/40 to-transparent blur-[1px]" style={{ animationDelay: '3.2s' }} />
+          <span className="light-trail absolute left-[20%] top-[58%] h-px w-1/3 bg-gradient-to-r from-transparent via-brand-600/30 to-transparent blur-[1px]" style={{ animationDelay: '6s' }} />
+        </div>
+
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 pb-20 pt-16 lg:grid-cols-2 lg:pt-24">
           <div>
-            <Badge tone="brand" className="uppercase tracking-wide">
+            <Badge tone="brand" className="hero-reveal uppercase tracking-wide" style={{ animationDelay: '0ms' }}>
               AI Workforce for the Modern Enterprise
             </Badge>
             <h1 className="mt-5 text-[40px] font-bold leading-[1.08] tracking-tight text-ink-900 sm:text-[52px]">
-              Hire AI Employees.
-              <br />
-              <span className="text-brand-600">Scale Your Business.</span>
+              <span className="hero-reveal block" style={{ animationDelay: '120ms' }}>Hire AI Employees.</span>
+              <span className="hero-reveal block text-brand-600" style={{ animationDelay: '240ms' }}>Scale Your Business.</span>
             </h1>
-            <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-ink-600">
-              AIVRA is your AI Workforce Operating System. Deploy intelligent AI employees that work across voice,
+            <p className="hero-reveal mt-5 max-w-lg text-[16px] leading-relaxed text-ink-600" style={{ animationDelay: '360ms' }}>
+              JEXA.AI is your AI Workforce Operating System. Deploy intelligent AI employees that work across voice,
               chat, email and your business systems — with human oversight and enterprise-grade governance.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="hero-reveal mt-8 flex flex-wrap items-center gap-3" style={{ animationDelay: '460ms' }}>
               <a href="#hr-employee">
-                <Button size="lg" iconRight={<ArrowRight className="size-4" />}>
+                <Button size="lg" iconRight={<ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />}>
                   Get Started Free
                 </Button>
               </a>
@@ -118,16 +134,16 @@ export default function HomePage() {
                 </Button>
               </a>
             </div>
-            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-ink-500">
+            <div className="hero-reveal mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-ink-500" style={{ animationDelay: '560ms' }}>
               {['No Credit Card', 'Quick Setup', 'Enterprise Ready'].map((item) => (
                 <span key={item} className="flex items-center gap-1.5">
-                  <CheckCircle2 className="size-3.5 text-success-600" />
+                  <CheckCircle2 className="size-3.5 text-brand-600" />
                   {item}
                 </span>
               ))}
             </div>
           </div>
-          <div className="mx-auto w-full max-w-md pr-4 lg:pr-0">
+          <div className="hero-reveal mx-auto w-full max-w-md pr-4 lg:pr-0" style={{ animationDelay: '260ms' }}>
             <DashboardPreview />
           </div>
         </div>
@@ -139,10 +155,10 @@ export default function HomePage() {
               Trusted by innovative companies
             </p>
             <div className="mt-5 flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
-              {TRUSTED_BY.map((name) => (
-                <span key={name} className="text-[13px] font-bold tracking-wide text-ink-300">
-                  {name}
-                </span>
+              {TRUSTED_BY.map((name, i) => (
+                <Reveal key={name} delay={i * 60} className="!duration-500">
+                  <span className="text-[13px] font-bold tracking-wide text-ink-300">{name}</span>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -151,15 +167,17 @@ export default function HomePage() {
 
       {/* Benefits */}
       <section className="mx-auto max-w-7xl px-6 py-20">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {BENEFITS.map((b) => (
-            <div key={b.title}>
-              <div className="flex size-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
-                <b.icon className="size-5" />
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {BENEFITS.map((b, i) => (
+            <Reveal key={b.title} delay={i * 90}>
+              <div className="group h-full rounded-2xl border border-ink-200 bg-surface p-6 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-brand-600/60 hover:bg-surface-elevated hover:shadow-glow-red">
+                <div className="flex size-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition-transform duration-300 ease-out group-hover:scale-110">
+                  <b.icon className="size-5" />
+                </div>
+                <h3 className="mt-4 text-[15px] font-semibold text-ink-900">{b.title}</h3>
+                <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-500">{b.description}</p>
               </div>
-              <h3 className="mt-4 text-[15px] font-semibold text-ink-900">{b.title}</h3>
-              <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-500">{b.description}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -167,25 +185,25 @@ export default function HomePage() {
       {/* AI Employee concept */}
       <section id="hr-employee" className="bg-ink-25 py-20">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="mx-auto max-w-2xl text-center">
+          <Reveal className="mx-auto max-w-2xl text-center">
             <Badge tone="neutral">The AI Employee Concept</Badge>
             <h2 className="mt-4 text-[32px] font-bold tracking-tight text-ink-900">
               Not a chatbot. A deployable member of your team.
             </h2>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
-              Every AIVRA employee has a role, a status, KPIs and configured permissions — just like a human hire.
-              AIVRA ships with two AI employees today, built to be extended over time.
+              Every JEXA.AI employee has a role, a status, KPIs and configured permissions — just like a human hire.
+              JEXA.AI ships with two AI employees today, built to be extended over time.
             </p>
-          </div>
+          </Reveal>
 
           <div className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <div className="rounded-2xl border border-ink-200 bg-white p-8 shadow-card">
+            <Reveal className="rounded-2xl border border-ink-200 bg-surface p-8 shadow-card">
               <div className="flex items-center gap-3">
                 <div className="flex size-11 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
                   <Users className="size-5" />
                 </div>
                 <div>
-                  <h3 className="text-[17px] font-semibold text-ink-900">Aivra Hr</h3>
+                  <h3 className="text-[17px] font-semibold text-ink-900">Jexa HR</h3>
                   <p className="text-[13px] text-ink-500">Recruiting & Interview Copilot</p>
                 </div>
               </div>
@@ -202,18 +220,18 @@ export default function HomePage() {
                 ))}
               </ul>
               <Link to="/ai-employees/hr" className="mt-6 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-brand-700">
-                Explore Aivra Hr <ArrowRight className="size-3.5" />
+                Explore Jexa HR <ArrowRight className="size-3.5" />
               </Link>
-            </div>
+            </Reveal>
 
-            <div id="voice-employee" className="rounded-2xl border border-ink-200 bg-white p-8 shadow-card">
+            <Reveal id="voice-employee" delay={120} className="rounded-2xl border border-ink-200 bg-surface p-8 shadow-card">
               <div className="flex items-center gap-3">
                 <div className="flex size-11 items-center justify-center rounded-xl bg-info-100 text-info-600">
                   <Mic className="size-5" />
                 </div>
                 <div>
-                  <h3 className="text-[17px] font-semibold text-ink-900">AI Voice Employee</h3>
-                  <p className="text-[13px] text-ink-500">Configurable Voice Concierge</p>
+                  <h3 className="text-[17px] font-semibold text-ink-900">Jaan</h3>
+                  <p className="text-[13px] text-ink-500">Talks. Understands. Takes Action.</p>
                 </div>
               </div>
               <p className="mt-4 text-[13.5px] leading-relaxed text-ink-600">
@@ -229,29 +247,29 @@ export default function HomePage() {
                 ))}
               </ul>
               <Link to="/ai-employees/voice" className="mt-6 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-brand-700">
-                Explore AI Voice Employee <ArrowRight className="size-3.5" />
+                Explore Jaan <ArrowRight className="size-3.5" />
               </Link>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
       {/* Business workflow */}
       <section id="platform" className="mx-auto max-w-7xl px-6 py-20">
-        <div className="mx-auto max-w-2xl text-center">
-          <Badge tone="neutral">How AIVRA Works</Badge>
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <Badge tone="neutral">How JEXA.AI Works</Badge>
           <h2 className="mt-4 text-[32px] font-bold tracking-tight text-ink-900">From configuration to a governed AI workforce</h2>
-        </div>
+        </Reveal>
         <div className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {WORKFLOW_STEPS.map((s, i) => (
-            <div key={s.step} className="relative">
-              <span className="text-[13px] font-bold text-brand-300">{s.step}</span>
+            <Reveal key={s.step} delay={i * 90} className="relative">
+              <span className="text-[13px] font-bold text-brand-600">{s.step}</span>
               <h3 className="mt-2 text-[16px] font-semibold text-ink-900">{s.title}</h3>
               <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-500">{s.description}</p>
               {i < WORKFLOW_STEPS.length - 1 && (
                 <div className="absolute right-[-16px] top-2 hidden h-px w-8 bg-ink-200 lg:block" />
               )}
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -260,7 +278,7 @@ export default function HomePage() {
       <section id="company-brain" className="bg-ink-25 py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2">
-            <div>
+            <Reveal>
               <Badge tone="neutral">Company Brain & Integrations</Badge>
               <h2 className="mt-4 text-[30px] font-bold tracking-tight text-ink-900">
                 Employees that know your business and act on real systems
@@ -274,15 +292,15 @@ export default function HomePage() {
                 <MessageSquare className="size-4 text-brand-600" />
                 Every source and integration is scoped to the employees you approve.
               </div>
-            </div>
+            </Reveal>
             <div className="grid grid-cols-3 gap-4">
-              {INTEGRATIONS.map((integration) => (
-                <div key={integration.label} className="flex flex-col items-center gap-2.5 rounded-xl border border-ink-200 bg-white py-6 shadow-card">
+              {INTEGRATIONS.map((integration, i) => (
+                <Reveal key={integration.label} delay={i * 60} className="flex flex-col items-center gap-2.5 rounded-xl border border-ink-200 bg-surface py-6 shadow-card transition-colors duration-300 hover:border-brand-600/50">
                   <div className="flex size-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
                     <integration.icon className="size-5" />
                   </div>
                   <span className="text-[12.5px] font-medium text-ink-700">{integration.label}</span>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -291,7 +309,7 @@ export default function HomePage() {
 
       {/* Governance */}
       <section id="governance" className="mx-auto max-w-7xl px-6 py-20">
-        <div className="rounded-2xl border border-ink-200 bg-white p-10 shadow-card lg:p-14">
+        <Reveal className="rounded-2xl border border-ink-200 bg-surface p-10 shadow-card lg:p-14">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
             <div>
               <div className="flex size-11 items-center justify-center rounded-xl bg-success-100 text-success-600">
@@ -308,37 +326,40 @@ export default function HomePage() {
                 'AI provides job-related evidence and recommendations — final employment decisions remain with authorized humans.',
                 'Consequential actions require explicit human approval before they take effect.',
                 'Every escalation clearly explains why the AI handed off, and to whom.',
-              ].map((point) => (
-                <div key={point} className="flex items-start gap-3 rounded-xl bg-ink-25 p-4">
+              ].map((point, i) => (
+                <Reveal key={point} delay={i * 90} className="flex items-start gap-3 rounded-xl bg-ink-25 p-4">
                   <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-success-600" />
                   <p className="text-[13.5px] leading-relaxed text-ink-700">{point}</p>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-6 pb-20">
-        <div className="rounded-2xl bg-brand-600 px-8 py-14 text-center sm:px-16">
-          <h2 className="text-[28px] font-bold tracking-tight text-white sm:text-[34px]">
-            Ready to hire your first AI Employee?
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-[15px] text-brand-100">
-            Set up AIVRA in minutes with realistic mock data, then connect your real systems when you're ready.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a href="#hr-employee">
-              <Button size="lg" variant="secondary" className="bg-white text-brand-700 hover:bg-brand-50">
-                Get Started Free
+        <Reveal className="relative overflow-hidden rounded-2xl border border-ink-200 bg-surface-elevated px-8 py-14 text-center shadow-glow-red sm:px-16">
+          <div className="glow-pulse pointer-events-none absolute left-1/2 top-0 -z-0 h-64 w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-600/20 blur-[100px]" />
+          <div className="relative">
+            <h2 className="text-[28px] font-bold tracking-tight text-ink-900 sm:text-[34px]">
+              Ready to hire your first AI Employee?
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-[15px] text-ink-500">
+              Set up JEXA.AI in minutes with realistic mock data, then connect your real systems when you're ready.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <a href="#hr-employee">
+                <Button size="lg" iconRight={<ArrowRight className="size-4" />}>
+                  Get Started Free
+                </Button>
+              </a>
+              <Button size="lg" variant="outline" onClick={() => openDemoRequest('hr')}>
+                Book a Demo
               </Button>
-            </a>
-            <Button size="lg" variant="ghost" className="text-white hover:bg-white/10" onClick={() => openDemoRequest('hr')}>
-              Book a Demo
-            </Button>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <MarketingFooter />

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { cn } from '@/utils/cn'
 
 export type BadgeTone = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info'
@@ -27,9 +27,10 @@ interface BadgeProps {
   dot?: boolean
   icon?: ReactNode
   className?: string
+  style?: CSSProperties
 }
 
-export function Badge({ tone = 'neutral', children, dot = false, icon, className }: BadgeProps) {
+export function Badge({ tone = 'neutral', children, dot = false, icon, className, style }: BadgeProps) {
   return (
     <span
       className={cn(
@@ -37,8 +38,9 @@ export function Badge({ tone = 'neutral', children, dot = false, icon, className
         toneClasses[tone],
         className,
       )}
+      style={style}
     >
-      {dot && <span className={cn('size-1.5 rounded-full', dotClasses[tone])} aria-hidden />}
+      {dot && <span className={cn('size-1.5 rounded-full', tone === 'success' && 'status-dot-live', dotClasses[tone])} aria-hidden />}
       {icon}
       {children}
     </span>

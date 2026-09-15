@@ -25,8 +25,8 @@ const FOOTER_COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
     title: 'AI Employees',
     links: [
-      { label: 'Aivra Hr', href: '/ai-employees/hr' },
-      { label: 'AI Voice Employee', href: '/ai-employees/voice' },
+      { label: 'Jexa HR', href: '/ai-employees/hr' },
+      { label: 'Jaan', href: '/ai-employees/voice' },
     ],
   },
   {
@@ -54,11 +54,11 @@ function FooterLinkItem({ link }: { link: FooterLink }) {
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-ink-200 bg-white">
+    <footer className="border-t border-ink-200 bg-ink-25">
       <div className="mx-auto max-w-7xl px-6 py-14">
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-6">
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
-            <Logo />
+            <Logo markSize={36} />
             <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-ink-500">
               The AI Workforce Operating System. Deploy governed AI Employees across voice, chat and business systems.
             </p>
@@ -77,7 +77,7 @@ export function MarketingFooter() {
           ))}
         </div>
         <div className="mt-12 border-t border-ink-100 pt-6">
-          <p className="text-xs text-ink-400">© {new Date().getFullYear()} AIVRA Technologies Inc. All rights reserved.</p>
+          <p className="text-xs text-ink-400">© {new Date().getFullYear()} JEXA.AI, Inc. All rights reserved.</p>
         </div>
       </div>
     </footer>

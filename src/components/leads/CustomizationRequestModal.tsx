@@ -63,7 +63,7 @@ export function CustomizationRequestModal({ open, onClose }: CustomizationReques
       open={open}
       onClose={onClose}
       size="lg"
-      title={submitted ? undefined : "Let's Build Your AI Voice Employee"}
+      title={submitted ? undefined : "Let's Build Your Jaan"}
       description={submitted ? undefined : "Tell us about your business and what you want your AI Employee to handle. Our team will design, configure and deploy it for you."}
     >
       {submitted ? (
@@ -72,7 +72,7 @@ export function CustomizationRequestModal({ open, onClose }: CustomizationReques
             <CheckCircle2 className="size-7" />
           </div>
           <p className="text-[17px] font-semibold text-ink-900">✓ Request received</p>
-          <p className="max-w-md text-[13px] text-ink-500">An AIVRA specialist will contact you to understand your requirements and plan your AI Employee.</p>
+          <p className="max-w-md text-[13px] text-ink-500">An JEXA.AI specialist will contact you to understand your requirements and plan your AI Employee.</p>
           <Button className="mt-2" variant="outline" onClick={onClose}>Close</Button>
         </div>
       ) : (

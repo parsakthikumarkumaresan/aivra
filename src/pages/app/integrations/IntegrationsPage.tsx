@@ -116,7 +116,7 @@ export default function IntegrationsPage() {
           <div className="rounded-lg bg-ink-25 p-3.5">
             <p className="mb-2 flex items-center gap-1.5 text-[13px] font-semibold text-ink-800">
               <ShieldCheck className="size-3.5 text-ink-400" />
-              This will grant AIVRA permission to:
+              This will grant JEXA.AI permission to:
             </p>
             <ul className="space-y-1.5 pl-1 text-[13px] text-ink-600">
               <li>• Read and write records relevant to configured AI Employees</li>

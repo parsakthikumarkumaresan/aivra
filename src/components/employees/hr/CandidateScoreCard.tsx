@@ -8,7 +8,7 @@ interface CandidateScoreCardProps {
 
 export function CandidateScoreCard({ overallScore, evidence }: CandidateScoreCardProps) {
   return (
-    <div className="rounded-xl border border-ink-200 bg-white p-5">
+    <div className="rounded-xl border border-ink-200 bg-surface p-5">
       <div className="flex items-center gap-4">
         {overallScore !== null ? (
           <ScoreRing value={overallScore} size={56} />

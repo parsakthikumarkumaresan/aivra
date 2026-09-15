@@ -49,7 +49,7 @@ export function ErrorState({
 
 export function PermissionDeniedState({ requiredRole }: { requiredRole?: string }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-ink-200 bg-white px-6 py-14 text-center">
+    <div className="flex flex-col items-center justify-center rounded-xl border border-ink-200 bg-surface px-6 py-14 text-center">
       <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-ink-100 text-ink-500">
         <AlertTriangle className="size-6" />
       </div>

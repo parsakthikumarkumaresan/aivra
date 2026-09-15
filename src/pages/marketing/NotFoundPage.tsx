@@ -4,7 +4,7 @@ import { NotFoundContent } from '@/components/layout/NotFoundContent'
 
 export default function NotFoundPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-ink-25">
       <MarketingHeader />
       <div className="flex-1">
         <NotFoundContent />

@@ -42,14 +42,14 @@ export default function VoiceAgentsListPage() {
       <PageHeader
         icon={<Mic className="size-5" />}
         title="Voice Agent Builder"
-        description="AIVRA-internal — configure and operate every customer's AI Voice Employee."
+        description="JEXA.AI-internal — configure and operate every customer's Jaan."
       />
       <DataTable
         columns={columns}
         data={agents.data ?? []}
         keyExtractor={(a) => a.id}
         loading={agents.loading}
-        emptyState={<EmptyState icon={<PhoneCall className="size-6" />} title="No voice agents yet" description="Provision one from Settings → Developer → AIVRA Provisioning." />}
+        emptyState={<EmptyState icon={<PhoneCall className="size-6" />} title="No voice agents yet" description="Provision one from Settings → Developer → JEXA.AI Provisioning." />}
       />
     </div>
   )

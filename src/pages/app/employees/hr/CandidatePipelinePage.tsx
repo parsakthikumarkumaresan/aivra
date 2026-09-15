@@ -29,7 +29,7 @@ const STATUS_OPTIONS = [
 ]
 
 export default function CandidatePipelinePage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr', href: '/app/employees/hr' }, { label: 'Candidates' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jexa HR', href: '/app/employees/hr' }, { label: 'Candidates' }])
   const [params, setParams] = useSearchParams()
   const jobs = useJobs()
   const { show } = useToast()
@@ -195,7 +195,7 @@ export default function CandidatePipelinePage() {
     <div className="space-y-5">
       <PageHeader
         title="Candidate Pipeline"
-        description="Every candidate resume Aivra Hr has processed, matched or screened."
+        description="Every candidate resume Jexa HR has processed, matched or screened."
         actions={
           <Link to="/app/employees/hr/candidates/upload">
             <Button icon={<Upload className="size-4" />}>Upload Resumes</Button>
@@ -260,7 +260,7 @@ export default function CandidatePipelinePage() {
           />
         ) : (
           candidates.data?.map((c) => (
-            <Link key={c.id} to={`/app/employees/hr/candidates/${c.id}`} className="flex items-start gap-3 rounded-xl border border-ink-200 bg-white p-4">
+            <Link key={c.id} to={`/app/employees/hr/candidates/${c.id}`} className="flex items-start gap-3 rounded-xl border border-ink-200 bg-surface p-4">
               <Avatar name={c.name} size="sm" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">

@@ -59,7 +59,7 @@ const initialData: WizardData = {
 }
 
 export default function HrSetupWizardPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr', href: '/app/employees/hr' }, { label: 'Setup' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jexa HR', href: '/app/employees/hr' }, { label: 'Setup' }])
   const navigate = useNavigate()
   const { show } = useToast()
   const [stepIndex, setStepIndex] = useState(0)
@@ -97,7 +97,7 @@ export default function HrSetupWizardPage() {
     setActivating(true)
     await new Promise((r) => setTimeout(r, 1000))
     setActivating(false)
-    show({ tone: 'success', title: 'Aivra Hr activated', description: `${data.job.title || 'Your job'} is now live and accepting candidates.` })
+    show({ tone: 'success', title: 'Jexa HR activated', description: `${data.job.title || 'Your job'} is now live and accepting candidates.` })
     navigate('/app/employees/hr')
   }
 
@@ -105,10 +105,10 @@ export default function HrSetupWizardPage() {
     <div className="space-y-5">
       <Link to="/app/employees/hr" className="flex items-center gap-1.5 text-[13px] font-medium text-ink-500 hover:text-ink-800">
         <ArrowLeft className="size-3.5" />
-        Back to Aivra Hr
+        Back to Jexa HR
       </Link>
 
-      <PageHeader title="Aivra Hr Setup" description="Configure Aivra Hr before activating it for candidates." actions={<SaveStatus state={saveState} />} />
+      <PageHeader title="Jexa HR Setup" description="Configure Jexa HR before activating it for candidates." actions={<SaveStatus state={saveState} />} />
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_1fr]">
         <Card className="h-fit lg:sticky lg:top-6">
@@ -152,7 +152,7 @@ export default function HrSetupWizardPage() {
                 </Button>
               ) : (
                 <Button onClick={activate} loading={activating} icon={<Sparkles className="size-4" />} disabled={allErrors.length > 0}>
-                  Activate Aivra Hr
+                  Activate Jexa HR
                 </Button>
               )}
             </div>
@@ -189,7 +189,7 @@ interface StepProps {
 function ProfileStep({ data, setData }: StepProps) {
   return (
     <div className="space-y-4">
-      <StepHeading icon={<Building2 className="size-4" />} title="HR Profile" description="Tell AIVRA about your company and hiring team." />
+      <StepHeading icon={<Building2 className="size-4" />} title="HR Profile" description="Tell JEXA.AI about your company and hiring team." />
       <div>
         <Label required>Company name</Label>
         <Input value={data.profile.companyName} onChange={(e) => setData({ ...data, profile: { ...data.profile, companyName: e.target.value } })} />
@@ -216,7 +216,7 @@ function JobStep({ data, setData }: StepProps) {
   const set = (patch: Partial<WizardData['job']>) => setData({ ...data, job: { ...job, ...patch } })
   return (
     <div className="space-y-4">
-      <StepHeading icon={<Briefcase className="size-4" />} title="Create Job" description="AIVRA will generate a draft rubric from this job description." />
+      <StepHeading icon={<Briefcase className="size-4" />} title="Create Job" description="JEXA.AI will generate a draft rubric from this job description." />
       <div>
         <Label required>Job title</Label>
         <Input value={job.title} onChange={(e) => set({ title: e.target.value })} placeholder="e.g. Senior Product Designer" />
@@ -335,7 +335,7 @@ function ScreeningStep({ data, setData }: StepProps) {
       <div className="flex items-center justify-between rounded-lg border border-ink-200 p-3.5">
         <div>
           <p className="text-[13px] font-medium text-ink-800">Enable voice screening</p>
-          <p className="text-xs text-ink-500">Candidates can complete initial screening by phone via the AI Voice Employee.</p>
+          <p className="text-xs text-ink-500">Candidates can complete initial screening by phone via Jaan.</p>
         </div>
         <Switch checked={screening.voiceScreeningEnabled} onChange={(v) => setData({ ...data, screening: { ...screening, voiceScreeningEnabled: v } })} />
       </div>
@@ -418,7 +418,7 @@ function ReviewStep({ data, errors, onEditStep }: { data: WizardData; errors: st
   const total = data.rubric.reduce((sum, c) => sum + c.weight, 0)
   return (
     <div className="space-y-4">
-      <StepHeading icon={<ShieldCheck className="size-4" />} title="Review & Activate" description="Confirm your configuration before Aivra Hr goes live." />
+      <StepHeading icon={<ShieldCheck className="size-4" />} title="Review & Activate" description="Confirm your configuration before Jexa HR goes live." />
 
       {errors.length > 0 ? (
         <div className="space-y-1.5 rounded-lg border border-danger-100 bg-danger-50 p-3.5">

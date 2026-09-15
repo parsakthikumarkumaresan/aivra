@@ -15,7 +15,7 @@ export function NotFoundContent() {
           <Button icon={<LayoutDashboard className="size-4" />}>Go to Dashboard</Button>
         </Link>
         <Link to="/">
-          <Button variant="outline" icon={<Home className="size-4" />}>Back to AIVRA Home</Button>
+          <Button variant="outline" icon={<Home className="size-4" />}>Back to JEXA.AI Home</Button>
         </Link>
       </div>
     </div>

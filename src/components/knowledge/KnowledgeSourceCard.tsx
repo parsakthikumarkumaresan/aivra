@@ -11,7 +11,7 @@ const EMPLOYEE_ICON = { hr: Users, voice: Mic }
 export function KnowledgeSourceCard({ source, onClick }: { source: KnowledgeSource; onClick?: () => void }) {
   const TypeIcon = TYPE_ICON[source.type]
   return (
-    <button onClick={onClick} className="flex w-full items-start gap-3 rounded-xl border border-ink-200 bg-white p-4 text-left transition-colors duration-150 hover:border-brand-300 hover:bg-brand-50/30">
+    <button onClick={onClick} className="flex w-full items-start gap-3 rounded-xl border border-ink-200 bg-surface p-4 text-left transition-colors duration-150 hover:border-brand-300 hover:bg-brand-50/30">
       <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
         <TypeIcon className="size-4" />
       </span>

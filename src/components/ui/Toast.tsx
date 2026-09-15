@@ -23,7 +23,7 @@ export function ToastItem({ id, title, description, tone, onDismiss }: ToastItem
     <div
       role="status"
       className={cn(
-        'flex w-80 items-start gap-3 rounded-xl border bg-white p-3.5 shadow-elevated',
+        'toast-enter flex w-80 items-start gap-3 rounded-xl border bg-surface-elevated p-3.5 shadow-elevated',
         classes,
       )}
     >

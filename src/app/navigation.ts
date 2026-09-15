@@ -17,6 +17,10 @@ export interface NavItem {
   matchPrefix?: boolean
 }
 
+// IMPORTANT: individual AI Employees (Jexa HR, Jaan, future ones) are never
+// global nav items — they're reached via "My Workforce" -> Open, which
+// navigates into that employee's own dedicated workspace/shell (e.g. Jaan's
+// own sidebar takes over at /app/jaan/*, see AppShell + JaanSidebar).
 export const PRIMARY_NAV: NavItem[] = [
   { label: 'Dashboard', href: '/app', icon: LayoutDashboard },
   { label: 'My Workforce', href: '/app/employees', icon: Users, matchPrefix: true },

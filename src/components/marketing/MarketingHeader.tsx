@@ -20,8 +20,8 @@ const PRODUCT_LINKS: NavLinkItem[] = [
 ]
 
 const EMPLOYEE_LINKS: NavLinkItem[] = [
-  { label: 'Aivra Hr', href: '/ai-employees/hr', description: 'Screens, interviews and schedules candidates', icon: <Users className="size-4" /> },
-  { label: 'AI Voice Employee', href: '/ai-employees/voice', description: 'Handles calls, bookings and support', icon: <Mic className="size-4" /> },
+  { label: 'Jexa HR', href: '/ai-employees/hr', description: 'Screens, interviews and schedules candidates', icon: <Users className="size-4" /> },
+  { label: 'Jaan', href: '/ai-employees/voice', description: 'Handles calls, bookings and support', icon: <Mic className="size-4" /> },
 ]
 
 // Employee links point to real routes (/ai-employees/*); Product links are
@@ -41,7 +41,7 @@ function NavLinkContent({ item, onClick, className }: { item: NavLinkItem; onCli
       </span>
     </>
   )
-  const cls = className ?? 'flex items-start gap-3 rounded-lg p-2.5 hover:bg-ink-50'
+  const cls = className ?? 'flex items-start gap-3 rounded-lg p-2.5 transition-colors duration-150 hover:bg-ink-50'
   return item.href.startsWith('/') ? (
     <Link to={item.href} onClick={onClick} className={cls}>{inner}</Link>
   ) : (
@@ -53,19 +53,22 @@ function NavDropdown({ label, items }: { label: string; items: NavLinkItem[] }) 
   const [open, setOpen] = useState(false)
   return (
     <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-      <button className="flex items-center gap-1 rounded-md px-3 py-2 text-[13.5px] font-medium text-ink-700 hover:text-ink-900">
+      <button className="flex items-center gap-1 rounded-md px-3 py-2 text-[13.5px] font-medium text-ink-700 transition-colors duration-200 hover:text-brand-600">
         {label}
-        <ChevronDown className={cn('size-3.5 transition-transform duration-150', open && 'rotate-180')} />
+        <ChevronDown className={cn('size-3.5 transition-transform duration-200', open && 'rotate-180')} />
       </button>
-      {open && (
-        <div className="absolute left-1/2 top-full z-30 w-80 -translate-x-1/2 pt-2">
-          <div className="rounded-xl border border-ink-200 bg-white p-2 shadow-elevated">
-            {items.map((item) => (
-              <NavLinkContent key={item.label} item={item} />
-            ))}
-          </div>
+      <div
+        className={cn(
+          'absolute left-1/2 top-full z-30 w-80 -translate-x-1/2 pt-2 transition-all duration-200 ease-out',
+          open ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1 opacity-0',
+        )}
+      >
+        <div className="rounded-xl border border-ink-200 bg-surface-elevated/95 p-2 shadow-elevated backdrop-blur-sm">
+          {items.map((item) => (
+            <NavLinkContent key={item.label} item={item} />
+          ))}
         </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -77,16 +80,16 @@ export function MarketingHeader() {
   const { openDemoRequest } = useLeadFlow()
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink-200 bg-white/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        <Link to="/">
-          <Logo />
+    <header className="sticky top-0 z-40 border-b border-ink-200 bg-ink-25/85 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:h-20">
+        <Link to="/" className="hero-reveal" style={{ animationDelay: '0ms' }}>
+          <Logo markSize={44} markSizeLg={60} />
         </Link>
-        <nav className="hidden items-center gap-0.5 lg:flex">
+        <nav className="hidden items-center gap-0.5 lg:flex hero-reveal" style={{ animationDelay: '90ms' }}>
           <NavDropdown label="Product" items={PRODUCT_LINKS} />
           <NavDropdown label="AI Employees" items={EMPLOYEE_LINKS} />
         </nav>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 hero-reveal" style={{ animationDelay: '160ms' }}>
           <Link to="/login">
             <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
               Login
@@ -105,7 +108,7 @@ export function MarketingHeader() {
         </div>
       </div>
 
-      <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)} title={<Logo markSize={26} />} width="320px">
+      <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)} title={<Logo markSize={32} />} width="320px">
         <div className="flex flex-col gap-1">
           {ALL_LINKS.map((item) => (
             <NavLinkContent key={item.label} item={item} onClick={() => setMobileOpen(false)} />

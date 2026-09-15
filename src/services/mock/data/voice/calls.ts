@@ -20,7 +20,7 @@ export const mockCalls: Call[] = [
   {
     id: 'call_2', callerName: 'Unknown Caller', callerNumber: '+91 90032 11455', employeeId: 'emp_voice',
     startedAt: '2026-08-17T08:52:00Z', durationSeconds: 198, intent: 'complaint', outcome: 'escalated', escalated: true,
-    escalationReason: 'Customer requested a refund exception outside AI Voice Employee authority — refund tool requires approval and exceeds auto-approval threshold.',
+    escalationReason: 'Customer requested a refund exception outside Jaan authority — refund tool requires approval and exceeds auto-approval threshold.',
     recordingAvailable: true, summary: 'Customer requested a refund for a damaged item outside the 7-day window. Escalated for manual review.',
     transcript: [
       { id: 't1', speaker: 'ai', text: 'Thanks for calling Acme Jewellery, this is Aria. How can I help you today?', timestamp: '2026-08-17T08:52:00Z' },

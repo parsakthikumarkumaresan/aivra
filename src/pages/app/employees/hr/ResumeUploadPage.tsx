@@ -57,7 +57,7 @@ function nextUploadId() {
 const CONFIRM_PENDING_PROGRESS = 60
 
 export default function ResumeUploadPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr', href: '/app/employees/hr' }, { label: 'Candidates', href: '/app/employees/hr/candidates' }, { label: 'Upload Resumes' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jexa HR', href: '/app/employees/hr' }, { label: 'Candidates', href: '/app/employees/hr/candidates' }, { label: 'Upload Resumes' }])
   const [params] = useSearchParams()
   const jobs = useJobs()
   const [jobId, setJobId] = useState(params.get('job') ?? '')

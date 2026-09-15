@@ -24,7 +24,7 @@ const STATUS_LABEL: Record<JobStatus, string> = { draft: 'Draft', open: 'Open', 
 const EMPLOYMENT_LABEL: Record<EmploymentType, string> = { full_time: 'Full-time', part_time: 'Part-time', contract: 'Contract', internship: 'Internship' }
 
 export default function JobsListPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr', href: '/app/employees/hr' }, { label: 'Jobs' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jexa HR', href: '/app/employees/hr' }, { label: 'Jobs' }])
   const jobs = useJobs()
   const { show } = useToast()
   const [params, setParams] = useSearchParams()
@@ -154,7 +154,7 @@ export default function JobsListPage() {
           />
         ) : (
           jobs.data?.map((job) => (
-            <Link key={job.id} to={`/app/employees/hr/jobs/${job.id}`} className="block rounded-xl border border-ink-200 bg-white p-4">
+            <Link key={job.id} to={`/app/employees/hr/jobs/${job.id}`} className="block rounded-xl border border-ink-200 bg-surface p-4">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <p className="truncate text-[13.5px] font-semibold text-ink-900">{job.title}</p>
@@ -178,7 +178,7 @@ export default function JobsListPage() {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         title="Create a new job"
-        description="AIVRA will generate a draft evaluation rubric once details are added."
+        description="JEXA.AI will generate a draft evaluation rubric once details are added."
         footer={
           <>
             <Button variant="outline" onClick={() => setModalOpen(false)}>

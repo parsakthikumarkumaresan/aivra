@@ -33,12 +33,13 @@ export function Drawer({ open, onClose, title, description, children, footer, si
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex">
-      <div className="absolute inset-0 bg-ink-950/40" onClick={onClose} aria-hidden />
+      <div className="overlay-enter absolute inset-0 bg-black/70" onClick={onClose} aria-hidden />
       <div
         role="dialog"
         aria-modal="true"
         className={cn(
-          'relative z-10 flex h-full max-w-full flex-col bg-white shadow-overlay',
+          'relative z-10 flex h-full max-w-full flex-col border-ink-200 bg-surface-elevated shadow-overlay',
+          side === 'right' ? 'border-l drawer-in-right' : 'border-r drawer-in-left',
           side === 'right' ? 'ml-auto' : 'mr-auto',
         )}
         style={{ width }}

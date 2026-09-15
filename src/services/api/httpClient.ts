@@ -107,7 +107,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   try {
     response = await fetch(`${API_BASE_URL}${path}`, { method, credentials: 'include', headers, body })
   } catch (cause) {
-    throw new ApiError('Could not reach the AIVRA backend. Is it running on ' + API_BASE_URL + '?', {
+    throw new ApiError('Could not reach the JEXA.AI backend. Is it running on ' + API_BASE_URL + '?', {
       code: 'NETWORK_ERROR',
       status: 0,
       details: { cause: String(cause) },

@@ -41,9 +41,9 @@ export const employeeCatalogContent: EmployeeCatalogContent[] = [
     ],
     faq: [
       { question: 'Does the AI make final hiring decisions?', answer: 'No. AI-generated assessments are evidence-backed recommendations — final hiring decisions always remain with your authorized HR personnel.' },
-      { question: 'Can I cancel anytime?', answer: 'Yes, you can pause or cancel the Aivra Hr subscription anytime from Billing & Subscriptions. Your data is retained if you reactivate later.' },
+      { question: 'Can I cancel anytime?', answer: 'Yes, you can pause or cancel the Jexa HR subscription anytime from Billing & Subscriptions. Your data is retained if you reactivate later.' },
       { question: 'What happens if I go over my candidate limit?', answer: 'You will be notified before hitting your plan limit and can upgrade at any time.' },
-      { question: 'Is this self-service?', answer: 'Yes — Aivra Hr is a self-service subscription. Purchase it, configure your hiring team, jobs and rubric, and start screening candidates immediately.' },
+      { question: 'Is this self-service?', answer: 'Yes — Jexa HR is a self-service subscription. Purchase it, configure your hiring team, jobs and rubric, and start screening candidates immediately.' },
     ],
   },
   {
@@ -62,7 +62,7 @@ export const employeeCatalogContent: EmployeeCatalogContent[] = [
     howItWorks: [
       'Discovery & Demo',
       'Business Requirements',
-      'AIVRA Solution Team',
+      'JEXA.AI Solution Team',
       'Customization',
       'Knowledge Configuration',
       'Tool / API Integration',
@@ -82,10 +82,10 @@ export const employeeCatalogContent: EmployeeCatalogContent[] = [
       'Company Brain integration',
     ],
     faq: [
-      { question: 'Can I buy this like a normal subscription?', answer: 'No — the AI Voice Employee is customized and deployed by AIVRA for your specific business. There is no self-service checkout; our team builds and configures it with you.' },
+      { question: 'Can I buy this like a normal subscription?', answer: 'No — Jaan is customized and deployed by JEXA.AI for your specific business. There is no self-service checkout; our team builds and configures it with you.' },
       { question: 'How long does deployment take?', answer: 'It depends on the complexity of your requirements. After discovery, our solution team configures knowledge, tools, voice and guardrails, then runs testing before deployment to your account.' },
       { question: 'What happens on a high-risk request?', answer: 'Actions like refunds or cancellations above your configured threshold are routed to the Approvals queue for human sign-off.' },
-      { question: 'Can I make changes after it is live?', answer: 'Yes — you get safe, everyday controls (name, voice, language, greeting, hours) from your dashboard. AIVRA continues to manage the underlying AI configuration.' },
+      { question: 'Can I make changes after it is live?', answer: 'Yes — you get safe, everyday controls (name, voice, language, greeting, hours) from your dashboard. JEXA.AI continues to manage the underlying AI configuration.' },
     ],
   },
 ]

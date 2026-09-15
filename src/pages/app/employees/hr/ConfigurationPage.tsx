@@ -9,12 +9,12 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { HrSubNav } from '@/components/employees/hr/HrSubNav'
 
 export default function ConfigurationPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr', href: '/app/employees/hr' }, { label: 'Configuration' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jexa HR', href: '/app/employees/hr' }, { label: 'Configuration' }])
   const config = useHrConfig()
 
   return (
     <div className="space-y-5">
-      <PageHeader icon={<SlidersHorizontal className="size-5" />} title="Configuration" description="Administrator setup and testing tools for Aivra Hr." />
+      <PageHeader icon={<SlidersHorizontal className="size-5" />} title="Configuration" description="Administrator setup and testing tools for Jexa HR." />
       <HrSubNav />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

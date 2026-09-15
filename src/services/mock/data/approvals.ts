@@ -2,7 +2,7 @@ import type { Approval } from '@/types'
 
 export const mockApprovals: Approval[] = [
   {
-    id: 'appr_1', employeeType: 'voice', employeeName: 'AI Voice Employee',
+    id: 'appr_1', employeeType: 'voice', employeeName: 'Jaan',
     requestedAction: 'Apply full refund of ₹18,500 for order #A4471',
     affectedRecordLabel: 'Order #A4471 — Unknown Caller', affectedRecordHref: '/app/inbox/calls/call_2',
     reason: 'Customer requested a refund outside the standard 7-day window. This exceeds the auto-approval threshold and requires human sign-off.',
@@ -10,15 +10,15 @@ export const mockApprovals: Approval[] = [
     status: 'pending', risk: 'high', requestedAt: '2026-08-17T08:53:00Z', expiresAt: '2026-08-18T08:53:00Z',
   },
   {
-    id: 'appr_2', employeeType: 'voice', employeeName: 'AI Voice Employee',
+    id: 'appr_2', employeeType: 'voice', employeeName: 'Jaan',
     requestedAction: 'Cancel order #A4610 and issue partial refund',
     affectedRecordLabel: 'Order #A4610', affectedRecordHref: '/app/inbox',
-    reason: 'Order has already shipped, so cancellation requires manual carrier coordination outside AI Voice Employee tooling.',
+    reason: 'Order has already shipped, so cancellation requires manual carrier coordination outside Jaan tooling.',
     evidence: ['Order shipped yesterday via courier.', 'Customer contacted within 1 hour of shipment.'],
     status: 'pending', risk: 'medium', requestedAt: '2026-08-17T07:10:00Z', expiresAt: '2026-08-18T07:10:00Z',
   },
   {
-    id: 'appr_3', employeeType: 'hr', employeeName: 'Aivra Hr',
+    id: 'appr_3', employeeType: 'hr', employeeName: 'Jexa HR',
     requestedAction: 'Send interview scheduling email to Ishaan Kapoor with 3 proposed slots',
     affectedRecordLabel: 'Ishaan Kapoor — Backend Engineer', affectedRecordHref: '/app/employees/hr/candidates/cand_10',
     reason: 'Candidate scored 86/100 and completed AI interview. Requires human confirmation before external communication is sent.',
@@ -26,7 +26,7 @@ export const mockApprovals: Approval[] = [
     status: 'pending', risk: 'low', requestedAt: '2026-08-17T09:40:00Z', expiresAt: '2026-08-19T09:40:00Z',
   },
   {
-    id: 'appr_4', employeeType: 'voice', employeeName: 'AI Voice Employee',
+    id: 'appr_4', employeeType: 'voice', employeeName: 'Jaan',
     requestedAction: 'Cancel order #A4501',
     affectedRecordLabel: 'Order #A4501 — Vikram T.', affectedRecordHref: '/app/inbox',
     reason: 'Order had not yet shipped — within auto-approval policy.',
@@ -35,7 +35,7 @@ export const mockApprovals: Approval[] = [
     decidedAt: '2026-08-16T14:20:00Z', decidedBy: 'Karthik Iyer', decisionNote: 'Standard cancellation, approved.',
   },
   {
-    id: 'appr_5', employeeType: 'hr', employeeName: 'Aivra Hr',
+    id: 'appr_5', employeeType: 'hr', employeeName: 'Jexa HR',
     requestedAction: 'Reject candidate Farhan Ahmed — below seniority bar',
     affectedRecordLabel: 'Farhan Ahmed — Senior Product Designer', affectedRecordHref: '/app/employees/hr/candidates/cand_6',
     reason: 'Resume evidence score of 41/100, well below the shortlist threshold for a senior-level role.',
@@ -44,7 +44,7 @@ export const mockApprovals: Approval[] = [
     decidedAt: '2026-07-29T15:00:00Z', decidedBy: 'Priya Nair', decisionNote: 'Confirmed — not a fit for the seniority level required.',
   },
   {
-    id: 'appr_6', employeeType: 'voice', employeeName: 'AI Voice Employee',
+    id: 'appr_6', employeeType: 'voice', employeeName: 'Jaan',
     requestedAction: 'Apply loyalty discount override of 15% for repeat customer',
     affectedRecordLabel: 'Order #A4388', affectedRecordHref: '/app/inbox',
     reason: 'Discount exceeds the standard 10% ceiling configured for AI-initiated offers.',

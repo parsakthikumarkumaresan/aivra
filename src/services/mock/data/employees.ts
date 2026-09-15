@@ -1,6 +1,6 @@
 import type { AIEmployee } from '@/types'
 
-// Static product catalog — describes every AI Employee AIVRA offers, independent
+// Static product catalog — describes every AI Employee JEXA.AI offers, independent
 // of whether this organization has hired them. Status, KPIs, pricing and billing
 // fields are merged in at read time by employees.service from the subscription
 // and plan layers — see subscription.service.ts.
@@ -8,20 +8,20 @@ export const employeeCatalog: Omit<AIEmployee, 'status' | 'kpis' | 'lastActivity
   {
     id: 'emp_hr',
     type: 'hr',
-    name: 'Aivra Hr',
+    name: 'Jexa HR',
     tagline: 'Recruiting & Interview Copilot',
     description: 'Screens candidates, conducts structured AI interviews and schedules human interviews.',
-    avatarColor: '#6D3EF2',
+    avatarColor: '#C1121F',
     channels: ['chat', 'email'],
     createdAt: '2025-12-01T10:00:00Z',
   },
   {
     id: 'emp_voice',
     type: 'voice',
-    name: 'AI Voice Employee',
-    tagline: 'Customer Voice & Support Employee',
+    name: 'Jaan',
+    tagline: 'A Voice Agent for Your Business — that Talks. Understands. Takes Action.',
     description: 'Handles customer conversations, enquiries, bookings and support across configured industries.',
-    avatarColor: '#2137C9',
+    avatarColor: '#3B82F6',
     channels: ['voice'],
     configuredLabel: 'Jewellery Support',
     createdAt: '2025-12-08T10:00:00Z',

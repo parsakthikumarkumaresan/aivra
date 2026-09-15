@@ -31,7 +31,7 @@ import { formatDate } from '@/utils/format'
 
 const FUNNEL_STAGES: CandidateStage[] = ['uploaded', 'analyzed', 'hr_review', 'screening_approved', 'human_review', 'interview_scheduled', 'completed']
 const INTENT_LABEL: Record<CallIntent, string> = { faq: 'FAQ', booking: 'Booking', cancellation: 'Cancellation', status_lookup: 'Status Lookup', complaint: 'Complaint', unknown: 'Unknown' }
-const INTENT_COLORS = ['#6D3EF2', '#2137C9', '#178350', '#c8850c', '#d33d3d', '#9d9db3']
+const INTENT_COLORS = ['#c1121f', '#2137C9', '#178350', '#c8850c', '#d33d3d', '#a3a3a3']
 
 export default function AnalyticsPage() {
   useSetBreadcrumbs([{ label: 'Analytics' }])
@@ -122,15 +122,15 @@ export default function AnalyticsPage() {
                   <AreaChart data={chart.data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="genFill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#6D3EF2" stopOpacity={0.18} />
-                        <stop offset="100%" stopColor="#6D3EF2" stopOpacity={0} />
+                        <stop offset="0%" stopColor="#c1121f" stopOpacity={0.18} />
+                        <stop offset="100%" stopColor="#c1121f" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid vertical={false} stroke="#eeeef3" />
-                    <XAxis dataKey="date" tickFormatter={(v: string) => formatDate(v, chart.range === '7d' ? 'EEE' : 'MMM d')} tick={{ fontSize: 11, fill: '#9d9db3' }} axisLine={false} tickLine={false} interval={chart.range === '30d' ? 4 : 0} />
-                    <YAxis tick={{ fontSize: 11, fill: '#9d9db3' }} axisLine={false} tickLine={false} width={40} />
-                    <RTooltip labelFormatter={(v) => (typeof v === 'string' ? formatDate(v, 'MMM d, yyyy') : v)} contentStyle={{ borderRadius: 10, border: '1px solid #e0e0e9', fontSize: 12.5 }} />
-                    <Area type="monotone" dataKey="value" name="Tasks Completed" stroke="#6D3EF2" strokeWidth={2.25} fill="url(#genFill)" />
+                    <CartesianGrid vertical={false} stroke="#262626" />
+                    <XAxis dataKey="date" tickFormatter={(v: string) => formatDate(v, chart.range === '7d' ? 'EEE' : 'MMM d')} tick={{ fontSize: 11, fill: '#a3a3a3' }} axisLine={false} tickLine={false} interval={chart.range === '30d' ? 4 : 0} />
+                    <YAxis tick={{ fontSize: 11, fill: '#a3a3a3' }} axisLine={false} tickLine={false} width={40} />
+                    <RTooltip labelFormatter={(v) => (typeof v === 'string' ? formatDate(v, 'MMM d, yyyy') : v)} contentStyle={{ borderRadius: 10, border: '1px solid #262626', background: '#151515', color: '#f5f5f5', fontSize: 12.5 }} />
+                    <Area type="monotone" dataKey="value" name="Tasks Completed" stroke="#c1121f" strokeWidth={2.25} fill="url(#genFill)" />
                   </AreaChart>
                 </ResponsiveContainer>
               )}
@@ -157,11 +157,11 @@ export default function AnalyticsPage() {
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={funnelCounts} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-                    <CartesianGrid vertical={false} stroke="#eeeef3" />
-                    <XAxis dataKey="stage" tick={{ fontSize: 11, fill: '#9d9db3' }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 11, fill: '#9d9db3' }} axisLine={false} tickLine={false} width={30} />
-                    <RTooltip contentStyle={{ borderRadius: 10, border: '1px solid #e0e0e9', fontSize: 12.5 }} />
-                    <Bar dataKey="count" name="Candidates" fill="#6D3EF2" radius={[6, 6, 0, 0]} />
+                    <CartesianGrid vertical={false} stroke="#262626" />
+                    <XAxis dataKey="stage" tick={{ fontSize: 11, fill: '#a3a3a3' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: '#a3a3a3' }} axisLine={false} tickLine={false} width={30} />
+                    <RTooltip contentStyle={{ borderRadius: 10, border: '1px solid #262626', background: '#151515', color: '#f5f5f5', fontSize: 12.5 }} />
+                    <Bar dataKey="count" name="Candidates" fill="#c1121f" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               )}
@@ -193,7 +193,7 @@ export default function AnalyticsPage() {
                         <Cell key={i} fill={INTENT_COLORS[i % INTENT_COLORS.length]} />
                       ))}
                     </Pie>
-                    <RTooltip contentStyle={{ borderRadius: 10, border: '1px solid #e0e0e9', fontSize: 12.5 }} />
+                    <RTooltip contentStyle={{ borderRadius: 10, border: '1px solid #262626', background: '#151515', color: '#f5f5f5', fontSize: 12.5 }} />
                   </PieChart>
                 </ResponsiveContainer>
               )}

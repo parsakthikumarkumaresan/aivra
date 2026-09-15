@@ -22,7 +22,7 @@ export function HelpText({ children, error }: { children: ReactNode; error?: boo
 }
 
 const fieldBase =
-  'w-full rounded-lg border bg-white px-3 text-sm text-ink-900 placeholder:text-ink-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:bg-ink-50 disabled:text-ink-400'
+  'w-full rounded-lg border bg-surface px-3 text-sm text-ink-900 placeholder:text-ink-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:bg-ink-50 disabled:text-ink-400'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: boolean

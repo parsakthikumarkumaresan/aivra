@@ -11,13 +11,15 @@ async function toAIEmployee(catalogEntry: (typeof employeeCatalog)[number]): Pro
   const status: EmployeeStatus = subscription?.status ?? 'not_hired'
   const isActive = status === 'active'
 
-  // Voice is AIVRA-customized per customer — once a deployment exists
-  // (pending or active), brand it with the customer's own business name
-  // instead of the generic catalog name.
+  // Voice is JEXA.AI-customized per customer — once a deployment exists
+  // (pending or active), show what it's configured for as a secondary
+  // label. The employee's name/tagline stay "Jaan" everywhere: Jaan is the
+  // product identity on every catalog/dashboard card, regardless of
+  // subscription state — the customer's specific agent names (e.g. "Acme
+  // Jewellery AI Customer Assistant") live one level down, inside the Jaan
+  // console's own Agents list.
   const voiceProject = catalogEntry.type === 'voice' && subscription ? getVoiceProject() : null
-  const branding = voiceProject
-    ? { name: `${voiceProject.businessName} AI Customer Assistant`, tagline: `${voiceProject.industry} Customer Assistant`, configuredLabel: voiceProject.industry }
-    : {}
+  const branding = voiceProject ? { configuredLabel: voiceProject.industry } : {}
 
   return {
     ...catalogEntry,

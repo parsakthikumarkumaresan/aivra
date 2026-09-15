@@ -74,7 +74,7 @@ export const hrService = {
       requirements: input.requirements ?? [],
       requiredSkills: input.requiredSkills ?? [],
       ...input,
-      companyName: input.companyName || 'AIVRA Tech',
+      companyName: input.companyName || 'JEXA.AI Tech',
       aiAgentName: input.aiAgentName || 'Zara',
     }
     mockJobs.unshift(job)

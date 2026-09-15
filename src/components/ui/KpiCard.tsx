@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { ArrowDownRight, ArrowUpRight, Minus, Info } from 'lucide-react'
 import { Tooltip } from './Tooltip'
+import { useReveal } from '@/hooks/useReveal'
+import { useCountUp } from '@/hooks/useCountUp'
 import { cn } from '@/utils/cn'
 
 interface KpiCardProps {
@@ -15,8 +17,10 @@ interface KpiCardProps {
 
 export function KpiCard({ label, value, icon, trend, trendGood = 'up', tooltip, className }: KpiCardProps) {
   const isPositive = trend && (trend.direction === trendGood || trend.direction === 'flat')
+  const { ref, visible } = useReveal<HTMLDivElement>(0.4)
+  const displayValue = useCountUp(value, { start: visible })
   return (
-    <div className={cn('rounded-xl border border-ink-200 bg-white p-5 shadow-card', className)}>
+    <div ref={ref} className={cn('reveal rounded-xl border border-ink-200 bg-surface p-5 shadow-card', visible && 'reveal-visible', className)}>
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-1.5 text-[13px] font-medium text-ink-500">
           {label}
@@ -29,7 +33,7 @@ export function KpiCard({ label, value, icon, trend, trendGood = 'up', tooltip, 
         {icon && <span className="flex size-8 items-center justify-center rounded-lg bg-brand-50 text-brand-600">{icon}</span>}
       </div>
       <div className="mt-3 flex items-end justify-between gap-2">
-        <span className="text-[26px] font-semibold leading-none tracking-tight text-ink-900">{value}</span>
+        <span className="text-[26px] font-semibold leading-none tracking-tight text-ink-900">{displayValue}</span>
         {trend && (
           <span
             className={cn(

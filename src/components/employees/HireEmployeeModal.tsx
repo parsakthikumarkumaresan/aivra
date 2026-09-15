@@ -16,7 +16,7 @@ import { useToast } from '@/hooks/useToast'
 
 const CONFIGURE_HREF: Record<EmployeeType, string> = {
   hr: '/app/employees/hr/configuration',
-  voice: '/app/employees/voice/setup',
+  voice: '/app/jaan',
 }
 
 const CHECKOUT_STEPS = [
@@ -182,7 +182,7 @@ export function HireEmployeeModal({ employeeType, onClose }: HireEmployeeModalPr
                     </div>
                   </div>
                 </div>
-                <p className="mt-3 text-[11.5px] text-ink-400">This is a simulated payment for the AIVRA prototype — no real charge is made.</p>
+                <p className="mt-3 text-[11.5px] text-ink-400">This is a simulated payment for the JEXA.AI prototype — no real charge is made.</p>
               </div>
 
               <div className="flex justify-between">

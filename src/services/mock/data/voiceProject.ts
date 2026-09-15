@@ -4,7 +4,7 @@ export interface VoiceProject {
 }
 
 // Mutable, in-memory — set when a Voice Employee is provisioned (via a
-// customization lead, simulated by the Developer panel's "AIVRA
+// customization lead, simulated by the Developer panel's "JEXA.AI
 // Provisioning" action). employees.service reads this to brand the Voice
 // employee with the customer's own business name once it exists.
 let currentVoiceProject: VoiceProject | null = null

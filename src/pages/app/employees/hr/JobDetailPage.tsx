@@ -28,7 +28,7 @@ export default function JobDetailPage() {
   useSetBreadcrumbs(
     [
       { label: 'AI Employees', href: '/app/employees' },
-      { label: 'Aivra Hr', href: '/app/employees/hr' },
+      { label: 'Jexa HR', href: '/app/employees/hr' },
       { label: 'Jobs', href: '/app/employees/hr/jobs' },
       { label: job.data?.title ?? '…' },
     ],
@@ -200,7 +200,7 @@ export default function JobDetailPage() {
 
 function StatCard({ label, value, icon }: { label: string; value: number; icon: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-ink-200 bg-white p-4">
+    <div className="rounded-xl border border-ink-200 bg-surface p-4">
       <div className="flex items-center justify-between">
         <span className="text-[13px] font-medium text-ink-500">{label}</span>
         <span className="flex size-7 items-center justify-center rounded-lg bg-brand-50 text-brand-600">{icon}</span>

@@ -32,7 +32,7 @@ function NotificationRow({ icon, label, description, checked, onChange }: { icon
 }
 
 export default function VoiceBasicSettingsPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI Voice Employee', href: '/app/employees/voice' }, { label: 'Basic Settings' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jaan', href: '/app/employees/voice' }, { label: 'Basic Settings' }])
   const { show } = useToast()
   const config = useVoiceConfig()
 
@@ -88,16 +88,16 @@ export default function VoiceBasicSettingsPage() {
     <div className="space-y-5">
       <Link to="/app/employees/voice" className="flex items-center gap-1.5 text-[13px] font-medium text-ink-500 hover:text-ink-800">
         <ArrowLeft className="size-3.5" />
-        Back to AI Voice Employee
+        Back to Jaan
       </Link>
 
-      <PageHeader title="Basic Settings" description="Everyday controls for your AI Voice Employee." />
+      <PageHeader title="Basic Settings" description="Everyday controls for your Jaan." />
 
       <Card className="border-info-100 bg-info-50/50">
         <CardBody className="flex items-start gap-3">
           <Info className="mt-0.5 size-4 shrink-0 text-info-600" />
           <p className="text-[13px] leading-relaxed text-ink-700">
-            AIVRA configures and maintains the underlying AI system for your Voice Employee — knowledge indexing, tools,
+            JEXA.AI configures and maintains the underlying AI system for your Voice Employee — knowledge indexing, tools,
             guardrails and telephony. The settings below are safe controls you can adjust anytime.
           </p>
         </CardBody>
@@ -112,7 +112,7 @@ export default function VoiceBasicSettingsPage() {
       ) : (
         <>
           <Card>
-            <CardHeader title="AI Employee Identity" description="How your AI Voice Employee sounds and introduces itself" />
+            <CardHeader title="AI Employee Identity" description="How your Jaan sounds and introduces itself" />
             <CardBody className="space-y-4">
               <div>
                 <Label>AI Employee Name</Label>
@@ -156,7 +156,7 @@ export default function VoiceBasicSettingsPage() {
           <Card>
             <CardHeader
               title={<span className="flex items-center gap-2"><Building2 className="size-4 text-ink-500" /> Business Information</span>}
-              description="Provide the business information your AI Employee should know. AIVRA's team configures and maintains the underlying AI knowledge system."
+              description="Provide the business information your AI Employee should know. Jexa's team configures and maintains the underlying AI knowledge system."
             />
             <CardBody className="space-y-3">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -168,7 +168,7 @@ export default function VoiceBasicSettingsPage() {
                 variant="outline"
                 size="sm"
                 icon={<Sparkles className="size-3.5" />}
-                onClick={() => show({ tone: 'info', title: 'Suggestion sent', description: "AIVRA's team will review and add this to your AI Employee's knowledge." })}
+                onClick={() => show({ tone: 'info', title: 'Suggestion sent', description: "Jexa's team will review and add this to your AI Employee's knowledge." })}
               >
                 Suggest a Source
               </Button>
@@ -185,7 +185,7 @@ export default function VoiceBasicSettingsPage() {
           </Card>
 
           <Card>
-            <CardHeader title={<span className="flex items-center gap-2"><ShieldAlert className="size-4 text-ink-500" /> Basic Escalation Preferences</span>} description="Deeper routing logic is configured by AIVRA" />
+            <CardHeader title={<span className="flex items-center gap-2"><ShieldAlert className="size-4 text-ink-500" /> Basic Escalation Preferences</span>} description="Deeper routing logic is configured by JEXA.AI" />
             <CardBody className="space-y-3">
               <NotificationRow icon={<ShieldAlert className="size-4" />} label="Escalate when the caller seems upset" description="Hands off to a human on detected frustration" checked={escalation.upsetCaller} onChange={(v) => setEscalation({ ...escalation, upsetCaller: v })} />
               <NotificationRow icon={<ShieldAlert className="size-4" />} label="Escalate for cancellations or refunds" description="Always route these requests to a human" checked={escalation.refundsOrCancellations} onChange={(v) => setEscalation({ ...escalation, refundsOrCancellations: v })} />

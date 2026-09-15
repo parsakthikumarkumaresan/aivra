@@ -19,9 +19,9 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, onNavigate }: Si
   const { organization } = useAppData()
 
   return (
-    <div className="flex h-full flex-col bg-white">
+    <div className="flex h-full flex-col bg-ink-50">
       <div className={cn('flex h-16 shrink-0 items-center border-b border-ink-100', collapsed ? 'justify-center px-0' : 'justify-between px-5')}>
-        {collapsed ? <LogoMark size={28} /> : <Logo markSize={28} />}
+        {collapsed ? <LogoMark size={28} /> : <Logo markSize={36} />}
         {onToggleCollapsed && !collapsed && (
           <button
             onClick={onToggleCollapsed}

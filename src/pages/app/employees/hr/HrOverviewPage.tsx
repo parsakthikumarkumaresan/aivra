@@ -34,7 +34,7 @@ import type { Candidate, Job } from '@/types'
 import { formatRelativeTime } from '@/utils/format'
 
 export default function HrOverviewPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jexa HR' }])
   const employee = useEmployeeByType('hr')
   const jobs = useJobs()
   const candidates = useCandidates({})
@@ -45,7 +45,7 @@ export default function HrOverviewPage() {
   async function pauseEmployee() {
     await subscriptionService.pauseSubscription('hr')
     refetchEmployees()
-    show({ tone: 'success', title: 'Aivra Hr paused', description: 'It will stop taking new work immediately.' })
+    show({ tone: 'success', title: 'Jexa HR paused', description: 'It will stop taking new work immediately.' })
     navigate('/app/employees/hr')
   }
 
@@ -78,7 +78,7 @@ export default function HrOverviewPage() {
         icon={<Users className="size-5" />}
         title={
           <span className="flex items-center gap-2.5">
-            Aivra Hr
+            Jexa HR
             {employee.data && <EmployeeStatusBadge status={employee.data.status} />}
           </span>
         }
@@ -176,7 +176,7 @@ export default function HrOverviewPage() {
       </Card>
 
       <Card>
-        <CardHeader title="Needs Your Attention" description="Human decisions Aivra Hr is waiting on" />
+        <CardHeader title="Needs Your Attention" description="Human decisions Jexa HR is waiting on" />
         <CardBody className="space-y-1 p-2">
           <AttentionRow
             icon={<ClipboardList className="size-4" />}

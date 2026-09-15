@@ -43,7 +43,7 @@ const STEPS = [
 ]
 
 export default function VoiceSetupWizardPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI Voice Employee', href: '/app/employees/voice' }, { label: 'Advanced Setup (Internal)' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jaan', href: '/app/employees/voice' }, { label: 'Advanced Setup (Internal)' }])
   const navigate = useNavigate()
   const { show } = useToast()
   const [stepIndex, setStepIndex] = useState(0)
@@ -78,7 +78,7 @@ export default function VoiceSetupWizardPage() {
     setActivating(true)
     await new Promise((r) => setTimeout(r, 1000))
     setActivating(false)
-    show({ tone: 'success', title: 'AI Voice Employee activated', description: `${data.businessName} is now live and taking calls.` })
+    show({ tone: 'success', title: 'Jaan activated', description: `${data.businessName} is now live and taking calls.` })
     navigate('/app/employees/voice')
   }
 
@@ -86,12 +86,12 @@ export default function VoiceSetupWizardPage() {
     <div className="space-y-5">
       <Link to="/app/employees/voice" className="flex items-center gap-1.5 text-[13px] font-medium text-ink-500 hover:text-ink-800">
         <ArrowLeft className="size-3.5" />
-        Back to AI Voice Employee
+        Back to Jaan
       </Link>
 
       <div className="flex items-center gap-2 rounded-lg border border-warning-200 bg-warning-50 px-3.5 py-2.5 text-[12.5px] font-medium text-warning-700">
         <ShieldAlert className="size-3.5 shrink-0" />
-        AIVRA Internal Configuration — internal AIVRA team only. Not visible to customers.
+        JEXA.AI Internal Configuration — internal JEXA.AI team only. Not visible to customers.
       </div>
 
       <PageHeader title="Voice Employee Setup" description="Configuration-driven — the same Voice Employee UI adapts to any industry." actions={<SaveStatus state={saveState} />} />
@@ -139,7 +139,7 @@ export default function VoiceSetupWizardPage() {
                 </Button>
               ) : (
                 <Button onClick={activate} loading={activating} icon={<Sparkles className="size-4" />} disabled={allErrors.length > 0}>
-                  Activate AI Voice Employee
+                  Activate Jaan
                 </Button>
               )}
             </div>
@@ -171,7 +171,7 @@ function ProfileStep({ data, setData }: StepProps) {
   const set = (patch: Partial<VoiceEmployeeConfig>) => setData({ ...data, ...patch })
   return (
     <div className="space-y-4">
-      <StepHeading icon={<Building2 className="size-4" />} title="Business Profile" description="Tell AIVRA about the business this employee represents." />
+      <StepHeading icon={<Building2 className="size-4" />} title="Business Profile" description="Tell JEXA.AI about the business this employee represents." />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <Label required>Business name</Label>
@@ -216,7 +216,7 @@ function VoiceStep({ data, setData }: StepProps) {
   const set = (patch: Partial<VoiceEmployeeConfig>) => setData({ ...data, ...patch })
   return (
     <div className="space-y-4">
-      <StepHeading icon={<Mic2 className="size-4" />} title="Voice Identity" description="Configure how the AI Voice Employee sounds and speaks." />
+      <StepHeading icon={<Mic2 className="size-4" />} title="Voice Identity" description="Configure how Jaan sounds and speaks." />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <Label>Language</Label>

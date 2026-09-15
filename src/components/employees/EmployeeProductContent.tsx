@@ -62,7 +62,7 @@ export function EmployeeProductContent({ description, content, plan, pricingMode
       </Card>
 
       <Card className="border-brand-200">
-        <CardHeader title="Pricing" description={pricingMode === 'fixed' ? 'Simple per-employee subscription — cancel or pause anytime.' : 'Every AI Voice Employee is custom-built for its business.'} />
+        <CardHeader title="Pricing" description={pricingMode === 'fixed' ? 'Simple per-employee subscription — cancel or pause anytime.' : 'Every Jaan is custom-built for its business.'} />
         <CardBody className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           {pricingMode === 'fixed' ? (
             <div className="flex flex-wrap items-end gap-6">

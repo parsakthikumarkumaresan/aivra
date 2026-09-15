@@ -122,7 +122,7 @@ export const BUILDER_SECTIONS: SectionMeta[] = [
   },
   {
     id: 'advanced', label: 'Advanced', icon: Cpu,
-    guideTitle: 'AIVRA internal — runtime configuration',
+    guideTitle: 'JEXA.AI internal — runtime configuration',
     guideBody: [
       'These settings affect cost, latency and reliability directly — change with care.',
       'Debug mode adds verbose logging and should be off in production.',

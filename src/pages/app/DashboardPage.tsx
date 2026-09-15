@@ -28,6 +28,7 @@ import { ErrorState } from '@/components/ui/ErrorState'
 import { ActivityItem } from '@/components/ui/ActivityItem'
 import { Button } from '@/components/ui/Button'
 import { EmployeeCard } from '@/components/employees/EmployeeCard'
+import { Reveal } from '@/components/ui/Reveal'
 import { formatDate } from '@/utils/format'
 
 const ATTENTION_CONFIG = {
@@ -39,7 +40,7 @@ const ATTENTION_CONFIG = {
 
 const QUICK_ACTIONS = [
   { label: 'Upload Resumes', description: 'Add candidates for AI screening', icon: UploadCloud, href: '/app/employees/hr/candidates/upload', requiresType: 'hr' as const },
-  { label: 'Configure Voice Employee', description: 'Update business profile or capabilities', icon: Mic, href: '/app/employees/voice/setup', requiresType: 'voice' as const },
+  { label: 'Open Jaan', description: 'Manage your Jaan voice agents', icon: Mic, href: '/app/jaan', requiresType: 'voice' as const },
   { label: 'Upload Knowledge', description: 'Add a file, URL or connected source', icon: Brain, href: '/app/knowledge', requiresType: undefined },
   { label: 'Connect Integration', description: 'Calendar, CRM, telephony and more', icon: Plug, href: '/app/integrations', requiresType: undefined },
 ]
@@ -54,18 +55,23 @@ export default function DashboardPage() {
 
   // "My AI Workforce" — only employees actually provisioned to this
   // customer's account. Discovering and hiring new ones happens on the
-  // public AIVRA website, not inside the authenticated dashboard.
+  // public JEXA.AI website, not inside the authenticated dashboard.
   const workforce = employees.filter((e) => !['not_hired', 'cancelled', 'expired'].includes(e.status))
   const activeCount = employees.filter((e) => e.status === 'active').length
+  const activeTypes = new Set(employees.filter((e) => e.status === 'active').map((e) => e.type))
   const quickActions = QUICK_ACTIONS.filter((a) => !a.requiresType || workforce.some((e) => e.type === a.requiresType))
+  // Keep the feed general: an item calling out a specific AI Employee (e.g.
+  // Jaan) only belongs here for accounts that actually have that employee active.
+  const attentionData = attention.data?.filter((item) => !item.employeeType || activeTypes.has(item.employeeType))
+  const activityData = activity.data?.filter((event) => !event.employeeType || activeTypes.has(event.employeeType))
 
   if (!appLoading && workforce.length === 0) {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center">
         <EmptyState
           icon={<Sparkles className="size-6" />}
-          title={`Welcome to AIVRA, ${currentUser?.name?.split(' ')[0] ?? 'there'}`}
-          description="Build your AI workforce. You haven't added an AI Employee to your workforce yet — discover what AIVRA offers on our website."
+          title={`Welcome to JEXA.AI, ${currentUser?.name?.split(' ')[0] ?? 'there'}`}
+          description="Build your AI workforce. You haven't added an AI Employee to your workforce yet — discover what JEXA.AI offers on our website."
           action={
             <Link to="/">
               <Button icon={<Sparkles className="size-4" />}>Explore AI Employees</Button>
@@ -128,8 +134,10 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {workforce.map((employee) => (
-              <EmployeeCard key={employee.id} employee={employee} compact />
+            {workforce.map((employee, i) => (
+              <Reveal key={employee.id} delay={i * 70}>
+                <EmployeeCard employee={employee} compact />
+              </Reveal>
             ))}
           </div>
         )}
@@ -137,7 +145,8 @@ export default function DashboardPage() {
 
       {/* Activity + Needs Attention */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="p-5 lg:col-span-2">
+        <Reveal className="lg:col-span-2">
+        <Card className="p-5">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-[15px] font-semibold text-ink-900">Activity Overview</h3>
@@ -162,33 +171,35 @@ export default function DashboardPage() {
                 <AreaChart data={chart.data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="taskFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#6D3EF2" stopOpacity={0.18} />
-                      <stop offset="100%" stopColor="#6D3EF2" stopOpacity={0} />
+                      <stop offset="0%" stopColor="#c1121f" stopOpacity={0.18} />
+                      <stop offset="100%" stopColor="#c1121f" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid vertical={false} stroke="#eeeef3" />
+                  <CartesianGrid vertical={false} stroke="#262626" />
                   <XAxis
                     dataKey="date"
                     tickFormatter={(v: string) => formatDate(v, chart.range === '7d' ? 'EEE' : 'MMM d')}
-                    tick={{ fontSize: 11, fill: '#9d9db3' }}
+                    tick={{ fontSize: 11, fill: '#a3a3a3' }}
                     axisLine={false}
                     tickLine={false}
                     interval={chart.range === '30d' ? 4 : 0}
                   />
-                  <YAxis tick={{ fontSize: 11, fill: '#9d9db3' }} axisLine={false} tickLine={false} width={40} />
+                  <YAxis tick={{ fontSize: 11, fill: '#a3a3a3' }} axisLine={false} tickLine={false} width={40} />
                   <RTooltip
                     labelFormatter={(v) => (typeof v === 'string' ? formatDate(v, 'MMM d, yyyy') : v)}
-                    contentStyle={{ borderRadius: 10, border: '1px solid #e0e0e9', fontSize: 12.5 }}
+                    contentStyle={{ borderRadius: 10, border: '1px solid #262626', background: '#151515', color: '#f5f5f5', fontSize: 12.5 }}
                   />
-                  <Area type="monotone" dataKey="value" name="Tasks Completed" stroke="#6D3EF2" strokeWidth={2.25} fill="url(#taskFill)" />
-                  <Area type="monotone" dataKey="secondaryValue" name="Conversations" stroke="#c7c7d6" strokeWidth={2} fill="transparent" />
+                  <Area type="monotone" dataKey="value" name="Tasks Completed" stroke="#c1121f" strokeWidth={2.25} fill="url(#taskFill)" />
+                  <Area type="monotone" dataKey="secondaryValue" name="Conversations" stroke="#a3a3a3" strokeWidth={2} fill="transparent" />
                 </AreaChart>
               </ResponsiveContainer>
             )}
           </div>
         </Card>
+        </Reveal>
 
-        <Card className="flex flex-col">
+        <Reveal delay={100}>
+        <Card className="flex flex-col h-full">
           <CardHeader title="Needs Attention" description="Escalations, failures and approvals" />
           <CardBody className="flex-1 space-y-1 p-2">
             {attention.loading ? (
@@ -197,13 +208,18 @@ export default function DashboardPage() {
                 <Skeleton className="h-12 w-full" />
                 <Skeleton className="h-12 w-full" />
               </div>
-            ) : attention.data?.length === 0 ? (
+            ) : attentionData?.length === 0 ? (
               <EmptyState compact title="All clear" description="Nothing needs your attention right now." />
             ) : (
-              attention.data?.map((item) => {
+              attentionData?.map((item, i) => {
                 const config = ATTENTION_CONFIG[item.type]
                 return (
-                  <Link key={item.id} to={item.href} className="block rounded-lg transition-colors duration-150 hover:bg-ink-50">
+                  <Link
+                    key={item.id}
+                    to={item.href}
+                    className="row-fade-in block rounded-lg transition-colors duration-150 hover:bg-ink-50"
+                    style={{ animationDelay: `${i * 60}ms` }}
+                  >
                     <ActivityItem icon={<config.icon className="size-4" />} tone={config.tone} title={item.title} description={item.description} timestamp={item.timestamp} />
                   </Link>
                 )
@@ -211,11 +227,13 @@ export default function DashboardPage() {
             )}
           </CardBody>
         </Card>
+        </Reveal>
       </div>
 
       {/* Recent activity + quick actions */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+        <Reveal className="lg:col-span-2">
+        <Card>
           <CardHeader title="Recent Activity" description="Latest events across your AI workforce" />
           <CardBody className="space-y-1 p-2">
             {activity.loading ? (
@@ -225,8 +243,13 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : (
-              activity.data?.map((event) => (
-                <Link key={event.id} to={event.href ?? '#'} className="block rounded-lg transition-colors duration-150 hover:bg-ink-50">
+              activityData?.map((event, i) => (
+                <Link
+                  key={event.id}
+                  to={event.href ?? '#'}
+                  className="row-fade-in block rounded-lg transition-colors duration-150 hover:bg-ink-50"
+                  style={{ animationDelay: `${i * 50}ms` }}
+                >
                   <ActivityItem
                     icon={<Clock className="size-4" />}
                     tone={event.type.includes('escalat') || event.type.includes('failed') ? 'danger' : event.type.includes('approval') ? 'warning' : 'brand'}
@@ -239,7 +262,9 @@ export default function DashboardPage() {
             )}
           </CardBody>
         </Card>
+        </Reveal>
 
+        <Reveal delay={100}>
         <Card>
           <CardHeader title="Quick Actions" />
           <CardBody className="space-y-2 p-3">
@@ -260,6 +285,7 @@ export default function DashboardPage() {
             ))}
           </CardBody>
         </Card>
+        </Reveal>
       </div>
     </div>
   )

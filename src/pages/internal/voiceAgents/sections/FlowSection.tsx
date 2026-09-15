@@ -102,7 +102,7 @@ export default function FlowSection({ agent, patch }: SectionProps) {
                         onClick={() => openEdit(node)}
                         onMouseEnter={() => setHighlighted(node.id)}
                         onMouseLeave={() => setHighlighted(null)}
-                        className={`rounded-xl border p-3.5 text-left transition-colors duration-150 ${highlighted === node.id ? 'border-brand-400 bg-brand-50/40' : 'border-ink-200 bg-white hover:border-brand-300'}`}
+                        className={`rounded-xl border p-3.5 text-left transition-colors duration-150 ${highlighted === node.id ? 'border-brand-400 bg-brand-50/40' : 'border-ink-200 bg-surface hover:border-brand-300'}`}
                       >
                         <div className="flex items-center justify-between gap-2">
                           <Badge tone={NODE_TYPE_TONE[node.type]} icon={<Icon className="size-3" />}>{FLOW_NODE_TYPE_LABEL[node.type]}</Badge>

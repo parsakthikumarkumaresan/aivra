@@ -33,7 +33,7 @@ export function DataTable<T>({
 }: DataTableProps<T>) {
   if (loading) {
     return (
-      <div className={cn('overflow-hidden rounded-xl border border-ink-200 bg-white', className)}>
+      <div className={cn('overflow-hidden rounded-xl border border-ink-200 bg-surface', className)}>
         <SkeletonTable cols={columns.length} />
       </div>
     )
@@ -44,7 +44,7 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={cn('overflow-x-auto rounded-xl border border-ink-200 bg-white', className)}>
+    <div className={cn('overflow-x-auto rounded-xl border border-ink-200 bg-surface', className)}>
       <table className="w-full min-w-max border-collapse text-left text-sm">
         <thead>
           <tr className="border-b border-ink-100 bg-ink-25">
@@ -59,15 +59,16 @@ export function DataTable<T>({
           </tr>
         </thead>
         <tbody>
-          {data.map((row) => (
+          {data.map((row, i) => (
             <tr
               key={keyExtractor(row)}
               onClick={() => onRowClick?.(row)}
               className={cn(
-                'border-b border-ink-100 last:border-0 transition-colors duration-150',
+                'row-fade-in border-b border-ink-100 last:border-0 transition-colors duration-150',
                 onRowClick && 'cursor-pointer hover:bg-brand-50/40',
                 rowClassName?.(row),
               )}
+              style={{ animationDelay: `${Math.min(i * 35, 350)}ms` }}
             >
               {columns.map((col) => (
                 <td key={col.key} className={cn('px-5 py-3.5 align-middle text-ink-700', col.className)}>

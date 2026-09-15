@@ -7,8 +7,8 @@ export const mockPhoneNumbers: PhoneNumber[] = [
 ]
 
 export const mockTelephonyProviders: TelephonyProviderAccount[] = [
-  { id: 'prov_twilio', name: 'Twilio', status: 'connected', accountLabel: 'AIVRA Production', numbersCount: 2 },
-  { id: 'prov_exotel', name: 'Exotel', status: 'connected', accountLabel: 'AIVRA India', numbersCount: 1 },
+  { id: 'prov_twilio', name: 'Twilio', status: 'connected', accountLabel: 'JEXA.AI Production', numbersCount: 2 },
+  { id: 'prov_exotel', name: 'Exotel', status: 'connected', accountLabel: 'JEXA.AI India', numbersCount: 1 },
   { id: 'prov_vonage', name: 'Vonage', status: 'not_connected', numbersCount: 0 },
 ]
 

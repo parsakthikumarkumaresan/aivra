@@ -75,7 +75,7 @@ export default function CandidateDetailPage() {
   useSetBreadcrumbs(
     [
       { label: 'AI Employees', href: '/app/employees' },
-      { label: 'Aivra Hr', href: '/app/employees/hr' },
+      { label: 'Jexa HR', href: '/app/employees/hr' },
       { label: 'Candidates', href: '/app/employees/hr/candidates' },
       { label: candidate.data?.name ?? '…' },
     ],
@@ -105,7 +105,7 @@ export default function CandidateDetailPage() {
     setBusy(true)
     await hrService.approveForScreening(c.id)
     setBusy(false)
-    show({ tone: 'success', title: 'Approved for AI screening', description: `${c.name} can now be called by Aivra Hr.` })
+    show({ tone: 'success', title: 'Approved for AI screening', description: `${c.name} can now be called by Jexa HR.` })
     refreshAll()
   }
 

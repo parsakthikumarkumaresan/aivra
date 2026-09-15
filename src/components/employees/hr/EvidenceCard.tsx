@@ -4,7 +4,7 @@ import { ScoreRing } from '@/components/ui/ProgressBar'
 
 export function EvidenceCard({ evidence }: { evidence: CriterionEvidence }) {
   return (
-    <div className="rounded-xl border border-ink-200 bg-white p-4">
+    <div className="rounded-xl border border-ink-200 bg-surface p-4">
       <div className="flex items-start justify-between gap-3">
         <h4 className="text-[13.5px] font-semibold text-ink-900">{evidence.criterionLabel}</h4>
         <ScoreRing value={evidence.score} size={36} />

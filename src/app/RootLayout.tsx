@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { AppDataProvider } from '@/app/AppDataProvider'
 import { HireFlowProvider } from '@/app/HireFlowContext'
 import { LeadFlowProvider } from '@/app/LeadFlowContext'
+import { PageTransition } from '@/components/layout/PageTransition'
 
 // Client-side navigation to a route + hash (e.g. a footer link on another
 // page pointing to "/#platform") doesn't auto-scroll the way a plain <a>
@@ -28,7 +29,7 @@ export function RootLayout() {
     <AppDataProvider>
       <HireFlowProvider>
         <LeadFlowProvider>
-          <Outlet />
+          <PageTransition />
         </LeadFlowProvider>
       </HireFlowProvider>
     </AppDataProvider>

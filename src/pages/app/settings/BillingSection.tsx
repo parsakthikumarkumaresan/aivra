@@ -93,7 +93,7 @@ export function BillingSection() {
               <p className="mt-1 text-xs text-ink-400">{activeEmployees.length} currently active</p>
             </Card>
             <Card className="p-5">
-              <p className="text-[13px] font-medium text-ink-500">Total AIVRA subscription</p>
+              <p className="text-[13px] font-medium text-ink-500">Total JEXA.AI subscription</p>
               <p className="mt-2 text-[26px] font-bold text-ink-900">{formatCurrency(totalMonthly)}<span className="text-[13px] font-normal text-ink-500">/mo</span></p>
               <p className="mt-1 text-xs text-ink-400">Across all hired AI Employees</p>
             </Card>
@@ -220,7 +220,7 @@ export function BillingSection() {
             emptyState={<div className="p-8 text-center text-[13px] text-ink-500">No invoices yet.</div>}
             columns={[
               { key: 'id', header: 'Invoice', render: (row) => <span className="font-medium text-ink-800">{row.id.toUpperCase()}</span> },
-              { key: 'employee', header: 'AI Employee', render: (row) => <span className="capitalize">{row.employeeType === 'hr' ? 'Aivra Hr' : 'AI Voice Employee'}</span> },
+              { key: 'employee', header: 'AI Employee', render: (row) => <span className="capitalize">{row.employeeType === 'hr' ? 'Jexa HR' : 'Jaan'}</span> },
               { key: 'period', header: 'Period', render: (row) => row.periodLabel },
               { key: 'amount', header: 'Amount', render: (row) => formatCurrency(row.amount, row.currency) },
               { key: 'status', header: 'Status', render: (row) => <Badge tone={row.status === 'paid' ? 'success' : row.status === 'failed' ? 'danger' : 'warning'} dot className="capitalize">{row.status}</Badge> },
@@ -270,12 +270,12 @@ function PlanCard({ employee, onAcquire }: { employee: AIEmployee; onAcquire: ()
     <Card>
       <CardHeader
         title={employee.name}
-        description={isVoice ? 'Custom AIVRA deployment' : plan.data.name + ' plan'}
+        description={isVoice ? 'Custom JEXA.AI deployment' : plan.data.name + ' plan'}
         actions={<EmployeeStatusBadge status={employee.status} />}
       />
       <CardBody className="space-y-3">
         {isVoice ? (
-          <p className="text-[13px] text-ink-600">Custom pricing — depends on your requirements. AIVRA provides a proposal after discovery.</p>
+          <p className="text-[13px] text-ink-600">Custom pricing — depends on your requirements. JEXA.AI provides a proposal after discovery.</p>
         ) : (
           <p className="text-[22px] font-bold text-ink-900">{formatCurrency(plan.data.monthlyPrice, plan.data.currency)}<span className="text-[13px] font-normal text-ink-500">/mo</span></p>
         )}
@@ -289,7 +289,7 @@ function PlanCard({ employee, onAcquire }: { employee: AIEmployee; onAcquire: ()
         </ul>
         {employee.status === 'not_hired' && (
           <Button size="sm" className="w-full" icon={<Sparkles className="size-3.5" />} onClick={onAcquire}>
-            {isVoice ? 'Contact AIVRA for Customization' : 'Hire AI Employee'}
+            {isVoice ? 'Contact JEXA.AI for Customization' : 'Hire AI Employee'}
           </Button>
         )}
       </CardBody>

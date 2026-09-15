@@ -18,7 +18,7 @@ export function BuilderGuidePanel({ section }: { section: SectionMeta }) {
         </ul>
         {section.internalOnly && (
           <p className="rounded-lg bg-warning-50 px-2.5 py-2 text-[11.5px] font-medium text-warning-700">
-            AIVRA internal — never exposed to customers.
+            JEXA.AI internal — never exposed to customers.
           </p>
         )}
       </CardBody>

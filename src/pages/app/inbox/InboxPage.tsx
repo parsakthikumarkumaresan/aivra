@@ -117,7 +117,7 @@ export default function InboxPage() {
       />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
-        <div className={cn('rounded-xl border border-ink-200 bg-white lg:col-span-2', selectedId && 'hidden lg:block')}>
+        <div className={cn('rounded-xl border border-ink-200 bg-surface lg:col-span-2', selectedId && 'hidden lg:block')}>
           {loading ? (
             <div className="space-y-3 p-4">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -163,7 +163,7 @@ export default function InboxPage() {
               <p className="mt-3 text-[13px] text-ink-500">Select a conversation to view details</p>
             </div>
           ) : (
-            <div className="rounded-xl border border-ink-200 bg-white">
+            <div className="rounded-xl border border-ink-200 bg-surface">
               <div className="flex items-start justify-between gap-3 border-b border-ink-100 px-5 py-4">
                 <div className="flex items-center gap-2">
                   <button onClick={() => setSelectedId(null)} className="rounded-lg p-1.5 text-ink-400 hover:bg-ink-100 hover:text-ink-700 lg:hidden">

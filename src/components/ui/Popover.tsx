@@ -36,7 +36,7 @@ export function Popover({ trigger, children, align = 'right', className, panelCl
       {open && (
         <div
           className={cn(
-            'absolute top-full z-40 mt-2 min-w-56 rounded-xl border border-ink-200 bg-white p-1.5 shadow-elevated',
+            'absolute top-full z-40 mt-2 min-w-56 rounded-xl border border-ink-200 bg-surface-elevated p-1.5 shadow-elevated',
             align === 'right' ? 'right-0' : 'left-0',
             panelClassName,
           )}

@@ -23,7 +23,7 @@ export function JdMatchCard({ match, jobTitle }: { match: JdMatchBreakdown; jobT
               <circle cx={32} cy={32} r={27} strokeWidth={5} fill="none" className="stroke-ink-100" />
               <circle
                 cx={32} cy={32} r={27} strokeWidth={5} fill="none"
-                stroke={match.overallScore >= 85 ? '#178350' : match.overallScore >= 70 ? '#6D3EF2' : match.overallScore >= 50 ? '#c8850c' : '#d33d3d'}
+                stroke={match.overallScore >= 85 ? '#22c55e' : match.overallScore >= 70 ? '#3b82f6' : match.overallScore >= 50 ? '#eab308' : '#ef4444'}
                 strokeDasharray={2 * Math.PI * 27}
                 strokeDashoffset={2 * Math.PI * 27 * (1 - match.overallScore / 100)}
                 strokeLinecap="round"

@@ -41,10 +41,10 @@ export default function LoginPage() {
     <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
       <div className="flex flex-col justify-between px-8 py-8 sm:px-16">
         <Link to="/">
-          <Logo />
+          <Logo markSize={44} />
         </Link>
         <div className="mx-auto w-full max-w-sm py-12">
-          <h1 className="text-[24px] font-bold tracking-tight text-ink-900">Sign in to AIVRA</h1>
+          <h1 className="text-[24px] font-bold tracking-tight text-ink-900">Sign in to JEXA.AI</h1>
           <p className="mt-1.5 text-[13.5px] text-ink-500">Manage your AI workforce for Acme Corporation.</p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
@@ -94,15 +94,15 @@ export default function LoginPage() {
             </button>
           </p>
         </div>
-        <p className="text-xs text-ink-400">© {new Date().getFullYear()} AIVRA Technologies Inc.</p>
+        <p className="text-xs text-ink-400">© {new Date().getFullYear()} JEXA.AI, Inc.</p>
       </div>
 
-      <div className="relative hidden overflow-hidden bg-brand-600 lg:flex lg:flex-col lg:justify-center lg:px-16">
-        <div className="pointer-events-none absolute -right-24 -top-24 size-96 rounded-full bg-brand-500/40 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-32 -left-16 size-96 rounded-full bg-brand-700/50 blur-3xl" />
+      <div className="relative hidden overflow-hidden border-l border-ink-200 bg-ink-50 lg:flex lg:flex-col lg:justify-center lg:px-16">
+        <div className="pointer-events-none absolute -right-24 -top-24 size-96 rounded-full bg-brand-600/25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -left-16 size-96 rounded-full bg-brand-700/20 blur-3xl" />
         <div className="relative">
-          <p className="text-[13px] font-semibold uppercase tracking-widest text-brand-200">AI Workforce Operating System</p>
-          <h2 className="mt-4 max-w-md text-[30px] font-bold leading-tight text-white">
+          <p className="text-[13px] font-semibold uppercase tracking-widest text-brand-600">AI Workforce Operating System</p>
+          <h2 className="mt-4 max-w-md text-[30px] font-bold leading-tight text-ink-900">
             Every AI Employee action is visible, governed and auditable.
           </h2>
           <div className="mt-10 space-y-4">
@@ -111,9 +111,9 @@ export default function LoginPage() {
               { label: 'Calls Handled', value: '1,248' },
               { label: 'Pending Approvals', value: '3' },
             ].map((stat) => (
-              <div key={stat.label} className="flex items-center justify-between rounded-xl bg-white/10 px-5 py-3.5 backdrop-blur-sm">
-                <span className="text-[13.5px] text-brand-100">{stat.label}</span>
-                <span className="text-lg font-bold text-white">{stat.value}</span>
+              <div key={stat.label} className="flex items-center justify-between rounded-xl border border-ink-200 bg-surface px-5 py-3.5 backdrop-blur-sm">
+                <span className="text-[13.5px] text-ink-500">{stat.label}</span>
+                <span className="text-lg font-bold text-ink-900">{stat.value}</span>
               </div>
             ))}
           </div>

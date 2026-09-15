@@ -39,7 +39,7 @@ const STATUS_TONE: Record<InterviewStatus, BadgeTone> = {
 }
 
 export default function ScreeningsListPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr', href: '/app/employees/hr' }, { label: 'Screenings' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jexa HR', href: '/app/employees/hr' }, { label: 'Screenings' }])
   const screenings = useScreenings()
   const jobs = useJobs()
   const navigate = useNavigate()

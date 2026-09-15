@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { HrSubNav } from '@/components/employees/hr/HrSubNav'
 
 export default function ReportsPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Aivra Hr', href: '/app/employees/hr' }, { label: 'Reports' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jexa HR', href: '/app/employees/hr' }, { label: 'Reports' }])
   const candidates = useCandidates({})
   const jobs = useJobs()
 

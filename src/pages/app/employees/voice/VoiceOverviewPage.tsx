@@ -20,7 +20,7 @@ import { formatDuration, formatRelativeTime } from '@/utils/format'
 const INTENT_LABEL: Record<CallIntent, string> = { faq: 'FAQ', booking: 'Booking', cancellation: 'Cancellation', status_lookup: 'Status Lookup', complaint: 'Complaint', unknown: 'Unknown' }
 
 export default function VoiceOverviewPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI Voice Employee' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jaan' }])
   const employee = useEmployeeByType('voice')
   const config = useVoiceConfig()
   const calls = useCalls({})
@@ -30,7 +30,7 @@ export default function VoiceOverviewPage() {
   async function pauseEmployee() {
     await subscriptionService.pauseSubscription('voice')
     refetchEmployees()
-    show({ tone: 'success', title: 'AI Voice Employee paused', description: 'It will stop taking new work immediately.' })
+    show({ tone: 'success', title: 'Jaan paused', description: 'It will stop taking new work immediately.' })
   }
 
   const data = calls.data ?? []
@@ -57,7 +57,7 @@ export default function VoiceOverviewPage() {
         icon={<Mic className="size-5" />}
         title={
           <span className="flex items-center gap-2.5">
-            {employee.data?.name ?? 'AI Voice Employee'}
+            {employee.data?.name ?? 'Jaan'}
             {employee.data && <EmployeeStatusBadge status={employee.data.status} />}
           </span>
         }

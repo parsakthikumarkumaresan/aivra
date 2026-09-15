@@ -6,6 +6,7 @@ import { AppShell } from '@/components/layout/AppShell'
 import { EmployeeAccessGate } from '@/components/employees/EmployeeAccessGate'
 import { VoiceAdvancedSetupGate } from '@/components/employees/voice/VoiceAdvancedSetupGate'
 import { InternalGate } from '@/components/internal/InternalGate'
+import { JaanAccessGate } from '@/components/jaan/JaanAccessGate'
 
 function lazyPage(factory: () => Promise<{ default: React.ComponentType }>) {
   const Component = lazy(factory)
@@ -37,7 +38,7 @@ export const router = createBrowserRouter([
         element: lazyPage(() => import('@/pages/marketing/VoiceEmployeePage')),
       },
       {
-        // AIVRA-internal Voice Agent Builder + Telephony console. Top-level
+        // JEXA.AI-internal Voice Agent Builder + Telephony console. Top-level
         // sibling routes (not nested under /app's AppShell), reached only via
         // the internal/developer entry point — never linked from customer nav.
         // Gated by InternalGate (the isInternalModeEnabled() dev flag), same
@@ -153,7 +154,7 @@ export const router = createBrowserRouter([
                 element: lazyPage(() => import('@/pages/app/employees/voice/VoiceBasicSettingsPage')),
               },
               {
-                // AIVRA-internal technical configuration — not linked from any
+                // JEXA.AI-internal technical configuration — not linked from any
                 // customer-facing nav, and gated behind VoiceAdvancedSetupGate
                 // so a customer landing here directly sees a clear "internal
                 // only" blocker instead of the technical wizard.
@@ -170,6 +171,45 @@ export const router = createBrowserRouter([
                 path: 'simulator',
                 element: lazyPage(() => import('@/pages/app/employees/voice/VoiceSimulatorPage')),
               },
+            ],
+          },
+          {
+            path: 'jaan',
+            element: <JaanAccessGate />,
+            children: [
+              { index: true, element: lazyPage(() => import('@/pages/app/jaan/JaanHomePage')) },
+              { path: 'onboarding', element: lazyPage(() => import('@/pages/app/jaan/JaanOnboardingPage')) },
+              { path: 'agents', element: lazyPage(() => import('@/pages/app/jaan/agents/AgentsListPage')) },
+              { path: 'agents/:id', element: lazyPage(() => import('@/pages/app/jaan/agents/AgentWorkspacePage')) },
+              { path: 'tools', element: lazyPage(() => import('@/pages/app/jaan/tools/JaanToolsPage')) },
+              { path: 'tables', element: lazyPage(() => import('@/pages/app/jaan/tables/TablesPage')) },
+              { path: 'tables/:id', element: lazyPage(() => import('@/pages/app/jaan/tables/TableDetailPage')) },
+              { path: 'library', element: lazyPage(() => import('@/pages/app/jaan/library/JaanLibraryPage')) },
+              { path: 'pronunciation', element: lazyPage(() => import('@/pages/app/jaan/pronunciation/PronunciationPage')) },
+              { path: 'analytics', element: lazyPage(() => import('@/pages/app/jaan/analytics/JaanAnalyticsPage')) },
+              { path: 'campaigns', element: lazyPage(() => import('@/pages/app/jaan/campaigns/CampaignsListPage')) },
+              { path: 'campaigns/:id', element: lazyPage(() => import('@/pages/app/jaan/campaigns/CampaignDetailPage')) },
+              { path: 'workflows', element: lazyPage(() => import('@/pages/app/jaan/workflows/WorkflowsPage')) },
+              { path: 'logs/conversations', element: lazyPage(() => import('@/pages/app/jaan/logs/ConversationsLogPage')) },
+              { path: 'logs/conversations/:id', element: lazyPage(() => import('@/pages/app/jaan/logs/ConversationDetailPage')) },
+              { path: 'logs/tools', element: lazyPage(() => import('@/pages/app/jaan/logs/ToolLogsPage')) },
+              { path: 'logs/api-webhook', element: lazyPage(() => import('@/pages/app/jaan/logs/ApiWebhookLogsPage')) },
+              { path: 'logs/library', element: lazyPage(() => import('@/pages/app/jaan/logs/LibraryLogsPage')) },
+              { path: 'logs/audio-ingestion', element: lazyPage(() => import('@/pages/app/jaan/logs/AudioIngestionLogsPage')) },
+              { path: 'monitor/metrics', element: lazyPage(() => import('@/pages/app/jaan/monitor/MetricsPage')) },
+              { path: 'monitor/runs', element: lazyPage(() => import('@/pages/app/jaan/monitor/RunsPage')) },
+              { path: 'monitor/reviews', element: lazyPage(() => import('@/pages/app/jaan/monitor/ReviewsPage')) },
+              { path: 'monitor/alerts', element: lazyPage(() => import('@/pages/app/jaan/monitor/AlertsPage')) },
+              { path: 'monitor/reports', element: lazyPage(() => import('@/pages/app/jaan/monitor/ReportsPage')) },
+              { path: 'simulations', element: lazyPage(() => import('@/pages/app/jaan/simulations/SimulationsPage')) },
+              { path: 'telephony/numbers', element: lazyPage(() => import('@/pages/app/jaan/telephony/JaanNumbersPage')) },
+              { path: 'telephony', element: lazyPage(() => import('@/pages/app/jaan/telephony/JaanTelephonyPage')) },
+              { path: 'telephony/compliance', element: lazyPage(() => import('@/pages/app/jaan/telephony/JaanCompliancePage')) },
+              { path: 'telephony/dnd', element: lazyPage(() => import('@/pages/app/jaan/telephony/JaanDndPage')) },
+              { path: 'settings', element: lazyPage(() => import('@/pages/app/jaan/settings/JaanSettingsPage')) },
+              { path: 'settings/billing', element: lazyPage(() => import('@/pages/app/jaan/settings/JaanSettingsPage')) },
+              { path: 'docs', element: lazyPage(() => import('@/pages/app/jaan/JaanDocsPage')) },
+              { path: '*', element: lazyPage(() => import('@/pages/app/NotFoundPage')) },
             ],
           },
           {

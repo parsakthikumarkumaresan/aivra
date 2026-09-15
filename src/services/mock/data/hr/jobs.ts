@@ -4,7 +4,7 @@ export const mockJobs: Job[] = [
   {
     id: 'job_1042',
     title: 'Senior Product Designer',
-    companyName: 'AIVRA Technologies',
+    companyName: 'JEXA.AI Technologies',
     aiAgentName: 'Zara',
     department: 'Design',
     location: 'Bengaluru, India (Hybrid)',
@@ -12,7 +12,7 @@ export const mockJobs: Job[] = [
     experienceLevel: '5-8 years',
     status: 'open',
     description:
-      'Own end-to-end product design for AIVRA\'s AI Employee console — from discovery through high-fidelity craft. Partner closely with product and engineering to ship enterprise-grade experiences.',
+      'Own end-to-end product design for JEXA.AI\'s AI Employee console — from discovery through high-fidelity craft. Partner closely with product and engineering to ship enterprise-grade experiences.',
     requirements: [
       'Lead end-to-end design for at least one major product surface',
       'Partner directly with engineering and product on scoping and delivery',
@@ -27,7 +27,7 @@ export const mockJobs: Job[] = [
   {
     id: 'job_1043',
     title: 'Backend Engineer',
-    companyName: 'AIVRA Technologies',
+    companyName: 'JEXA.AI Technologies',
     aiAgentName: 'Zara',
     department: 'Engineering',
     location: 'Remote (India)',
@@ -49,14 +49,14 @@ export const mockJobs: Job[] = [
   {
     id: 'job_1044',
     title: 'Customer Success Manager',
-    companyName: 'AIVRA Technologies',
+    companyName: 'JEXA.AI Technologies',
     aiAgentName: 'Zara',
     department: 'Customer Success',
     location: 'Mumbai, India',
     employmentType: 'full_time',
     experienceLevel: '2-5 years',
     status: 'open',
-    description: 'Own onboarding and retention for AIVRA\'s enterprise accounts, helping customers configure and scale their AI workforce.',
+    description: 'Own onboarding and retention for JEXA.AI\'s enterprise accounts, helping customers configure and scale their AI workforce.',
     requirements: [
       'Manage a book of enterprise accounts end-to-end',
       'Run onboarding calls and quarterly business reviews',
@@ -70,7 +70,7 @@ export const mockJobs: Job[] = [
   {
     id: 'job_1045',
     title: 'Data Analyst',
-    companyName: 'AIVRA Technologies',
+    companyName: 'JEXA.AI Technologies',
     aiAgentName: 'Zara',
     department: 'Analytics',
     location: 'Bengaluru, India',

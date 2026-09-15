@@ -115,7 +115,7 @@ export default function VoiceAgentBuilderPage() {
   return (
     <div className="min-h-screen bg-ink-25">
       {/* Builder header */}
-      <div className="sticky top-0 z-30 border-b border-ink-200 bg-white">
+      <div className="sticky top-0 z-30 border-b border-ink-200 bg-surface-elevated">
         <div className="flex flex-wrap items-center gap-4 px-5 py-3">
           <Link to="/internal/voice-agents" className="flex size-8 shrink-0 items-center justify-center rounded-lg text-ink-500 hover:bg-ink-100 hover:text-ink-800" aria-label="Back to agents">
             <ArrowLeft className="size-4" />

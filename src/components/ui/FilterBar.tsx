@@ -28,7 +28,7 @@ interface FilterSelectProps {
 
 export function FilterSelect({ label, value, options, onChange }: FilterSelectProps) {
   return (
-    <label className="flex items-center gap-1.5 rounded-lg border border-ink-200 bg-white px-2.5 py-1.5 text-[13px] text-ink-700">
+    <label className="flex items-center gap-1.5 rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 text-[13px] text-ink-700">
       <span className="font-medium text-ink-500">{label}</span>
       <select
         value={value}

@@ -1,10 +1,10 @@
 import type { TranscriptTurn } from './hr'
 
 // ---------------------------------------------------------------------
-// AIVRA-internal Voice Agent Builder domain model.
+// JEXA.AI-internal Voice Agent Builder domain model.
 //
 // This is the technical configuration behind a customer's AI Voice
-// Employee — configured exclusively by the AIVRA implementation team,
+// Employee — configured exclusively by the JEXA.AI implementation team,
 // never by the customer. The customer-safe subset of this (name, voice,
 // language, speaking style, greeting, basic notification/escalation
 // preferences) lives separately on VoiceEmployeeConfig (types/voice.ts)
@@ -192,7 +192,15 @@ export interface VoiceAgentCallActionsConfig {
   actions: CallAction[]
 }
 
-// -- Advanced (AIVRA internal only) ---------------------------------------
+// -- Call limits (Jaan customer-facing "Advanced" tab) ----------------------
+export interface VoiceAgentCallLimitsConfig {
+  voicemailDetectionEnabled: boolean
+  maxCallDurationSeconds: number
+  noResponseTimeoutSeconds: number
+  noResponseMessage: string
+}
+
+// -- Advanced (JEXA.AI internal only) ---------------------------------------
 export interface VoiceAgentAdvancedConfig {
   llmProvider: string
   llmModel: string
@@ -232,6 +240,7 @@ export interface VoiceAgent {
   analysisConfig: VoiceAgentAnalysisConfig
   callActionsConfig: VoiceAgentCallActionsConfig
   advancedConfig: VoiceAgentAdvancedConfig
+  callLimits: VoiceAgentCallLimitsConfig
 }
 
 // -- Test / Replay -----------------------------------------------------------

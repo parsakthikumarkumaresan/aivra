@@ -6,64 +6,80 @@
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 
   /* ---------------------------------------------------------------------
-     Brand — AIVRA purple
+     Brand — JEXA.AI red. Used ONLY as an accent (CTAs, active states,
+     focus rings, icons, small highlights) — never as a large surface.
+     600/700 are pinned to the finalized spec hex exactly; other steps are
+     dark tints (50-300, for subtle chip/badge backgrounds on black) or
+     bright tints (800-950, for text/icons needing extra contrast).
   --------------------------------------------------------------------- */
-  --color-brand-50: #f4f2ff;
-  --color-brand-100: #ece7ff;
-  --color-brand-200: #dad2ff;
-  --color-brand-300: #bcabff;
-  --color-brand-400: #9b7ffb;
-  --color-brand-500: #8259f6;
-  --color-brand-600: #6d3ef2;
-  --color-brand-700: #5c2fd6;
-  --color-brand-800: #4b28ab;
-  --color-brand-900: #3d2286;
-  --color-brand-950: #251458;
+  --color-brand-50: #200a0c;
+  --color-brand-100: #330f12;
+  --color-brand-200: #4a171b;
+  --color-brand-300: #6b1f24;
+  --color-brand-400: #9c2530;
+  --color-brand-500: #c1121f;
+  --color-brand-600: #c1121f;
+  --color-brand-700: #e11d2e;
+  --color-brand-800: #ff4d5e;
+  --color-brand-900: #ffb3ba;
+  --color-brand-950: #ffe4e6;
 
   /* ---------------------------------------------------------------------
-     Neutral ink scale — cool slate, used for text & surfaces
+     Neutral ink scale — the dark canvas. Low steps are near-black
+     backgrounds; high steps are near-white text. This scale is
+     intentionally used ONLY for text, borders and subtle hover/recessed
+     backgrounds — never for the main elevated card/input surface (see
+     --color-surface below), so a hairline border can always read against
+     an adjacent card.
   --------------------------------------------------------------------- */
-  --color-ink-25: #fbfbfd;
-  --color-ink-50: #f6f6f9;
-  --color-ink-100: #eeeef3;
-  --color-ink-200: #e0e0e9;
-  --color-ink-300: #c7c7d6;
-  --color-ink-400: #9d9db3;
-  --color-ink-500: #75758f;
-  --color-ink-600: #585871;
-  --color-ink-700: #414157;
-  --color-ink-800: #2a2a3c;
-  --color-ink-900: #191926;
-  --color-ink-950: #0e0e17;
+  --color-ink-25: #050505;
+  --color-ink-50: #0a0a0a;
+  --color-ink-100: #1c1c1c;
+  --color-ink-200: #262626;
+  --color-ink-300: #333333;
+  --color-ink-400: #737373;
+  --color-ink-500: #a3a3a3;
+  --color-ink-600: #b8b8b8;
+  --color-ink-700: #cccccc;
+  --color-ink-800: #e0e0e0;
+  --color-ink-900: #f5f5f5;
+  --color-ink-950: #ffffff;
+
+  /* Dedicated elevated-surface tokens — the literal "card/input plane"
+     color, kept distinct from the ink scale above (see comment). */
+  --color-surface: #101010;
+  --color-surface-elevated: #151515;
 
   /* ---------------------------------------------------------------------
-     Semantic — status colors (used ONLY for state, never decoration)
+     Semantic — status colors (used ONLY for state, never decoration).
+     Same convention as ink/brand: low steps = dark tint for badge/chip
+     backgrounds, high steps = bright tint for icons/text on black.
   --------------------------------------------------------------------- */
-  --color-success-50: #f0faf4;
-  --color-success-100: #dcf3e4;
-  --color-success-500: #1fa163;
-  --color-success-600: #178350;
-  --color-success-700: #146842;
+  --color-success-50: #08170d;
+  --color-success-100: #0f2818;
+  --color-success-500: #22c55e;
+  --color-success-600: #4ade80;
+  --color-success-700: #86efac;
 
-  --color-warning-50: #fef8ec;
-  --color-warning-100: #fcecc6;
-  --color-warning-500: #c8850c;
-  --color-warning-600: #a8690a;
-  --color-warning-700: #855109;
+  --color-warning-50: #1a1206;
+  --color-warning-100: #2e1f08;
+  --color-warning-500: #eab308;
+  --color-warning-600: #facc15;
+  --color-warning-700: #fde047;
 
-  --color-danger-50: #fdf2f2;
-  --color-danger-100: #fbdfdf;
-  --color-danger-500: #d33d3d;
-  --color-danger-600: #b62c2c;
-  --color-danger-700: #932323;
+  --color-danger-50: #1a0808;
+  --color-danger-100: #2e0e0e;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #f87171;
+  --color-danger-700: #fca5a5;
 
-  /* Blue-violet/indigo (not flat blue) — reads as part of the AIVRA family,
-     used for informational states and the AI Voice Employee accent. */
-  --color-info-50: #f0f2fe;
-  --color-info-100: #dce0fc;
-  --color-info-500: #2137c9;
-  --color-info-600: #1a2ca3;
-  --color-info-700: #162586;
+  /* Clean informational blue — deliberately distinct from the brand red
+     so status/info states never get mistaken for the brand accent. */
+  --color-info-50: #070b1a;
+  --color-info-100: #0d152e;
+  --color-info-500: #3b82f6;
+  --color-info-600: #60a5fa;
+  --color-info-700: #93c5fd;
 
   /* ---------------------------------------------------------------------
      Radius
@@ -76,12 +92,15 @@
   --radius-2xl: 1.25rem;
 
   /* ---------------------------------------------------------------------
-     Shadows — subtle only, no heavy elevation
+     Shadows — on a near-black canvas, elevation reads mostly from the
+     surface/border step-up, so shadows lean darker/tighter rather than
+     soft, plus a dedicated selective red glow for hero/CTA/hover accents.
   --------------------------------------------------------------------- */
-  --shadow-xs: 0 1px 2px 0 rgb(25 25 38 / 0.04);
-  --shadow-card: 0 1px 2px 0 rgb(25 25 38 / 0.04), 0 1px 6px -1px rgb(25 25 38 / 0.06);
-  --shadow-elevated: 0 4px 12px -2px rgb(25 25 38 / 0.08), 0 2px 4px -2px rgb(25 25 38 / 0.05);
-  --shadow-overlay: 0 12px 32px -8px rgb(25 25 38 / 0.18), 0 4px 10px -4px rgb(25 25 38 / 0.08);
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 1px 6px -1px rgb(0 0 0 / 0.4);
+  --shadow-elevated: 0 4px 16px -2px rgb(0 0 0 / 0.5), 0 2px 6px -2px rgb(0 0 0 / 0.35);
+  --shadow-overlay: 0 20px 48px -8px rgb(0 0 0 / 0.65), 0 6px 16px -4px rgb(0 0 0 / 0.4);
+  --shadow-glow-red: 0 0 1px 0 rgb(193 18 31 / 0.5), 0 8px 28px -4px rgb(193 18 31 / 0.35);
 
   /* ---------------------------------------------------------------------
      Motion

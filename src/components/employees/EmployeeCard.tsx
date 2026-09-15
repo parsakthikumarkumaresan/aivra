@@ -4,7 +4,6 @@ import {
   Users,
   Mic,
   Settings2,
-  FlaskConical,
   Pause,
   Play,
   ArrowUpRight,
@@ -16,16 +15,27 @@ import {
   CreditCard,
   Loader2,
   ArrowRight,
+  Sparkles,
 } from 'lucide-react'
 import type { AIEmployee, Channel } from '@/types'
 import { Card } from '@/components/ui/Card'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
 import { EmployeeStatusBadge } from '@/components/ui/StatusBadge'
 import { formatRelativeTime } from '@/utils/format'
 import { useAppData } from '@/app/AppDataProvider'
+import { useHireFlow } from '@/app/HireFlowContext'
 import { useToast } from '@/hooks/useToast'
 import { subscriptionService } from '@/services/api'
+
+// Jexa HR opens its own tab inside the general app shell; Jaan is its own
+// workspace/shell (see AppShell + JaanSidebar) reached only via this link —
+// never a global sidebar item.
+const EMPLOYEE_WORKSPACE_HREF: Record<AIEmployee['type'], string> = {
+  hr: '/app/employees/hr',
+  voice: '/app/jaan',
+}
 
 const TYPE_ICON = { hr: Users, voice: Mic }
 
@@ -40,16 +50,43 @@ const CHANNEL_ICON: Record<Channel, typeof Phone> = {
 interface EmployeeCardProps {
   employee: AIEmployee
   onTogglePause?: (employee: AIEmployee) => void
-  onTest?: (employee: AIEmployee) => void
   compact?: boolean
 }
 
-// Renders an employee already provisioned to this org's workforce — never
-// called with 'not_hired' / 'cancelled' / 'expired' (those employees simply
-// don't appear in "My AI Workforce"; discovery/purchase lives on the public site).
-export function EmployeeCard({ employee, onTogglePause, onTest, compact = false }: EmployeeCardProps) {
+// Renders one AI Employee card. "My Workforce" passes every catalog entry
+// (subscribed or not) so a customer can see what's available and subscribe;
+// the global Dashboard's "My AI Workforce" only ever passes already-active
+// ones — see EmployeesCatalogPage / DashboardPage for the respective filters.
+export function EmployeeCard({ employee, onTogglePause, compact = false }: EmployeeCardProps) {
   const TypeIcon = TYPE_ICON[employee.type]
-  const employeeHref = `/app/employees/${employee.type}`
+  const employeeHref = EMPLOYEE_WORKSPACE_HREF[employee.type]
+  const { openHireFlow } = useHireFlow()
+
+  // Not yet subscribed (or churned) — a compact catalog tile with a single
+  // Subscribe action, not the full operational card.
+  if (['not_hired', 'cancelled', 'expired'].includes(employee.status)) {
+    return (
+      <Card className="flex flex-col p-5">
+        <div className="flex items-start gap-3">
+          <Avatar name={employee.name} color={employee.avatarColor} size="lg" />
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="text-[15px] font-semibold text-ink-900">{employee.name}</p>
+              <TypeIcon className="size-3.5 text-ink-400" />
+            </div>
+            <p className="text-[13px] text-ink-500">{employee.tagline}</p>
+          </div>
+        </div>
+        {!compact && <p className="mt-3.5 text-[13.5px] leading-relaxed text-ink-600">{employee.description}</p>}
+        <div className="mt-5 flex items-center justify-between border-t border-ink-100 pt-4">
+          <Badge tone="neutral">Not Subscribed</Badge>
+          <Button size="sm" icon={<Sparkles className="size-3.5" />} onClick={() => openHireFlow(employee.type)}>
+            {employee.status === 'not_hired' ? 'Subscribe' : 'Resubscribe'}
+          </Button>
+        </div>
+      </Card>
+    )
+  }
 
   const header = (
     <div className="flex items-start justify-between gap-3">
@@ -69,7 +106,7 @@ export function EmployeeCard({ employee, onTogglePause, onTest, compact = false 
     </div>
   )
 
-  // Payment just went through (HR) or AIVRA is deploying it (Voice).
+  // Payment just went through (HR) or JEXA.AI is deploying it (Voice).
   if (employee.status === 'pending_activation') {
     return (
       <Card className="flex flex-col p-5">
@@ -77,7 +114,7 @@ export function EmployeeCard({ employee, onTogglePause, onTest, compact = false 
         <div className="mt-4 flex items-center gap-2.5 rounded-lg bg-info-50 px-3.5 py-3 text-info-700">
           <Loader2 className="size-4 shrink-0 animate-spin" />
           <p className="text-[13px] font-medium">
-            {employee.type === 'voice' ? 'Being configured by AIVRA — deployment in progress.' : 'Activating — provisioning your AI Employee now.'}
+            {employee.type === 'voice' ? 'Being configured by JEXA.AI — deployment in progress.' : 'Activating — provisioning your AI Employee now.'}
           </p>
         </div>
       </Card>
@@ -156,16 +193,11 @@ export function EmployeeCard({ employee, onTogglePause, onTest, compact = false 
             </Button>
           </Link>
         )}
-        <Link to={isHr ? `${employeeHref}/configuration` : `${employeeHref}/setup`}>
-          <Button variant={isHr ? 'ghost' : 'outline'} size="sm" icon={<Settings2 className="size-3.5" />}>
-            {isHr ? 'Configure' : 'Basic Settings'}
+        <Link to={isHr ? `${employeeHref}/configuration` : `${employeeHref}/settings`}>
+          <Button variant="ghost" size="sm" icon={<Settings2 className="size-3.5" />}>
+            {isHr ? 'Configure' : 'Settings'}
           </Button>
         </Link>
-        {!isHr && (
-          <Button variant="outline" size="sm" icon={<FlaskConical className="size-3.5" />} onClick={() => onTest?.(employee)}>
-            Preview
-          </Button>
-        )}
         <Button
           variant="ghost"
           size="sm"

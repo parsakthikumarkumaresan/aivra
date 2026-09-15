@@ -296,12 +296,12 @@ export default function SettingsPage() {
 
           {section === 'branding' && (
             <Card>
-              <CardHeader title="Branding" description="How AIVRA appears to your team and customers" />
+              <CardHeader title="Branding" description="How JEXA.AI appears to your team and customers" />
               <CardBody className="space-y-4">
                 <div className="flex items-center gap-4">
                   <Logo markSize={40} />
                   <div>
-                    <p className="text-[13px] font-medium text-ink-800">AIVRA Logo</p>
+                    <p className="text-[13px] font-medium text-ink-800">JEXA.AI Logo</p>
                     <p className="text-xs text-ink-500">Used across the app shell and public homepage.</p>
                   </div>
                 </div>
@@ -309,7 +309,7 @@ export default function SettingsPage() {
                   <Label>Primary accent color</Label>
                   <div className="flex items-center gap-2.5">
                     <span className="size-8 rounded-lg bg-brand-600" />
-                    <span className="text-[13px] text-ink-600">#6D3EF2 — AIVRA Purple</span>
+                    <span className="text-[13px] text-ink-600">#C1121F — JEXA.AI Red</span>
                   </div>
                 </div>
               </CardBody>
@@ -411,7 +411,7 @@ function DeveloperSection() {
     setInternalModeState(enabled)
     show({
       tone: 'info',
-      title: enabled ? 'AIVRA Internal Mode enabled' : 'AIVRA Internal Mode disabled',
+      title: enabled ? 'JEXA.AI Internal Mode enabled' : 'JEXA.AI Internal Mode disabled',
       description: enabled
         ? 'Voice Advanced Setup is now reachable on this device — for internal testing only.'
         : 'Voice Advanced Setup is blocked again, matching a normal customer session.',
@@ -430,7 +430,7 @@ function DeveloperSection() {
     await subscriptionService.startVoiceDeployment({ businessName, industry })
     setBusy(false)
     refetchEmployees()
-    show({ tone: 'info', title: 'Voice deployment started', description: `AIVRA is now "configuring" ${businessName}'s AI Voice Employee.` })
+    show({ tone: 'info', title: 'Voice deployment started', description: `JEXA.AI is now "configuring" ${businessName}'s Jaan.` })
   }
 
   async function markLive() {
@@ -438,7 +438,7 @@ function DeveloperSection() {
     await subscriptionService.completeActivation('voice')
     setBusy(false)
     refetchEmployees()
-    show({ tone: 'success', title: 'Voice Employee deployed', description: `${businessName}'s AI Voice Employee is now active in the customer's workforce.` })
+    show({ tone: 'success', title: 'Voice Employee deployed', description: `${businessName}'s Jaan is now active in the customer's workforce.` })
   }
 
   return (
@@ -446,8 +446,8 @@ function DeveloperSection() {
       <div className="flex items-start gap-2.5 rounded-xl border border-warning-200 bg-warning-50 px-4 py-3.5 text-warning-800">
         <ShieldAlert className="mt-0.5 size-4 shrink-0" />
         <div>
-          <p className="text-[13px] font-semibold">Developer / AIVRA Internal Tools</p>
-          <p className="mt-0.5 text-[12.5px]">Not visible to customers in production. Everything on this page is a prototype stand-in for AIVRA's internal admin console.</p>
+          <p className="text-[13px] font-semibold">Developer / JEXA.AI Internal Tools</p>
+          <p className="mt-0.5 text-[12.5px]">Not visible to customers in production. Everything on this page is a prototype stand-in for Jexa's internal admin console.</p>
         </div>
       </div>
 
@@ -459,7 +459,7 @@ function DeveloperSection() {
         <CardBody>
           <div className="flex items-center justify-between rounded-lg border border-ink-200 p-3.5">
             <div>
-              <p className="text-[13px] font-medium text-ink-800">Enable AIVRA Internal Mode</p>
+              <p className="text-[13px] font-medium text-ink-800">Enable JEXA.AI Internal Mode</p>
               <p className="text-xs text-ink-500">Off by default, matching a normal customer session — turn on only to test the internal wizard.</p>
             </div>
             <Switch checked={internalMode} onChange={toggleInternalMode} />
@@ -470,8 +470,8 @@ function DeveloperSection() {
       {internalMode && (
         <Card>
           <CardHeader
-            title="AIVRA Internal Consoles"
-            description="The technical builder and platform infrastructure AIVRA's team uses to configure and operate Voice Employees — not part of the customer experience."
+            title="JEXA.AI Internal Consoles"
+            description="The technical builder and platform infrastructure Jexa's team uses to configure and operate Voice Employees — not part of the customer experience."
           />
           <div className="divide-y divide-ink-100">
             <Link to="/internal/voice-agents" className="flex items-center justify-between gap-3 px-5 py-3.5 transition-colors hover:bg-ink-25">
@@ -500,8 +500,8 @@ function DeveloperSection() {
 
       <Card>
         <CardHeader
-          title="AIVRA Provisioning (simulate internal admin)"
-          description="Stands in for AIVRA's solution team turning a customization lead into a live Voice Employee — Lead → Deployment → Live."
+          title="JEXA.AI Provisioning (simulate internal admin)"
+          description="Stands in for Jexa's solution team turning a customization lead into a live Voice Employee — Lead → Deployment → Live."
         />
         <CardBody className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

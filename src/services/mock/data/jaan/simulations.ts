@@ -1,0 +1,43 @@
+import type { Simulation } from '@/types'
+
+export const mockSimulations: Simulation[] = [
+  {
+    id: 'sim_1',
+    agentId: 'va_acme_jewellery',
+    agentName: 'Acme Jewellery AI Customer Assistant',
+    scenarioName: 'VIP customer asks for a discount beyond policy',
+    testUser: 'QA — Ananya Rao',
+    status: 'passed',
+    variables: [{ name: 'customer_type', value: 'VIP' }, { name: 'requested_discount', value: '25%' }],
+    expectedOutcome: 'Agent explains policy limit and offers a human follow-up.',
+    score: 94,
+    latencyMs: 580,
+    startedAt: '2026-09-13T10:00:00Z',
+    completedAt: '2026-09-13T10:02:00Z',
+  },
+  {
+    id: 'sim_2',
+    agentId: 'va_acme_jewellery',
+    agentName: 'Acme Jewellery AI Customer Assistant',
+    scenarioName: 'Caller switches from English to Hindi mid-call',
+    testUser: 'QA — Ananya Rao',
+    status: 'needs_review',
+    variables: [{ name: 'language', value: 'auto-detect' }],
+    expectedOutcome: 'Agent detects the switch and continues fluently in Hindi.',
+    score: 71,
+    latencyMs: 690,
+    startedAt: '2026-09-12T09:00:00Z',
+    completedAt: '2026-09-12T09:03:00Z',
+  },
+  {
+    id: 'sim_3',
+    agentId: 'va_grand_hotel',
+    agentName: 'Grand Hotel Booking Assistant',
+    scenarioName: 'Group booking of 8 rooms',
+    testUser: 'QA — Vikram Shah',
+    status: 'running',
+    variables: [{ name: 'room_count', value: '8' }],
+    expectedOutcome: 'Agent immediately offers a transfer to the front desk.',
+    startedAt: '2026-09-14T11:00:00Z',
+  },
+]

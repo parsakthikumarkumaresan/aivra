@@ -24,13 +24,13 @@ export const mockIntegrations: Integration[] = [
   },
   {
     id: 'int_salesforce', name: 'Salesforce', category: 'crm',
-    description: 'Sync customer and order records for the AI Voice Employee to reference during calls.',
+    description: 'Sync customer and order records for Jaan to reference during calls.',
     status: 'connected', logoInitial: 'SF', accentColor: '#2170C9', connectedAt: '2026-07-20T09:00:00Z',
     usedByEmployees: ['voice'], accountLabel: 'Acme Jewellery Org',
   },
   {
     id: 'int_twilio', name: 'Twilio', category: 'telephony',
-    description: 'Phone number provisioning and call routing for the AI Voice Employee.',
+    description: 'Phone number provisioning and call routing for Jaan.',
     status: 'connected', logoInitial: 'T', accentColor: '#d33d3d', connectedAt: '2026-06-15T09:00:00Z',
     usedByEmployees: ['voice'], accountLabel: '+91 80 4718 2200',
   },
@@ -42,7 +42,7 @@ export const mockIntegrations: Integration[] = [
   },
   {
     id: 'int_custom', name: 'Order Management API', category: 'custom_api',
-    description: 'Custom REST API connecting the AI Voice Employee to your order and inventory system.',
+    description: 'Custom REST API connecting Jaan to your order and inventory system.',
     status: 'connected', logoInitial: 'API', accentColor: '#6D3EF2', connectedAt: '2026-06-10T09:00:00Z',
     usedByEmployees: ['voice'], accountLabel: 'api.acmejewellery.com',
   },

@@ -1,5 +1,6 @@
 import type { BillingCycle, EmployeeType, Invoice, Subscription } from '@/types'
 import { buildScenarioSubscriptions, buildScenarioVoiceProject } from './data/subscriptions'
+import type { MockScenarioId } from './data/subscriptions'
 import { getPlanForEmployee, mockPlans } from './data/plans'
 import { mockBillingAccount, mockInvoices } from './data/billing'
 import { setVoiceProject } from './data/voiceProject'
@@ -9,6 +10,15 @@ import { delay, nextId } from './utils'
 
 let subscriptions: Subscription[] = buildScenarioSubscriptions(getMockScenario())
 setVoiceProject(buildScenarioVoiceProject(getMockScenario()))
+
+// Re-derives the in-memory subscription set for a scenario chosen at
+// runtime (the Developer panel, or auto-detection from the logged-in demo
+// organization's slug — see AppDataProvider). The module-level `subscriptions`
+// array is otherwise only seeded once, at import time.
+export function reseedSubscriptionsForScenario(scenario: MockScenarioId) {
+  subscriptions = buildScenarioSubscriptions(scenario)
+  setVoiceProject(buildScenarioVoiceProject(scenario))
+}
 
 const ACTIVATION_DELAY_MS = 1600
 
@@ -70,8 +80,8 @@ export const subscriptionService = {
     return delay(sub, ACTIVATION_DELAY_MS)
   },
 
-  // Voice has no self-service checkout — this stands in for "AIVRA's
-  // solution team has started building this customer's AI Voice Employee",
+  // Voice has no self-service checkout — this stands in for "Jexa's
+  // solution team has started building this customer's Jaan",
   // triggered from the Developer panel to simulate the internal-admin side
   // of the lead → deploy lifecycle. See completeActivation to mark it live.
   startVoiceDeployment(project: VoiceProject): Promise<Subscription> {

@@ -24,3 +24,15 @@ export { knowledgeService } from '@/services/mock/knowledge.service'
 export { inboxService } from '@/services/mock/inbox.service'
 export { approvalsService } from '@/services/mock/approvals.service'
 export { integrationsService } from '@/services/mock/integrations.service'
+
+// Jaan (Voice AI Workforce console) — all mock for now; the console reuses
+// voiceAgentBuilderService/telephonyService/voiceService above for agents,
+// telephony and call data, plus these Jaan-specific domains.
+export { jaanCampaignsService } from '@/services/mock/jaanCampaigns.service'
+export { jaanWorkflowsService } from '@/services/mock/jaanWorkflows.service'
+export { jaanTablesService } from '@/services/mock/jaanTables.service'
+export { jaanMonitorService } from '@/services/mock/jaanMonitor.service'
+export { jaanSimulationsService } from '@/services/mock/jaanSimulations.service'
+export { jaanPronunciationService } from '@/services/mock/jaanPronunciation.service'
+export { jaanBalanceService } from '@/services/mock/jaanBalance.service'
+export { jaanLogsService } from '@/services/mock/jaanLogs.service'

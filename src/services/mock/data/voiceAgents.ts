@@ -202,6 +202,12 @@ Edge Cases:
     environment: 'production',
     runtimeVersion: 'v2.4.1',
   },
+  callLimits: {
+    voicemailDetectionEnabled: true,
+    maxCallDurationSeconds: 600,
+    noResponseTimeoutSeconds: 12,
+    noResponseMessage: "Sorry, I didn't catch that — are you still there?",
+  },
 }
 
 const hotelAgent: VoiceAgent = {
@@ -335,6 +341,12 @@ Escalation Behavior: Complaints, group bookings, and billing disputes transfer i
     webhookUrl: '',
     environment: 'staging',
     runtimeVersion: 'v2.4.1',
+  },
+  callLimits: {
+    voicemailDetectionEnabled: false,
+    maxCallDurationSeconds: 480,
+    noResponseTimeoutSeconds: 15,
+    noResponseMessage: 'Are you still on the line?',
   },
 }
 

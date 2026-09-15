@@ -31,7 +31,7 @@ export interface EvaluationCriterion {
 }
 
 // ---------------------------------------------------------------------
-// Candidate pipeline — mirrors the real AIVRA HR workflow:
+// Candidate pipeline — mirrors the real JEXA.AI HR workflow:
 // Upload -> Processing -> Analyzed -> HR Review (gate) -> Screening Approved
 // -> AI Screening -> Screening Completed -> Human Review (gate)
 // -> Interview Approved -> Interview Scheduled -> Completed

@@ -71,7 +71,7 @@ export default function ScreeningCallPage() {
   useSetBreadcrumbs(
     [
       { label: 'AI Employees', href: '/app/employees' },
-      { label: 'Aivra Hr', href: '/app/employees/hr' },
+      { label: 'Jexa HR', href: '/app/employees/hr' },
       { label: 'Screenings', href: '/app/employees/hr/screenings' },
       { label: candidate.data?.name ?? '…' },
     ],
@@ -293,7 +293,7 @@ export default function ScreeningCallPage() {
                   <EmptyState
                     icon={<AlertTriangle className="size-6" />}
                     title="Call could not connect"
-                    description={interview.data?.failureReason || 'The AI Voice Employee was unable to reach this candidate.'}
+                    description={interview.data?.failureReason || 'The Jaan was unable to reach this candidate.'}
                   />
                 )
               ) : notStarted ? (

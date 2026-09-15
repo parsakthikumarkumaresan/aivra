@@ -33,6 +33,11 @@ export interface NeedsAttentionItem {
   description: string
   timestamp: string
   href: string
+  // Which AI Employee this item is about, if any — the global dashboard
+  // must stay general, so an item naming a specific employee (e.g. Jaan)
+  // is filtered out for accounts that never subscribed to that employee.
+  // Omitted for company-wide items that don't reference an employee.
+  employeeType?: 'hr' | 'voice'
 }
 
 export const needsAttentionItems: NeedsAttentionItem[] = [
@@ -40,9 +45,10 @@ export const needsAttentionItems: NeedsAttentionItem[] = [
     id: 'na1',
     type: 'escalation',
     title: 'Call escalated to human agent',
-    description: 'Customer requested a refund exception — outside AI Voice Employee authority.',
+    description: 'Customer requested a refund exception — outside Jaan authority.',
     timestamp: '2026-08-17T08:55:00Z',
     href: '/app/inbox',
+    employeeType: 'voice',
   },
   {
     id: 'na2',
@@ -51,14 +57,16 @@ export const needsAttentionItems: NeedsAttentionItem[] = [
     description: 'Google Calendar token expired — HR interview scheduling is paused.',
     timestamp: '2026-08-17T07:20:00Z',
     href: '/app/integrations',
+    employeeType: 'hr',
   },
   {
     id: 'na3',
     type: 'approval',
     title: '3 approvals awaiting review',
-    description: 'Includes 1 high-risk action requested by AI Voice Employee.',
+    description: 'Includes 1 high-risk action requested by Jaan.',
     timestamp: '2026-08-16T19:10:00Z',
     href: '/app/approvals',
+    employeeType: 'voice',
   },
   {
     id: 'na4',
@@ -73,10 +81,10 @@ export const needsAttentionItems: NeedsAttentionItem[] = [
 export const recentActivity: ActivityEvent[] = [
   { id: 'ev1', type: 'candidate_progressed', employeeType: 'hr', title: 'Meera Krishnan moved to AI Screening', description: 'Senior Product Designer · Job #JD-1042', timestamp: '2026-08-17T09:52:00Z', href: '/app/employees/hr/candidates/cand_1' },
   { id: 'ev2', type: 'call_completed', employeeType: 'voice', title: 'Call completed — Booking confirmed', description: '+91 98765 43210 · 4m 12s · Jewellery Support', timestamp: '2026-08-17T09:30:00Z', href: '/app/inbox' },
-  { id: 'ev3', type: 'approval_requested', employeeType: 'voice', title: 'Approval requested — Cancel order #A4471', description: 'AI Voice Employee flagged a high-value cancellation.', timestamp: '2026-08-17T09:05:00Z', href: '/app/approvals' },
+  { id: 'ev3', type: 'approval_requested', employeeType: 'voice', title: 'Approval requested — Cancel order #A4471', description: 'Jaan flagged a high-value cancellation.', timestamp: '2026-08-17T09:05:00Z', href: '/app/approvals' },
   { id: 'ev4', type: 'interview_completed', employeeType: 'hr', title: 'AI Screening completed — Arjun Verma', description: 'Backend Engineer · JD Match 82%', timestamp: '2026-08-17T08:40:00Z', href: '/app/employees/hr/candidates/cand_7' },
   { id: 'ev5', type: 'call_escalated', employeeType: 'voice', title: 'Call escalated to human agent', description: 'Low confidence on complaint handling.', timestamp: '2026-08-17T08:55:00Z', href: '/app/inbox' },
   { id: 'ev6', type: 'knowledge_synced', title: 'Company Brain synced — Product Catalog 2026', description: '212 documents indexed successfully.', timestamp: '2026-08-17T06:15:00Z', href: '/app/knowledge' },
   { id: 'ev7', type: 'integration_failed', title: 'Integration sync failed — Google Calendar', description: 'Token expired, reconnect required.', timestamp: '2026-08-17T07:20:00Z', href: '/app/integrations' },
-  { id: 'ev8', type: 'employee_status_changed', employeeType: 'hr', title: 'Aivra Hr activated', description: 'Rubric v3 and interview template approved.', timestamp: '2026-08-16T14:00:00Z', href: '/app/employees/hr' },
+  { id: 'ev8', type: 'employee_status_changed', employeeType: 'hr', title: 'Jexa HR activated', description: 'Rubric v3 and interview template approved.', timestamp: '2026-08-16T14:00:00Z', href: '/app/employees/hr' },
 ]

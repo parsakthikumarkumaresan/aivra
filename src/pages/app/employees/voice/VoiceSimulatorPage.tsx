@@ -36,9 +36,9 @@ const SCENARIOS = Object.keys(SIMULATOR_SCENARIO_LABEL) as SimulatorScenario[]
 
 const STATE_CONFIG: Record<VoiceState, { label: string; color: string }> = {
   idle: { label: 'Ready to start', color: 'bg-ink-300' },
-  listening: { label: 'Listening', color: 'bg-success-500 animate-pulse' },
-  thinking: { label: 'Thinking', color: 'bg-brand-500 animate-pulse' },
-  speaking: { label: 'AI Speaking', color: 'bg-brand-500 animate-pulse' },
+  listening: { label: 'Listening', color: 'bg-success-500 status-dot-live' },
+  thinking: { label: 'Thinking', color: 'bg-brand-500 status-dot-live-red' },
+  speaking: { label: 'AI Speaking', color: 'bg-brand-500 status-dot-live-red' },
   tool_call: { label: 'Calling Tool', color: 'bg-info-500 animate-pulse' },
   human_handoff: { label: 'Human Handoff', color: 'bg-warning-500' },
 }
@@ -59,7 +59,7 @@ const TOOL_STEP_CONFIG: Partial<Record<SimulatorScenario, { index: number; tool:
 }
 
 export default function VoiceSimulatorPage() {
-  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'AI Voice Employee', href: '/app/employees/voice' }, { label: 'Simulator' }])
+  useSetBreadcrumbs([{ label: 'AI Employees', href: '/app/employees' }, { label: 'Jaan', href: '/app/employees/voice' }, { label: 'Simulator' }])
   const [scenario, setScenario] = useState<SimulatorScenario>('faq')
   const [scenarioData, setScenarioData] = useState<SimulatorResult | null>(null)
   const [loadingScenario, setLoadingScenario] = useState(false)
@@ -162,19 +162,19 @@ export default function VoiceSimulatorPage() {
     <div className="space-y-5">
       <Link to="/app/employees/voice" className="flex items-center gap-1.5 text-[13px] font-medium text-ink-500 hover:text-ink-800">
         <ArrowLeft className="size-3.5" />
-        Back to AI Voice Employee
+        Back to Jaan
       </Link>
 
       <PageHeader
         title="Preview Your AI Employee"
-        description="Try your AI Voice Employee in your browser. Deep technical testing and tuning happens on AIVRA's side before every deployment."
+        description="Try Jaan in your browser. Deep technical testing and tuning happens on Jexa's side before every deployment."
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <select
               value={scenario}
               onChange={(e) => changeScenario(e.target.value as SimulatorScenario)}
               disabled={state !== 'idle' && !ended}
-              className="h-9 rounded-lg border border-ink-200 bg-white px-3 text-[13px] font-medium text-ink-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+              className="h-9 rounded-lg border border-ink-200 bg-surface px-3 text-[13px] font-medium text-ink-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
             >
               {SCENARIOS.map((s) => (
                 <option key={s} value={s}>
@@ -262,7 +262,7 @@ export default function VoiceSimulatorPage() {
                   </p>
                   {scenarioData.failedStep && <p className="mt-1.5 text-[13px] text-ink-700">{scenarioData.failedStep}</p>}
                   {scenarioData.configurationSuggestion && (
-                    <p className="mt-2 rounded-lg bg-white/60 px-3 py-2 text-[12.5px] text-ink-600">Suggestion: {scenarioData.configurationSuggestion}</p>
+                    <p className="mt-2 rounded-lg bg-surface px-3 py-2 text-[12.5px] text-ink-600">Suggestion: {scenarioData.configurationSuggestion}</p>
                   )}
                 </div>
               )}
