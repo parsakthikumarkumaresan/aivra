@@ -158,15 +158,18 @@ export default function InboxPage() {
 
         <div className={cn('lg:col-span-3', !selectedId && 'hidden lg:flex')}>
           {!selectedId || !selectedConversation ? (
-            <div className="hidden h-full min-h-[300px] w-full flex-col items-center justify-center rounded-xl border border-dashed border-ink-200 bg-ink-25 text-center lg:flex">
-              <MessageSquareText className="size-6 text-ink-300" />
-              <p className="mt-3 text-[13px] text-ink-500">Select a conversation to view details</p>
-            </div>
+            <EmptyState
+              icon={<MessageSquareText className="size-6" />}
+              title="Select a conversation"
+              description="Choose an item from the list to view details."
+              compact
+              className="hidden h-full min-h-[300px] w-full lg:flex"
+            />
           ) : (
             <div className="rounded-xl border border-ink-200 bg-surface">
               <div className="flex items-start justify-between gap-3 border-b border-ink-100 px-5 py-4">
                 <div className="flex items-center gap-2">
-                  <button onClick={() => setSelectedId(null)} className="rounded-lg p-1.5 text-ink-400 hover:bg-ink-100 hover:text-ink-700 lg:hidden">
+                  <button onClick={() => setSelectedId(null)} aria-label="Back to list" className="rounded-lg p-1.5 text-ink-400 hover:bg-ink-100 hover:text-ink-700 lg:hidden">
                     <ArrowLeft className="size-4" />
                   </button>
                   <Avatar name={selectedConversation.participantName} size="sm" />

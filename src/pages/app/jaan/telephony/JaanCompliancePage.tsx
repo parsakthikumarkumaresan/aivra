@@ -3,9 +3,10 @@ import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useComplianceSettings } from '@/hooks/useTelephony'
 import { telephonyService } from '@/services/api'
 import { PageHeader } from '@/components/ui/PageHeader'
-import { Card, CardBody } from '@/components/ui/Card'
+import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Switch } from '@/components/ui/Field'
+import { Skeleton } from '@/components/ui/Skeleton'
 import type { ComplianceSetting } from '@/types'
 
 export default function JaanCompliancePage() {
@@ -21,7 +22,7 @@ export default function JaanCompliancePage() {
     <div className="mx-auto max-w-[1000px] space-y-5 p-6">
       <PageHeader title="Compliance" description="Recording consent, retention and regional call-handling requirements." />
       {compliance.loading ? (
-        <Card><CardBody><p className="text-sm text-ink-500">Loading…</p></CardBody></Card>
+        <div className="space-y-3"><Skeleton className="h-16 w-full rounded-xl" /><Skeleton className="h-16 w-full rounded-xl" /><Skeleton className="h-16 w-full rounded-xl" /></div>
       ) : (
         <Card>
           <div className="divide-y divide-ink-100">

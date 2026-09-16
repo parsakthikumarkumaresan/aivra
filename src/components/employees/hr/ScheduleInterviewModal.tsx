@@ -134,7 +134,7 @@ export function ScheduleInterviewModal({
             <div key={i} className="flex items-center gap-2">
               <Input value={email} onChange={(e) => updateEmail(i, e.target.value)} placeholder="interviewer@company.com" type="email" />
               {panelistEmails.length > 1 && (
-                <button type="button" onClick={() => removeEmailField(i)} className="shrink-0 text-ink-400 hover:text-ink-700">
+                <button type="button" onClick={() => removeEmailField(i)} aria-label="Remove panelist email" className="shrink-0 text-ink-400 hover:text-ink-700">
                   <X className="size-4" />
                 </button>
               )}

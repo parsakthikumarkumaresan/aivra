@@ -35,7 +35,13 @@ export default function JaanTelephonyPage() {
       <PageHeader title="Telephony" description="Carrier connections powering your Jaan agents — numbers only reference these, they don't configure them." />
       <PillTabs items={[{ value: 'providers', label: 'Providers' }, { value: 'sip', label: 'SIP / BYOC' }]} value={tab} onChange={setTab} />
       {tab === 'providers' ? (
-        <DataTable columns={providerColumns} data={providers.data ?? []} keyExtractor={(p) => p.id} loading={providers.loading} />
+        <DataTable
+          columns={providerColumns}
+          data={providers.data ?? []}
+          keyExtractor={(p) => p.id}
+          loading={providers.loading}
+          emptyState={<EmptyState icon={<Signal className="size-6" />} title="No telephony providers connected" description="Connect a provider to give your Jaan agents phone numbers." />}
+        />
       ) : (
         <DataTable
           columns={trunkColumns}

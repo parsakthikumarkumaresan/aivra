@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, Download, Trash2 } from 'lucide-react'
+import { ArrowLeft, Database, Download, Trash2 } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useAgentTable } from '@/hooks/useJaan'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/ui/ErrorState'
+import { EmptyState } from '@/components/ui/EmptyState'
 
 export default function TableDetailPage() {
   const { id = '' } = useParams()
@@ -32,26 +33,32 @@ export default function TableDetailPage() {
         description={t.description}
         actions={<><Button variant="outline" icon={<Download className="size-3.5" />}>Export</Button><Button variant="danger" icon={<Trash2 className="size-3.5" />}>Delete</Button></>}
       />
-      <Card className="overflow-x-auto">
-        <table className="w-full min-w-max border-collapse text-left text-sm">
-          <thead>
-            <tr className="border-b border-ink-100 bg-ink-25">
-              {t.columns.map((c) => (
-                <th key={c.id} className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-ink-500">{c.name} <span className="normal-case text-ink-400">({c.type})</span></th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {t.rows.map((row, i) => (
-              <tr key={i} className="border-b border-ink-100 last:border-0">
+      {t.rows.length === 0 ? (
+        <Card>
+          <EmptyState compact icon={<Database className="size-6" />} title="No rows yet" description="Import data or add a row for Jaan to look up during a call." />
+        </Card>
+      ) : (
+        <Card className="overflow-x-auto">
+          <table className="w-full min-w-max border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-ink-100 bg-ink-25">
                 {t.columns.map((c) => (
-                  <td key={c.id} className="px-5 py-3 text-ink-700">{row[c.id] ?? '—'}</td>
+                  <th key={c.id} className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-ink-500">{c.name} <span className="normal-case text-ink-400">({c.type})</span></th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+            </thead>
+            <tbody>
+              {t.rows.map((row, i) => (
+                <tr key={i} className="border-b border-ink-100 last:border-0">
+                  {t.columns.map((c) => (
+                    <td key={c.id} className="px-5 py-3 text-ink-700">{row[c.id] ?? '—'}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      )}
     </div>
   )
 }

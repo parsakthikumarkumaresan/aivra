@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, Pause, Play } from 'lucide-react'
+import { ArrowLeft, Pause, Play, Users } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useCampaign, useCampaignSummary, useCampaignTasks } from '@/hooks/useJaan'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -12,6 +12,7 @@ import type { BadgeTone } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/ui/ErrorState'
+import { EmptyState } from '@/components/ui/EmptyState'
 import type { CampaignTask } from '@/types'
 import { CAMPAIGN_STATUS_LABEL } from '@/types'
 import { formatDateTime, formatDuration } from '@/utils/format'
@@ -65,7 +66,14 @@ export default function CampaignDetailPage() {
 
       <Card>
         <CardHeader title="Contacts" description="Call attempts for this campaign" />
-        <DataTable columns={columns} data={tasks.data ?? []} keyExtractor={(t) => t.id} loading={tasks.loading} className="border-0" />
+        <DataTable
+          columns={columns}
+          data={tasks.data ?? []}
+          keyExtractor={(t) => t.id}
+          loading={tasks.loading}
+          className="border-0"
+          emptyState={<EmptyState compact icon={<Users className="size-6" />} title="No contacts yet" description="Attempts will appear here once this campaign starts dialing." />}
+        />
       </Card>
     </div>
   )

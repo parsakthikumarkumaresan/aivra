@@ -27,6 +27,7 @@ import { EmployeeStatusBadge } from '@/components/ui/StatusBadge'
 import { KpiCard } from '@/components/ui/KpiCard'
 import { Card, CardHeader, CardBody } from '@/components/ui/Card'
 import { Skeleton, SkeletonTable } from '@/components/ui/Skeleton'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { Badge } from '@/components/ui/Badge'
 import { HrSubNav } from '@/components/employees/hr/HrSubNav'
 import { CANDIDATE_STAGE_LABEL } from '@/types'
@@ -140,7 +141,17 @@ export default function HrOverviewPage() {
           </CardBody>
         ) : openJobs.length === 0 ? (
           <CardBody>
-            <p className="text-sm text-ink-500">No open jobs yet.</p>
+            <EmptyState
+              compact
+              icon={<Briefcase className="size-6" />}
+              title="No open jobs yet"
+              description="Create a job to start sourcing and screening candidates with AI."
+              action={
+                <Link to="/app/employees/hr/jobs?new=1">
+                  <Button size="sm" icon={<Plus className="size-3.5" />}>Create Job</Button>
+                </Link>
+              }
+            />
           </CardBody>
         ) : (
           <div className="divide-y divide-ink-100">

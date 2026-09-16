@@ -26,6 +26,7 @@ import { PageHeader } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { Card, CardBody, CardHeader } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { Select } from '@/components/ui/Field'
 import { PillTabs } from '@/components/ui/Tabs'
 import type { SimulatorResult, SimulatorScenario, VoiceState } from '@/types'
 import { SIMULATOR_SCENARIO_LABEL } from '@/types'
@@ -170,18 +171,18 @@ export default function VoiceSimulatorPage() {
         description="Try Jaan in your browser. Deep technical testing and tuning happens on Jexa's side before every deployment."
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <select
+            <Select
               value={scenario}
               onChange={(e) => changeScenario(e.target.value as SimulatorScenario)}
               disabled={state !== 'idle' && !ended}
-              className="h-9 rounded-lg border border-ink-200 bg-surface px-3 text-[13px] font-medium text-ink-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+              className="w-auto"
             >
               {SCENARIOS.map((s) => (
                 <option key={s} value={s}>
                   Scenario: {SIMULATOR_SCENARIO_LABEL[s]}
                 </option>
               ))}
-            </select>
+            </Select>
             {state === 'idle' && !ended ? (
               <Button icon={<Play className="size-4" />} onClick={start} loading={loadingScenario}>
                 Start

@@ -20,8 +20,8 @@ function isLeafActive(leaf: JaanNavLeaf, pathname: string): boolean {
   return leaf.matchPrefix ? pathname.startsWith(leaf.href) : pathname === leaf.href
 }
 
-const activeItemClasses = 'bg-[rgba(193,18,31,0.12)] border-l-2 border-l-brand-600 text-brand-600 pl-[10px]'
-const inactiveItemClasses = 'border-l-2 border-l-transparent pl-[10px] text-ink-500 hover:bg-ink-50 hover:text-ink-900'
+const activeItemClasses = 'bg-[rgba(193,18,31,0.12)] border-l-2 border-l-brand-600 text-brand-600 pl-2.5'
+const inactiveItemClasses = 'border-l-2 border-l-transparent pl-2.5 text-ink-500 hover:bg-ink-50 hover:text-ink-900'
 
 function NavBadge({ badge }: { badge?: 'Beta' | 'Enterprise' }) {
   if (!badge) return null

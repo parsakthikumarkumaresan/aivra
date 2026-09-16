@@ -443,7 +443,7 @@ function DeveloperSection() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-start gap-2.5 rounded-xl border border-warning-200 bg-warning-50 px-4 py-3.5 text-warning-800">
+      <div className="flex items-start gap-2.5 rounded-xl border border-warning-100 bg-warning-50 px-4 py-3.5 text-warning-700">
         <ShieldAlert className="mt-0.5 size-4 shrink-0" />
         <div>
           <p className="text-[13px] font-semibold">Developer / JEXA.AI Internal Tools</p>

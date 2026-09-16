@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Wallet, Plus, ExternalLink, Plug } from 'lucide-react'
+import { Wallet, Plus, ExternalLink, Plug, Receipt } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useBalance, useCreditTransactions } from '@/hooks/useJaan'
 import { useAppData } from '@/app/AppDataProvider'
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/Button'
 import { Label, Input, Switch } from '@/components/ui/Field'
 import { Badge } from '@/components/ui/Badge'
 import type { BadgeTone } from '@/components/ui/Badge'
+import { EmptyState } from '@/components/ui/EmptyState'
 import type { CreditTransactionType } from '@/types'
 import { formatDateTime } from '@/utils/format'
 
@@ -78,20 +79,26 @@ export default function JaanSettingsPage() {
 
           <Card>
             <CardHeader title="Transaction History" />
-            <div className="divide-y divide-ink-100">
-              {(transactions.data ?? []).map((t) => (
-                <div key={t.id} className="flex items-center justify-between gap-4 px-5 py-3">
-                  <div>
-                    <p className="text-[13px] font-medium text-ink-800">{t.description}</p>
-                    <p className="text-xs text-ink-500">{formatDateTime(t.createdAt)}</p>
+            {transactions.data && transactions.data.length === 0 ? (
+              <CardBody>
+                <EmptyState compact icon={<Receipt className="size-6" />} title="No transactions yet" description="Credit purchases and usage will show up here." />
+              </CardBody>
+            ) : (
+              <div className="divide-y divide-ink-100">
+                {(transactions.data ?? []).map((t) => (
+                  <div key={t.id} className="flex items-center justify-between gap-4 px-5 py-3">
+                    <div>
+                      <p className="text-[13px] font-medium text-ink-800">{t.description}</p>
+                      <p className="text-xs text-ink-500">{formatDateTime(t.createdAt)}</p>
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                      <Badge tone={TX_TONE[t.type]}>{t.type}</Badge>
+                      <span className={`text-[13px] font-semibold ${t.amount < 0 ? 'text-ink-700' : 'text-success-600'}`}>{t.amount < 0 ? '-' : '+'}{t.currency}{Math.abs(t.amount).toFixed(2)}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2.5">
-                    <Badge tone={TX_TONE[t.type]}>{t.type}</Badge>
-                    <span className={`text-[13px] font-semibold ${t.amount < 0 ? 'text-ink-700' : 'text-success-600'}`}>{t.amount < 0 ? '-' : '+'}{t.currency}{Math.abs(t.amount).toFixed(2)}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </Card>
 
           <p className="text-[12.5px] text-ink-500">

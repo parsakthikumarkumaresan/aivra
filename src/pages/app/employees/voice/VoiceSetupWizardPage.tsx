@@ -89,7 +89,7 @@ export default function VoiceSetupWizardPage() {
         Back to Jaan
       </Link>
 
-      <div className="flex items-center gap-2 rounded-lg border border-warning-200 bg-warning-50 px-3.5 py-2.5 text-[12.5px] font-medium text-warning-700">
+      <div className="flex items-center gap-2 rounded-lg border border-warning-100 bg-warning-50 px-3.5 py-2.5 text-[12.5px] font-medium text-warning-700">
         <ShieldAlert className="size-3.5 shrink-0" />
         JEXA.AI Internal Configuration — internal JEXA.AI team only. Not visible to customers.
       </div>
