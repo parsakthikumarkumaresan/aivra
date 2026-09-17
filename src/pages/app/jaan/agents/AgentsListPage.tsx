@@ -139,7 +139,7 @@ export default function AgentsListPage() {
               <>
                 <PopoverItem icon={<Pencil className="size-4" />} onClick={() => { close(); navigate(`/app/jaan/agents/${a.id}`) }}>Edit</PopoverItem>
                 <PopoverItem icon={<Copy className="size-4" />} onClick={() => { close(); duplicate(a) }}>Duplicate</PopoverItem>
-                <PopoverItem icon={<FlaskConical className="size-4" />} onClick={() => { close(); navigate(`/app/jaan/agents/${a.id}?tab=simulate`) }}>Test</PopoverItem>
+                <PopoverItem icon={<FlaskConical className="size-4" />} onClick={() => { close(); navigate(`/app/jaan/agents/${a.id}?test=1`) }}>Test</PopoverItem>
                 <PopoverItem tone="danger" icon={<Trash2 className="size-4" />} onClick={close}>Delete</PopoverItem>
               </>
             )}

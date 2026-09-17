@@ -191,7 +191,11 @@ export const router = createBrowserRouter([
               { path: 'campaigns/:id', element: lazyPage(() => import('@/pages/app/jaan/campaigns/CampaignDetailPage')) },
               { path: 'workflows', element: lazyPage(() => import('@/pages/app/jaan/workflows/WorkflowsPage')) },
               { path: 'logs/conversations', element: lazyPage(() => import('@/pages/app/jaan/logs/ConversationsLogPage')) },
-              { path: 'logs/conversations/:id', element: lazyPage(() => import('@/pages/app/jaan/logs/ConversationDetailPage')) },
+              {
+                path: 'logs/conversations/:id',
+                element: lazyPage(() => import('@/pages/app/jaan/logs/ConversationDetailPage')),
+                errorElement: lazyPage(() => import('@/pages/app/jaan/logs/ConversationDetailErrorBoundary')),
+              },
               { path: 'logs/tools', element: lazyPage(() => import('@/pages/app/jaan/logs/ToolLogsPage')) },
               { path: 'logs/api-webhook', element: lazyPage(() => import('@/pages/app/jaan/logs/ApiWebhookLogsPage')) },
               { path: 'logs/library', element: lazyPage(() => import('@/pages/app/jaan/logs/LibraryLogsPage')) },

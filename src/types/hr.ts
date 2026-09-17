@@ -283,9 +283,18 @@ export interface ScreeningResultSummary {
 
 export interface TranscriptTurn {
   id: string
-  speaker: 'ai' | 'candidate' | 'customer' | 'system'
+  // Widened from a closed union: real backends emit several different
+  // vocabularies (HR's own mapper normalizes to 'ai'/'candidate'/'system';
+  // Jaan's raw worker/simulator output uses 'assistant'/'customer'/'agent';
+  // historical rows can carry other values too). Display normalization
+  // happens once, centrally, in resolveTranscriptSpeaker() — this type no
+  // longer pretends to enumerate every value that can arrive.
+  speaker: string
   text: string
-  timestamp: string
+  // Jaan's persisted transcript turns don't carry a per-turn timestamp
+  // today (only call-level started_at/ended_at exist) — optional rather
+  // than fabricated.
+  timestamp?: string
 }
 
 export interface ScheduleSlot {

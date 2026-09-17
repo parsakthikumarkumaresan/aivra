@@ -430,7 +430,12 @@ export default function ScreeningCallPage() {
   )
 }
 
-function TranscriptBubble({ speaker, text }: { speaker: 'ai' | 'candidate' | 'customer' | 'system'; text: string }) {
+// speaker is always one of 'ai' | 'candidate' | 'system' at runtime (see
+// mapTranscript's SCREENING_SPEAKER_TO_FRONTEND in services/api/mappers/hr.ts)
+// — the prop type is `string` because TranscriptTurn.speaker itself is now
+// widened for Jaan's more varied real-world values; this component's own
+// logic and visual output are unchanged.
+function TranscriptBubble({ speaker, text }: { speaker: string; text: string }) {
   return (
     <div className={`flex items-start gap-2.5 ${speaker === 'candidate' ? 'flex-row-reverse' : ''}`}>
       <span className={`flex size-7 shrink-0 items-center justify-center rounded-full ${speaker === 'ai' ? 'bg-brand-100 text-brand-600' : 'bg-ink-100 text-ink-600'}`}>

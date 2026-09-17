@@ -13,6 +13,13 @@ export function useProviderCatalog() {
   return useAsync(() => voiceAgentBuilderService.getProviderCatalog(), [])
 }
 
+/** Real outbound caller ID(s) configured for this deployment — see
+ * app/ai_employees/voice/api/builder_routes.py's GET /outbound-numbers.
+ * Empty (never fabricated) when VOICE_OUTBOUND_CALLER_ID isn't set. */
+export function useOutboundNumbers() {
+  return useAsync(() => voiceAgentBuilderService.getOutboundNumbers(), [])
+}
+
 export function useVoiceAgent(id: string) {
   return useAsync(() => voiceAgentBuilderService.getVoiceAgent(id), [id])
 }

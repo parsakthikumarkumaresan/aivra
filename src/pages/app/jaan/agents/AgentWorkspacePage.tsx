@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Bot, History, PhoneOff, Rocket, Send, Sparkles } from 'lucide-react'
+import { ArrowLeft, Bot, History, PhoneOff, Rocket, Send, Sparkles, FlaskConical } from 'lucide-react'
 import { useVoiceAgent } from '@/hooks/useVoiceAgentBuilder'
 import { useCalls } from '@/hooks/useVoice'
 import { voiceAgentBuilderService } from '@/services/api'
@@ -39,6 +39,13 @@ function lazySection(factory: () => Promise<{ default: React.ComponentType<Secti
     </Suspense>
   )
 }
+
+// Lazy-loaded — pulls in the livekit-client browser SDK (~145kB gzipped),
+// which should only ever be fetched once someone actually opens the Test
+// modal, not on every agent workspace page load.
+const TestCallModal = lazy(() =>
+  import('@/components/internal/TestCallModal').then((m) => ({ default: m.TestCallModal })),
+)
 
 const AGENT_SECTIONS: { id: JaanSectionId; label: string }[] = [
   { id: 'prompt', label: 'Behavior' },
@@ -143,6 +150,7 @@ export default function AgentWorkspacePage() {
   const [dirty, setDirty] = useState(false)
   const [saveState, setSaveState] = useState<SaveState>('idle')
   const [replayOpen, setReplayOpen] = useState(false)
+  const [testCallOpen, setTestCallOpen] = useState(false)
   const seededFor = useRef<string | null>(null)
 
   useSetBreadcrumbs([{ label: 'Jaan', href: '/app/jaan' }, { label: 'Agents', href: '/app/jaan/agents' }, { label: draft?.name ?? '…' }])
@@ -155,6 +163,15 @@ export default function AgentWorkspacePage() {
       setSaveState('idle')
     }
   }, [agentQuery.data])
+
+  useEffect(() => {
+    if (params.get('test') === '1') {
+      setTestCallOpen(true)
+      const p = new URLSearchParams(params)
+      p.delete('test')
+      setParams(p, { replace: true })
+    }
+  }, [params, setParams])
 
   const patch = useCallback<SectionProps['patch']>((key, value) => {
     setDraft((prev) => (prev ? { ...prev, [key]: value } : prev))
@@ -234,7 +251,7 @@ export default function AgentWorkspacePage() {
             {dirty && saveState !== 'saving' && <span className="hidden text-xs font-medium text-warning-600 sm:inline">Unsaved changes</span>}
             <SaveStatus state={saveState} className="hidden sm:flex" />
             <Button variant="outline" size="sm" icon={<History className="size-3.5" />} onClick={() => setReplayOpen(true)}>Replay</Button>
-            <Button variant="outline" size="sm" icon={<Sparkles className="size-3.5" />} onClick={() => setMode('simulate')}>Test</Button>
+            <Button variant="outline" size="sm" icon={<FlaskConical className="size-3.5" />} onClick={() => setTestCallOpen(true)}>Test</Button>
             <Button size="sm" onClick={handleSave} loading={saveState === 'saving'} disabled={!dirty}>Save</Button>
             <Button size="sm" variant="danger" icon={<Rocket className="size-3.5" />} onClick={handlePublish}>Publish</Button>
           </div>
@@ -266,6 +283,11 @@ export default function AgentWorkspacePage() {
       </div>
 
       <ReplayDrawer open={replayOpen} onClose={() => setReplayOpen(false)} agentId={draft.id} />
+      {testCallOpen && (
+        <Suspense fallback={null}>
+          <TestCallModal open={testCallOpen} onClose={() => setTestCallOpen(false)} agent={draft} />
+        </Suspense>
+      )}
     </div>
   )
 }

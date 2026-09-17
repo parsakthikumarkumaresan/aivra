@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { cn } from '@/utils/cn'
 
 interface PopoverProps {
@@ -10,40 +11,72 @@ interface PopoverProps {
   panelClassName?: string
 }
 
+// Portaled to document.body (matching Modal.tsx/Drawer.tsx's existing
+// pattern) — an in-place `position: absolute` panel gets clipped by any
+// ancestor with overflow set on either axis, e.g. DataTable's
+// `overflow-x-auto` wrapper (overflow-x != visible forces overflow-y to
+// clip too, per the CSS spec), which was hiding the row-actions menu.
 export function Popover({ trigger, children, align = 'right', className, panelClassName }: PopoverProps) {
   const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+  const [coords, setCoords] = useState<{ top: number; left?: number; right?: number } | null>(null)
+  const anchorRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+
+  const updatePosition = useCallback(() => {
+    const rect = anchorRef.current?.getBoundingClientRect()
+    if (!rect) return
+    setCoords({
+      top: rect.bottom + 8,
+      left: align === 'left' ? rect.left : undefined,
+      right: align === 'right' ? window.innerWidth - rect.right : undefined,
+    })
+  }, [align])
+
+  useLayoutEffect(() => {
+    if (open) updatePosition()
+  }, [open, updatePosition])
 
   useEffect(() => {
     if (!open) return
     const onClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+      const target = e.target as Node
+      if (anchorRef.current?.contains(target) || panelRef.current?.contains(target)) return
+      setOpen(false)
     }
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false)
     }
+    const onReposition = () => updatePosition()
     document.addEventListener('mousedown', onClick)
     document.addEventListener('keydown', onKey)
+    window.addEventListener('scroll', onReposition, true)
+    window.addEventListener('resize', onReposition)
     return () => {
       document.removeEventListener('mousedown', onClick)
       document.removeEventListener('keydown', onKey)
+      window.removeEventListener('scroll', onReposition, true)
+      window.removeEventListener('resize', onReposition)
     }
-  }, [open])
+  }, [open, updatePosition])
 
   return (
-    <div ref={ref} className={cn('relative', className)}>
+    <div ref={anchorRef} className={cn('relative inline-block', className)}>
       {trigger({ open, toggle: () => setOpen((v) => !v) })}
-      {open && (
-        <div
-          className={cn(
-            'absolute top-full z-40 mt-2 min-w-56 rounded-xl border border-ink-200 bg-surface-elevated p-1.5 shadow-elevated',
-            align === 'right' ? 'right-0' : 'left-0',
-            panelClassName,
-          )}
-        >
-          {children(() => setOpen(false))}
-        </div>
-      )}
+      {open &&
+        coords &&
+        createPortal(
+          <div
+            ref={panelRef}
+            style={{ position: 'fixed', top: coords.top, left: coords.left, right: coords.right }}
+            className={cn(
+              'z-50 min-w-56 rounded-xl border border-ink-200 bg-surface-elevated p-1.5 shadow-elevated',
+              panelClassName,
+            )}
+          >
+            {children(() => setOpen(false))}
+          </div>,
+          document.body,
+        )}
     </div>
   )
 }

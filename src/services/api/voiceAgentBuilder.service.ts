@@ -273,11 +273,51 @@ export const voiceAgentBuilderService = {
   },
 
   /** Places a real LiveKit room + agent dispatch for this agent's
-   * published configuration; returns a browser-joinable token so the
+   * published or draft configuration; returns a browser-joinable token so the
    * configured STT/TTS/Realtime provider can actually be exercised live. */
-  startTestCall(agentId: string): Promise<{ callId: string; roomName: string; token: string; livekitUrl: string }> {
-    return httpClient.post(`${BASE}/${agentId}/start-test-call`)
+  startTestCall(
+    agentId: string,
+    payload?: StartTestCallPayload,
+  ): Promise<StartTestCallResult> {
+    return httpClient.post(`${BASE}/${agentId}/start-test-call`, payload)
   },
+
+  /** Real outbound caller ID(s) available for test calls — currently just
+   * the single VOICE_OUTBOUND_CALLER_ID configured for this deployment (a
+   * real number provisioned with the SIP trunk provider), never
+   * fabricated. Empty when unconfigured. */
+  getOutboundNumbers(): Promise<OutboundNumberOption[]> {
+    return httpClient
+      .get<{ numbers: OutboundNumberOption[] }>(`${BASE}/outbound-numbers`)
+      .then((r) => r.numbers)
+  },
+}
+
+export interface OutboundNumberOption {
+  number: string
+  label: string
+}
+
+export interface StartTestCallPayload {
+  userNumber?: string
+  agentNumber?: string
+  useDraft?: boolean
+  contextVariables?: Record<string, unknown>
+  callType?: 'phone' | 'web'
+}
+
+export interface StartTestCallResult {
+  callId: string
+  roomName: string
+  token: string
+  livekitUrl: string
+  // "ready" — no destination number was requested (the Web tab).
+  // "initiated" — a real SIP participant was created; a phone should ring.
+  // "failed" — a destination number was requested but the real SIP dial
+  //   did not succeed — see dialError for why. Never inferred just from
+  //   the request containing a destination number.
+  dialStatus?: string
+  dialError?: string
 }
 
 export type { BackendProviderCatalog }
