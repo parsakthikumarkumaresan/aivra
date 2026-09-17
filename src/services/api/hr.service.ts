@@ -398,6 +398,13 @@ export const hrService = {
     await httpClient.post(`/hr/screenings/candidates/${candidateId}/start`, {})
     return hrService.getInterview(candidateId)
   },
+  // Read-only — HR's screening runtime is OpenAI Realtime only, fixed
+  // org-wide by backend settings (app/ai_employees/hr/runtime/
+  // screening_agent.py); there is no per-call/per-org STT+TTS path to
+  // expose here, so this deliberately isn't an editable form.
+  getVoiceConfig(): Promise<{ mode: string; realtimeProvider: string; realtimeModel: string; realtimeVoice: string }> {
+    return httpClient.get('/hr/screenings/voice-config')
+  },
 
   async listScheduleSlots(): Promise<ScheduleSlot[]> {
     const slots = await httpClient.get<BackendScheduleSlot[]>('/hr/scheduling/availability')

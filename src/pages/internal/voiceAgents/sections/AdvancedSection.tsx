@@ -3,22 +3,28 @@ import type { SectionProps } from '../BuilderTypes'
 import { Card, CardBody, CardHeader } from '@/components/ui/Card'
 import { Input, Label, Select, Switch } from '@/components/ui/Field'
 import { Badge } from '@/components/ui/Badge'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { useProviderCatalog } from '@/hooks/useVoiceAgentBuilder'
 
-const LLM_PROVIDERS = ['Google', 'OpenAI', 'Anthropic']
-const LLM_MODELS: Record<string, string[]> = {
-  Google: ['Gemini 2.5 Flash', 'Gemini 2.5 Pro'],
-  OpenAI: ['GPT-4.1 Mini', 'GPT-4.1'],
-  Anthropic: ['Claude Haiku 4.5', 'Claude Sonnet 5'],
-}
+// Only OpenAI is supported today (spec: don't add other LLM providers
+// yet) — the architecture (backend provider catalog + validation) makes
+// adding one later a data change, not a rewrite.
+const LLM_PROVIDERS = ['OpenAI']
 const LATENCY_MODES = ['low_latency', 'balanced', 'high_quality'] as const
 const TURN_DETECTION_MODES = ['Server VAD', 'Client VAD', 'Push to Talk']
 const RETRY_POLICIES = ['No retry', 'Fixed, 2 attempts', 'Exponential backoff, 3 attempts']
 
 export default function AdvancedSection({ agent, patch }: SectionProps) {
   const config = agent.advancedConfig
+  const catalogQuery = useProviderCatalog()
   function set<K extends keyof typeof config>(key: K, value: (typeof config)[K]) {
     patch('advancedConfig', { ...config, [key]: value })
   }
+
+  if (catalogQuery.loading || !catalogQuery.data) {
+    return <Skeleton className="h-96 w-full rounded-xl" />
+  }
+  const llmModels = catalogQuery.data.providers.find((p) => p.id === 'openai')?.llmModels ?? []
 
   return (
     <div className="space-y-5">
@@ -40,7 +46,7 @@ export default function AdvancedSection({ agent, patch }: SectionProps) {
             <div>
               <Label>Model</Label>
               <Select value={config.llmModel} onChange={(e) => set('llmModel', e.target.value)}>
-                {(LLM_MODELS[config.llmProvider] ?? []).map((m) => <option key={m} value={m}>{m}</option>)}
+                {llmModels.map((m) => <option key={m} value={m}>{m}</option>)}
               </Select>
             </div>
           </div>

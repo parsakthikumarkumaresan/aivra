@@ -108,7 +108,16 @@ export interface VoiceAgentTool {
 }
 
 // -- Voice ---------------------------------------------------------------
+// `mode` selects between OpenAI Realtime (speech-to-speech; realtime*
+// fields apply, provider/model/voiceName below are ignored/disabled in the
+// UI) and Custom STT+TTS (provider/model/voiceName below are the TTS
+// selection; STT lives on VoiceAgentTranscriptionConfig). Server-side
+// validated against app/ai_employees/voice/providers/catalog.py.
 export interface VoiceAgentVoiceConfig {
+  mode: 'realtime' | 'custom'
+  realtimeProvider: string
+  realtimeModel: string
+  realtimeVoice: string
   provider: string
   model: string
   language: string
@@ -116,6 +125,8 @@ export interface VoiceAgentVoiceConfig {
   voiceName: string
   introRing: boolean
   backgroundSound: boolean
+  backgroundSoundId: string
+  backgroundSoundVolume: number
   textNormalizationPresets: string[]
 }
 
@@ -125,6 +136,8 @@ export interface VoiceAgentTranscriptionConfig {
   model: string
   languages: string[]
   turnMode: string
+  /** Only meaningful when turnMode === 'Fixed Silence'. */
+  fixedSilenceSeconds: number
   turnSensitivity: string
   interruptionEnabled: boolean
   interruptionSensitivity: string

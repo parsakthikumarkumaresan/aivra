@@ -33,6 +33,10 @@ export function useScreeningPrompt(candidateId: string) {
   return useAsync(() => hrService.getScreeningPrompt(candidateId), [candidateId])
 }
 
+export function useHrVoiceConfig() {
+  return useAsync(() => hrService.getVoiceConfig(), [])
+}
+
 export function useScheduleSlots() {
   return useAsync(() => hrService.listScheduleSlots(), [])
 }

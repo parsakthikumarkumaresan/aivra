@@ -23,7 +23,7 @@ interface ReplayDrawerProps {
 export function ReplayDrawer({ open, onClose, agentId }: ReplayDrawerProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const list = useReplayConversations(agentId)
-  const detail = useReplayConversation(selectedId ?? '')
+  const detail = useReplayConversation(selectedId ?? '', agentId)
 
   function handleClose() {
     setSelectedId(null)

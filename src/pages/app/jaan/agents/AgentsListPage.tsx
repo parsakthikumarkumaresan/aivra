@@ -19,6 +19,7 @@ import { Input, Label, Select } from '@/components/ui/Field'
 import type { VoiceAgent, VoiceAgentStatus } from '@/types'
 import { VOICE_AGENT_STATUS_LABEL } from '@/types'
 import { formatDateTime } from '@/utils/format'
+import { voiceAgentBuilderService } from '@/services/api'
 
 const STATUS_TONE: Record<VoiceAgentStatus, BadgeTone> = { draft: 'neutral', testing: 'info', live: 'success', paused: 'warning' }
 
@@ -35,13 +36,17 @@ function CreateAgentModal({ open, onClose, onCreated }: { open: boolean; onClose
       return
     }
     setCreating(true)
-    // Mock layer doesn't yet expose a createVoiceAgent endpoint — this is the
-    // clean seam where a real POST /voice-agents call would go.
-    await new Promise((r) => setTimeout(r, 500))
-    setCreating(false)
-    show({ tone: 'success', title: 'Agent created', description: `${name} is ready to configure.` })
-    onCreated('va_acme_jewellery') // demo: land on an existing seeded agent
-    onClose()
+    try {
+      // Real POST /internal/voice-agents — returns the new agent with its real DB id.
+      const agent = await voiceAgentBuilderService.createVoiceAgent(name.trim())
+      show({ tone: 'success', title: 'Agent created', description: `${agent.name} is ready to configure.` })
+      onCreated(agent.id)
+      onClose()
+    } catch (err) {
+      show({ tone: 'error', title: 'Failed to create agent', description: String(err) })
+    } finally {
+      setCreating(false)
+    }
   }
 
   return (

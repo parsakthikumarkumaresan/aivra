@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Bot, User, Loader2, PhoneCall, ArrowLeft, AlertTriangle, RefreshCw, Save, Sparkles, ChevronDown, ChevronUp, CalendarClock } from 'lucide-react'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
-import { useCandidate, useInterview, useScreeningPrompt } from '@/hooks/useHr'
+import { useCandidate, useHrVoiceConfig, useInterview, useScreeningPrompt } from '@/hooks/useHr'
 import { hrService } from '@/services/api'
 import { useToast } from '@/hooks/useToast'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -67,6 +67,7 @@ export default function ScreeningCallPage() {
   const candidate = useCandidate(candidateId)
   const interview = useInterview(candidateId)
   const prompt = useScreeningPrompt(candidateId)
+  const voiceConfig = useHrVoiceConfig()
 
   useSetBreadcrumbs(
     [
@@ -322,6 +323,21 @@ export default function ScreeningCallPage() {
         </div>
 
         <div className="space-y-4">
+          {voiceConfig.data && (
+            <Card>
+              <CardHeader title="Voice Configuration" description="Fixed for all HR screening calls — set by your AIVRA deployment." />
+              <CardBody className="space-y-2 text-[13px]">
+                <div className="flex items-center justify-between"><span className="text-ink-500">Mode</span><Badge tone="info">Realtime</Badge></div>
+                <div className="flex items-center justify-between"><span className="text-ink-500">Provider</span><span className="font-medium text-ink-900">OpenAI</span></div>
+                <div className="flex items-center justify-between"><span className="text-ink-500">Model</span><span className="font-mono text-ink-900">{voiceConfig.data.realtimeModel}</span></div>
+                <div className="flex items-center justify-between"><span className="text-ink-500">Voice</span><span className="font-medium text-ink-900 capitalize">{voiceConfig.data.realtimeVoice}</span></div>
+                <div className="mt-2 space-y-1 border-t border-ink-100 pt-2 text-xs text-ink-400">
+                  <div className="flex items-center justify-between"><span>STT Provider</span><span>Handled by Realtime</span></div>
+                  <div className="flex items-center justify-between"><span>TTS Provider</span><span>Handled by Realtime</span></div>
+                </div>
+              </CardBody>
+            </Card>
+          )}
           {result && (
             <Card>
               <CardHeader title="Screening Summary" description="Advisory only — human review required." />
