@@ -29,7 +29,7 @@ export default function LoginPage() {
     try {
       const user = await authService.login(email, password)
       show({ tone: 'success', title: 'Welcome back', description: `Signed in as ${user.fullName}.` })
-      navigate('/app')
+      navigate(authService.isPlatformAdmin() ? '/admin' : '/app')
     } catch (err) {
       setError(isApiError(err) ? err.message : 'Sign in failed. Please try again.')
     } finally {

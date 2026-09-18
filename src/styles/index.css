@@ -4,11 +4,12 @@
 
 @layer base {
   * {
-    border-color: var(--color-ink-200);
+    border-color: var(--color-ink-300);
   }
 
   html {
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
@@ -17,6 +18,8 @@
     color: var(--color-ink-900);
     font-family: var(--font-sans);
     font-feature-settings: 'cv11', 'ss01';
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   ::selection {
@@ -24,26 +27,27 @@
     color: var(--color-brand-900);
   }
 
+  /* JEXA red focus ring — clean, accessible, on-brand */
   :focus-visible {
-    outline: 2px solid var(--color-brand-500);
+    outline: 2px solid var(--color-brand-600);
     outline-offset: 2px;
     border-radius: var(--radius-xs);
   }
 
+  /* Thin, unobtrusive scrollbar consistent with dark canvas */
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: var(--color-ink-200);
+    background-color: var(--color-ink-300);
     border-radius: 999px;
-    border: 2px solid var(--color-ink-25);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-ink-300);
+    background-color: var(--color-ink-400);
   }
 }
 
@@ -54,5 +58,10 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* Hairline rule between sections — deliberately subtle on dark canvas */
+  .rule {
+    border-top: 1px solid var(--color-ink-200);
   }
 }

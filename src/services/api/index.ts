@@ -26,16 +26,52 @@ export { inboxService } from '@/services/mock/inbox.service'
 export { approvalsService } from '@/services/mock/approvals.service'
 export { integrationsService } from '@/services/mock/integrations.service'
 
+// JEXA Admin Console (AIVRA-internal, platform-role gated) — real backend,
+// reusing the existing Leads + Voice Project pipeline (app/leads).
+export { adminService } from '@/services/api/admin.service'
+export type {
+  AdminLead,
+  AdminLeadList,
+  AdminLeadVoiceProject,
+  AdminVoiceProject,
+  AdminRequirement,
+  LeadStatus,
+  LeadType,
+  VoiceProjectStatus,
+} from '@/services/api/admin.service'
+export { adminCreditsService } from '@/services/api/admin-credits.service'
+export type { AdminCreditsSummary, AdminAddCreditsInput } from '@/services/api/admin-credits.service'
+export { adminOrganizationsService } from '@/services/api/admin-organizations.service'
+export type {
+  AdminOrganizationSummary,
+  AdminOrganizationList,
+  AdminOrganizationDetail,
+  AdminEmployeeProvisionSummary,
+  AdminVoiceProjectSummary,
+  AdminOrganizationMember,
+} from '@/services/api/admin-organizations.service'
+
 // Jaan (Voice AI Workforce console) — voiceAgentBuilderService and
 // voiceService above are now real (agent CRUD/versioning/publish, provider
 // catalog, start-test-call, call list/detail, analytics); telephonyService
-// and everything below are still mock. The console also uses these
-// Jaan-specific mock domains.
+// and everything below (except creditsService) are still mock. The console
+// also uses these Jaan-specific mock domains.
 export { jaanCampaignsService } from '@/services/mock/jaanCampaigns.service'
 export { jaanWorkflowsService } from '@/services/mock/jaanWorkflows.service'
 export { jaanTablesService } from '@/services/mock/jaanTables.service'
 export { jaanMonitorService } from '@/services/mock/jaanMonitor.service'
 export { jaanSimulationsService } from '@/services/mock/jaanSimulations.service'
 export { jaanPronunciationService } from '@/services/mock/jaanPronunciation.service'
-export { jaanBalanceService } from '@/services/mock/jaanBalance.service'
 export { jaanLogsService } from '@/services/mock/jaanLogs.service'
+
+// Jaan Voice Credits (Phase 4) — real backend (app/ai_employees/voice's
+// credit ledger), replacing the old mock jaanBalanceService entirely.
+export { creditsService } from '@/services/api/credits.service'
+export type {
+  CreditBalance,
+  CreditTransaction as VoiceCreditTransaction,
+  CreditTransactionType as VoiceCreditTransactionType,
+  RechargePackage,
+  RechargeOrder,
+  RechargeOrderStatus,
+} from '@/services/api/credits.service'

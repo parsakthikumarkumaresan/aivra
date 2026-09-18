@@ -6,9 +6,12 @@ interface SessionState {
   expiresAt: number | null
   organizationId: string | null
   role: string | null
+  /** AIVRA-internal role (aivra_admin/aivra_engineer), null for ordinary customer users. */
+  platformRole: string | null
 }
 
 const STORAGE_KEY = 'aivra_session'
+const EMPTY_STATE: SessionState = { accessToken: null, expiresAt: null, organizationId: null, role: null, platformRole: null }
 
 function loadInitial(): SessionState {
   try {
@@ -16,13 +19,13 @@ function loadInitial(): SessionState {
     if (raw) {
       const parsed = JSON.parse(raw)
       if (parsed.expiresAt && parsed.expiresAt > Date.now()) {
-        return parsed
+        return { ...EMPTY_STATE, ...parsed }
       }
     }
   } catch {
     // Fallthrough to empty state on error
   }
-  return { accessToken: null, expiresAt: null, organizationId: null, role: null }
+  return { ...EMPTY_STATE }
 }
 
 let state: SessionState = loadInitial()
@@ -44,7 +47,7 @@ export const tokenStore = {
     listeners.forEach((listener) => listener())
   },
   clear(): void {
-    state = { accessToken: null, expiresAt: null, organizationId: null, role: null }
+    state = { ...EMPTY_STATE }
     try {
       if (typeof window !== 'undefined') {
         localStorage.removeItem(STORAGE_KEY)

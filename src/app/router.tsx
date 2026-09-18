@@ -7,6 +7,8 @@ import { EmployeeAccessGate } from '@/components/employees/EmployeeAccessGate'
 import { VoiceAdvancedSetupGate } from '@/components/employees/voice/VoiceAdvancedSetupGate'
 import { InternalGate } from '@/components/internal/InternalGate'
 import { JaanAccessGate } from '@/components/jaan/JaanAccessGate'
+import { AdminRoute } from '@/components/admin/AdminRoute'
+import { AdminShell } from '@/components/admin/AdminShell'
 
 function lazyPage(factory: () => Promise<{ default: React.ComponentType }>) {
   const Component = lazy(factory)
@@ -57,6 +59,41 @@ export const router = createBrowserRouter([
           {
             path: 'telephony',
             element: lazyPage(() => import('@/pages/internal/telephony/TelephonyPage')),
+          },
+        ],
+      },
+      {
+        // JEXA Admin console — AIVRA-internal operations, real platform-role
+        // RBAC (AdminRoute), fully separate shell from the customer /app
+        // tree so customer sessions never render admin chrome. See
+        // src/components/admin and app/leads (backend) for what's real.
+        path: '/admin',
+        element: <AdminRoute />,
+        children: [
+          {
+            element: <AdminShell />,
+            children: [
+              { index: true, element: lazyPage(() => import('@/pages/admin/AdminOverviewPage')) },
+              { path: 'leads', element: lazyPage(() => import('@/pages/admin/leads/AdminLeadsPage')) },
+              { path: 'leads/:leadId', element: lazyPage(() => import('@/pages/admin/leads/AdminLeadDetailPage')) },
+              { path: 'deployments', element: lazyPage(() => import('@/pages/admin/deployments/AdminDeploymentsPage')) },
+              { path: 'customers', element: lazyPage(() => import('@/pages/admin/customers/AdminCustomersPage')) },
+              { path: 'customers/:id', element: lazyPage(() => import('@/pages/admin/customers/AdminCustomerDetailPage')) },
+              { path: 'agents', element: lazyPage(() => import('@/pages/admin/AdminComingSoonPage')) },
+              { path: 'calls', element: lazyPage(() => import('@/pages/admin/AdminComingSoonPage')) },
+              { path: 'analytics', element: lazyPage(() => import('@/pages/admin/AdminComingSoonPage')) },
+              { path: 'usage', element: lazyPage(() => import('@/pages/admin/usage/AdminUsagePage')) },
+              { path: 'credits', element: lazyPage(() => import('@/pages/admin/credits/AdminCreditsPage')) },
+              { path: 'billing', element: lazyPage(() => import('@/pages/admin/AdminComingSoonPage')) },
+              { path: 'quotes', element: lazyPage(() => import('@/pages/admin/AdminComingSoonPage')) },
+              { path: 'integrations', element: lazyPage(() => import('@/pages/admin/AdminComingSoonPage')) },
+              { path: 'telephony', element: lazyPage(() => import('@/pages/admin/AdminComingSoonPage')) },
+              { path: 'monitor', element: lazyPage(() => import('@/pages/admin/AdminComingSoonPage')) },
+              { path: 'support', element: lazyPage(() => import('@/pages/admin/AdminComingSoonPage')) },
+              { path: 'audit-logs', element: lazyPage(() => import('@/pages/admin/AdminComingSoonPage')) },
+              { path: 'settings', element: lazyPage(() => import('@/pages/admin/AdminComingSoonPage')) },
+              { path: '*', element: lazyPage(() => import('@/pages/app/NotFoundPage')) },
+            ],
           },
         ],
       },

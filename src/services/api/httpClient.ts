@@ -23,6 +23,7 @@ interface RefreshResponseBody {
   expiresIn: number
   organizationId: string | null
   role: string | null
+  user: { platformRole: string | null }
 }
 
 let refreshPromise: Promise<boolean> | null = null
@@ -49,6 +50,7 @@ async function rawRefresh(): Promise<boolean> {
     expiresAt: Date.now() + body.expiresIn * 1000,
     organizationId: body.organizationId,
     role: body.role,
+    platformRole: body.user.platformRole,
   })
   return true
 }

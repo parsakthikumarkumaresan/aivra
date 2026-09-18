@@ -39,35 +39,46 @@ export function Modal({ open, onClose, title, description, children, footer, siz
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="overlay-enter absolute inset-0 bg-black/70 backdrop-blur-[2px]" onClick={onClose} aria-hidden />
+      {/* Backdrop — darker on this deep canvas */}
+      <div
+        className="overlay-enter absolute inset-0 bg-black/75 backdrop-blur-[3px]"
+        onClick={onClose}
+        aria-hidden
+      />
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'modal-title' : undefined}
         className={cn(
-          'panel-enter relative z-10 max-h-[90vh] w-full overflow-y-auto rounded-2xl border border-ink-200 bg-surface-elevated shadow-overlay',
+          'panel-enter relative z-10 max-h-[90vh] w-full overflow-y-auto rounded-2xl border border-ink-300 bg-surface-elevated shadow-overlay',
           SIZE_CLASSES[size],
         )}
       >
         {title && (
-          <div className="flex items-start justify-between gap-4 border-b border-ink-100 px-6 py-4">
+          <div className="flex items-start justify-between gap-4 border-b border-ink-200 px-6 py-4">
             <div>
-              <h2 id="modal-title" className="text-base font-semibold text-ink-900">
+              <h2 id="modal-title" className="text-[15px] font-semibold text-ink-900">
                 {title}
               </h2>
-              {description && <p className="mt-1 text-sm text-ink-500">{description}</p>}
+              {description && (
+                <p className="mt-1 text-[13px] leading-relaxed text-ink-500">{description}</p>
+              )}
             </div>
             <button
               onClick={onClose}
               aria-label="Close"
-              className="rounded-lg p-1.5 text-ink-400 hover:bg-ink-100 hover:text-ink-700"
+              className="flex size-7 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-200 hover:text-ink-700"
             >
-              <X className="size-4.5" />
+              <X className="size-4" />
             </button>
           </div>
         )}
         <div className="px-6 py-5">{children}</div>
-        {footer && <div className="flex items-center justify-end gap-2 border-t border-ink-100 px-6 py-4">{footer}</div>}
+        {footer && (
+          <div className="flex items-center justify-end gap-2 border-t border-ink-200 px-6 py-4">
+            {footer}
+          </div>
+        )}
       </div>
     </div>,
     document.body,

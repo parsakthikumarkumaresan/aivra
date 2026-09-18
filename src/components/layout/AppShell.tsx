@@ -48,7 +48,7 @@ export function AppShell() {
         <aside
           className={cn(
             'hidden shrink-0 border-r border-ink-200 transition-[width] duration-150 lg:block',
-            collapsed ? 'w-[72px]' : 'w-64',
+            collapsed ? 'w-16' : 'w-60',
           )}
         >
           {isJaan ? <JaanSidebar collapsed={collapsed} /> : <Sidebar collapsed={collapsed} onToggleCollapsed={toggleCollapsed} />}

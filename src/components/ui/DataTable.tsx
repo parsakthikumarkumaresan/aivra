@@ -33,7 +33,7 @@ export function DataTable<T>({
 }: DataTableProps<T>) {
   if (loading) {
     return (
-      <div className={cn('overflow-hidden rounded-xl border border-ink-200 bg-surface', className)}>
+      <div className={cn('overflow-hidden rounded-xl border border-ink-300 bg-surface', className)}>
         <SkeletonTable cols={columns.length} />
       </div>
     )
@@ -44,14 +44,17 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={cn('overflow-x-auto rounded-xl border border-ink-200 bg-surface', className)}>
-      <table className="w-full min-w-max border-collapse text-left text-sm">
+    <div className={cn('overflow-x-auto rounded-xl border border-ink-300 bg-surface', className)}>
+      <table className="w-full min-w-max border-collapse text-left text-[13px]">
         <thead>
-          <tr className="border-b border-ink-100 bg-ink-25">
+          <tr className="border-b border-ink-200 bg-ink-50">
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={cn('px-5 py-3 text-xs font-semibold uppercase tracking-wide text-ink-500', col.headerClassName)}
+                className={cn(
+                  'px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-500',
+                  col.headerClassName,
+                )}
               >
                 {col.header}
               </th>
@@ -64,14 +67,14 @@ export function DataTable<T>({
               key={keyExtractor(row)}
               onClick={() => onRowClick?.(row)}
               className={cn(
-                'row-fade-in border-b border-ink-100 last:border-0 transition-colors duration-150',
-                onRowClick && 'cursor-pointer hover:bg-brand-50/40',
+                'row-fade-in border-b border-ink-200 last:border-0 transition-colors duration-100',
+                onRowClick && 'cursor-pointer hover:bg-ink-100',
                 rowClassName?.(row),
               )}
-              style={{ animationDelay: `${Math.min(i * 35, 350)}ms` }}
+              style={{ animationDelay: `${Math.min(i * 30, 300)}ms` }}
             >
               {columns.map((col) => (
-                <td key={col.key} className={cn('px-5 py-3.5 align-middle text-ink-700', col.className)}>
+                <td key={col.key} className={cn('px-4 py-3 align-middle text-ink-700', col.className)}>
                   {col.render(row)}
                 </td>
               ))}

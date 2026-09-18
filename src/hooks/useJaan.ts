@@ -5,8 +5,8 @@ import {
   jaanMonitorService,
   jaanSimulationsService,
   jaanPronunciationService,
-  jaanBalanceService,
   jaanLogsService,
+  creditsService,
 } from '@/services/api'
 import { useAsync } from './useAsync'
 
@@ -67,12 +67,15 @@ export function useTextNormalizationRules() {
   return useAsync(() => jaanPronunciationService.listNormalizationRules(), [])
 }
 
-// -- Balance ---------------------------------------------------------------------
-export function useBalance() {
-  return useAsync(() => jaanBalanceService.getBalance(), [])
+// -- Jaan Voice Credits (real backend, Phase 4) -------------------------------
+export function useCreditBalance() {
+  return useAsync(() => creditsService.getBalance(), [])
 }
 export function useCreditTransactions() {
-  return useAsync(() => jaanBalanceService.listTransactions(), [])
+  return useAsync(() => creditsService.listTransactions(), [])
+}
+export function useRechargePackages() {
+  return useAsync(() => creditsService.listRechargePackages(), [])
 }
 
 // -- Logs --------------------------------------------------------------------------

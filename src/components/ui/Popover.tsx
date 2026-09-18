@@ -69,7 +69,7 @@ export function Popover({ trigger, children, align = 'right', className, panelCl
             ref={panelRef}
             style={{ position: 'fixed', top: coords.top, left: coords.left, right: coords.right }}
             className={cn(
-              'z-50 min-w-56 rounded-xl border border-ink-200 bg-surface-elevated p-1.5 shadow-elevated',
+              'z-50 min-w-56 rounded-xl border border-ink-300 bg-surface-elevated p-1.5 shadow-elevated',
               panelClassName,
             )}
           >
@@ -87,7 +87,7 @@ export function PopoverItem({ icon, children, onClick, tone = 'default' }: { ico
       onClick={onClick}
       className={cn(
         'flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13.5px] font-medium transition-colors duration-150',
-        tone === 'danger' ? 'text-danger-600 hover:bg-danger-50' : 'text-ink-700 hover:bg-ink-100',
+        tone === 'danger' ? 'text-danger-600 hover:bg-danger-100' : 'text-ink-700 hover:bg-ink-200',
       )}
     >
       {icon}

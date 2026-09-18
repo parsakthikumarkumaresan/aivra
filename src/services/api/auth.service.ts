@@ -4,6 +4,7 @@
 // cookie is echoed back by httpClient on mutating requests.
 import { httpClient } from './httpClient'
 import { tokenStore } from './tokenStore'
+import { isPlatformAdminRole } from './roles'
 
 export interface BackendUser {
   id: string
@@ -28,6 +29,7 @@ function applySession(res: AuthResponse): AuthResponse {
     expiresAt: Date.now() + res.expiresIn * 1000,
     organizationId: res.organizationId,
     role: res.role,
+    platformRole: res.user.platformRole,
   })
   return res
 }
@@ -62,5 +64,11 @@ export const authService = {
   },
   currentRole(): string | null {
     return tokenStore.get().role
+  },
+  currentPlatformRole(): string | null {
+    return tokenStore.get().platformRole
+  },
+  isPlatformAdmin(): boolean {
+    return isPlatformAdminRole(tokenStore.get().platformRole)
   },
 }

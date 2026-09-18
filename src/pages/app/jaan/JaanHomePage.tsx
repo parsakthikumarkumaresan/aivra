@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom'
 import { AreaChart, Area, CartesianGrid, ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis } from 'recharts'
-import { PhoneCall, PhoneIncoming, Clock, CheckCircle2, Percent, Timer, IndianRupee, Users, ChevronRight, Megaphone, Wallet } from 'lucide-react'
+import { PhoneCall, PhoneIncoming, Clock, CheckCircle2, Percent, Timer, Users, ChevronRight, Megaphone, Wallet } from 'lucide-react'
 import { useAppData } from '@/app/AppDataProvider'
 import { useSetBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { useVoiceAgents } from '@/hooks/useVoiceAgentBuilder'
 import { useCalls } from '@/hooks/useVoice'
-import { useCampaigns, useBalance } from '@/hooks/useJaan'
+import { useCampaigns, useCreditBalance } from '@/hooks/useJaan'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { KpiCard } from '@/components/ui/KpiCard'
 import { ChartCard } from '@/components/ui/ChartCard'
@@ -39,7 +39,7 @@ export default function JaanHomePage() {
   const agents = useVoiceAgents()
   const calls = useCalls({})
   const campaigns = useCampaigns()
-  const balance = useBalance()
+  const balance = useCreditBalance()
 
   const callData = calls.data ?? []
   const today = new Date().toDateString()
@@ -83,7 +83,12 @@ export default function JaanHomePage() {
         <KpiCard label="Tasks Completed" value={String(tasksCompleted)} icon={<CheckCircle2 className="size-4" />} trend={{ direction: 'up', value: '+12%' }} />
         <KpiCard label="Success Rate" value={`${successRate}%`} icon={<Percent className="size-4" />} />
         <KpiCard label="Avg Call Duration" value={formatDuration(avgDuration)} icon={<Timer className="size-4" />} />
-        <KpiCard label="Estimated Spend" value="₹1,240" icon={<IndianRupee className="size-4" />} trendGood="down" trend={{ direction: 'down', value: '-4%' }} />
+        <KpiCard
+          label="Voice Minutes Remaining"
+          value={balance.data ? String(balance.data.balanceMinutes) : '—'}
+          icon={<Wallet className="size-4" />}
+          tooltip={balance.data?.lowBalance ? 'Balance is low — consider recharging.' : undefined}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
@@ -152,12 +157,16 @@ export default function JaanHomePage() {
           <CardHeader title="Usage & Billing" actions={<Link to="/app/jaan/settings/billing" className="text-[12.5px] font-medium text-brand-600 hover:text-brand-700">Manage</Link>} />
           <CardBody className="space-y-3 p-4">
             <div className="flex items-center justify-between rounded-lg border border-ink-200 bg-ink-25 px-3.5 py-2.5">
-              <span className="flex items-center gap-2 text-[13px] text-ink-600"><Wallet className="size-4 text-brand-600" /> Current balance</span>
-              <span className="text-[15px] font-bold text-ink-900">{balance.data ? `${balance.data.currency}${balance.data.amount.toFixed(2)}` : '—'}</span>
+              <span className="flex items-center gap-2 text-[13px] text-ink-600"><Wallet className="size-4 text-brand-600" /> Voice minutes remaining</span>
+              <span className={`text-[15px] font-bold ${balance.data?.lowBalance ? 'text-danger-600' : 'text-ink-900'}`}>
+                {balance.data ? `${balance.data.balanceMinutes} min` : '—'}
+              </span>
             </div>
-            <div className="flex items-center justify-between px-1 text-[13px]"><span className="text-ink-500">Voice minutes used</span><span className="font-medium text-ink-800">{totalMinutes} min</span></div>
-            <div className="flex items-center justify-between px-1 text-[13px]"><span className="text-ink-500">Monthly spend</span><span className="font-medium text-ink-800">₹1,240.00</span></div>
-            <Button size="sm" variant="outline" className="w-full">Add Credits</Button>
+            <div className="flex items-center justify-between px-1 text-[13px]"><span className="text-ink-500">Minutes purchased</span><span className="font-medium text-ink-800">{balance.data?.purchasedMinutes ?? '—'}</span></div>
+            <div className="flex items-center justify-between px-1 text-[13px]"><span className="text-ink-500">Minutes used</span><span className="font-medium text-ink-800">{balance.data?.usedMinutes ?? '—'}</span></div>
+            <Link to="/app/jaan/settings/billing">
+              <Button size="sm" variant="outline" className="w-full">Recharge Credits</Button>
+            </Link>
           </CardBody>
         </Card>
         </Reveal>

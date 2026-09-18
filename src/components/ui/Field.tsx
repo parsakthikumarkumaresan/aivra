@@ -22,7 +22,7 @@ export function HelpText({ children, error }: { children: ReactNode; error?: boo
 }
 
 const fieldBase =
-  'w-full rounded-lg border bg-surface px-3 text-sm text-ink-900 placeholder:text-ink-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:bg-ink-50 disabled:text-ink-400'
+  'w-full rounded-lg border bg-surface px-3 text-[13.5px] text-ink-900 placeholder:text-ink-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-brand-600/25 disabled:bg-ink-100 disabled:text-ink-400'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: boolean
@@ -36,7 +36,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({ c
         <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-400">{icon}</span>
         <input
           ref={ref}
-          className={cn(fieldBase, 'h-9 pl-9', error ? 'border-danger-400 focus:ring-danger-500/30' : 'border-ink-200 focus:border-brand-500', className)}
+          className={cn(fieldBase, 'h-9 pl-9', error ? 'border-danger-400 focus:ring-danger-500/30' : 'border-ink-300 focus:border-brand-600', className)}
           {...props}
         />
       </div>
@@ -45,7 +45,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({ c
   return (
     <input
       ref={ref}
-      className={cn(fieldBase, 'h-9', error ? 'border-danger-400 focus:ring-danger-500/30' : 'border-ink-200 focus:border-brand-500', className)}
+      className={cn(fieldBase, 'h-9', error ? 'border-danger-400 focus:ring-danger-500/30' : 'border-ink-300 focus:border-brand-600', className)}
       {...props}
     />
   )
@@ -59,7 +59,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   return (
     <textarea
       ref={ref}
-      className={cn(fieldBase, 'min-h-24 py-2', error ? 'border-danger-400 focus:ring-danger-500/30' : 'border-ink-200 focus:border-brand-500', className)}
+      className={cn(fieldBase, 'min-h-24 py-2.5', error ? 'border-danger-400 focus:ring-danger-500/30' : 'border-ink-300 focus:border-brand-600', className)}
       {...props}
     />
   )
@@ -74,7 +74,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
     <div className="relative">
       <select
         ref={ref}
-        className={cn(fieldBase, 'h-9 appearance-none pr-9', error ? 'border-danger-400 focus:ring-danger-500/30' : 'border-ink-200 focus:border-brand-500', className)}
+        className={cn(fieldBase, 'h-9 appearance-none pr-9', error ? 'border-danger-400 focus:ring-danger-500/30' : 'border-ink-300 focus:border-brand-600', className)}
         {...props}
       >
         {children}
