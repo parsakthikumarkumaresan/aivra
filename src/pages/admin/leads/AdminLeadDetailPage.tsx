@@ -180,23 +180,33 @@ function LeadInfoCard({ lead, onChanged }: { lead: AdminLead; onChanged: () => v
 
         <p className="text-[12px] text-ink-400">Submitted {formatDateTime(lead.createdAt)}</p>
 
-        <div className="border-t border-ink-100 pt-4">
-          {lead.organizationId ? (
-            <Link to={`/admin/customers/${lead.organizationId}`} className="inline-flex items-center gap-1.5 text-[13.5px] font-medium text-brand-600 hover:text-brand-700">
-              View Customer <ExternalLink className="size-3.5" />
-            </Link>
-          ) : lead.status === 'qualified' ? (
-            <div className="max-w-sm">
-              <Label htmlFor="convert-org">Convert to customer organization</Label>
-              <Input id="convert-org" placeholder="Existing organization ID" value={orgId} onChange={(e) => setOrgId(e.target.value)} error={Boolean(convertError)} />
-              {convertError && <HelpText error>{convertError}</HelpText>}
-              <Button className="mt-2" size="sm" loading={converting} onClick={handleConvert}>
-                Convert Lead
-              </Button>
-            </div>
-          ) : (
-            <p className="text-[13px] text-ink-500">Customer not created</p>
-          )}
+        <div className="border-t border-ink-100 pt-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            {lead.organizationId ? (
+              <Link to={`/admin/customers/${lead.organizationId}`} className="inline-flex items-center gap-1.5 text-[13.5px] font-medium text-brand-600 hover:text-brand-700">
+                View Customer <ExternalLink className="size-3.5" />
+              </Link>
+            ) : lead.status === 'qualified' ? (
+              <div className="max-w-sm">
+                <Label htmlFor="convert-org">Convert to customer organization</Label>
+                <Input id="convert-org" placeholder="Existing organization ID" value={orgId} onChange={(e) => setOrgId(e.target.value)} error={Boolean(convertError)} />
+                {convertError && <HelpText error>{convertError}</HelpText>}
+                <Button className="mt-2" size="sm" loading={converting} onClick={handleConvert}>
+                  Convert Lead
+                </Button>
+              </div>
+            ) : (
+              <p className="text-[13px] text-ink-500">Customer not created</p>
+            )}
+          </div>
+
+          <Link
+            to={`/admin/quotes/new?leadId=${lead.id}${lead.organizationId ? `&organizationId=${lead.organizationId}` : ''}`}
+          >
+            <Button size="sm" variant="outline">
+              Create Quote
+            </Button>
+          </Link>
         </div>
 
         {nextStatuses.length > 0 && (

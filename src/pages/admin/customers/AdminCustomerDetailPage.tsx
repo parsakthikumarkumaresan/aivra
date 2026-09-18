@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Gauge, Wallet, Rocket, Users, ArrowLeft } from 'lucide-react'
+import { Gauge, Wallet, Rocket, Users, ArrowLeft, FileSpreadsheet } from 'lucide-react'
 import { useAsync } from '@/hooks/useAsync'
 import { adminOrganizationsService } from '@/services/api'
 import { PageHeader, Badge, Card, CardHeader, CardBody, ErrorState, EmptyState, Button } from '@/components/ui'
@@ -88,6 +88,12 @@ export default function AdminCustomerDetailPage() {
             </Link>
             <Link to={`/admin/credits?org=${org.id}`}>
               <Button variant="outline" icon={<Wallet className="size-4" />}>Manage Credits</Button>
+            </Link>
+            <Link to={`/admin/quotes/new?organizationId=${org.id}`}>
+              <Button variant="outline" icon={<FileSpreadsheet className="size-4" />}>Create Quote</Button>
+            </Link>
+            <Link to={`/admin/quotes?organizationId=${org.id}`}>
+              <Button variant="outline" icon={<FileSpreadsheet className="size-4" />}>View Quotes</Button>
             </Link>
           </CardBody>
         </Card>

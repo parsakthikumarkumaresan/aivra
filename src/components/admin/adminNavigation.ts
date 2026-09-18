@@ -99,9 +99,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
     label: 'Quotes',
     icon: FileSpreadsheet,
     href: '/admin/quotes',
-    implemented: false,
-    phase: 'Phase 8',
-    description: 'The quote calculator needs new quotes/quote_items models and pricing-component backend — not built yet.',
+    implemented: true,
   },
   {
     id: 'integrations',

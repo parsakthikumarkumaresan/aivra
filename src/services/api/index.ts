@@ -75,3 +75,19 @@ export type {
   RechargeOrder,
   RechargeOrderStatus,
 } from '@/services/api/credits.service'
+
+// JEXA Admin Quotes & Calculator (Phase 7) — real backend (app/quotes)
+export { quotesService } from '@/services/api/quotes.service'
+export type {
+  Quote,
+  QuoteList,
+  QuoteStatus,
+  QuoteLineItem,
+  QuoteLineItemCategory,
+  QuoteLineItemInput,
+  QuoteCalculatorInput,
+  QuoteCalculationEstimate,
+  QuoteCreatePayload,
+  QuoteUpdatePayload,
+  QuoteSendResponse,
+} from '@/services/api/quotes.service'

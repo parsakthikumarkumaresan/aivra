@@ -137,6 +137,8 @@ export const httpClient = {
   get: <T>(path: string, options?: Omit<RequestOptions, 'method'>) => request<T>(path, { ...options, method: 'GET' }),
   post: <T>(path: string, json?: unknown, options?: Omit<RequestOptions, 'method' | 'json'>) =>
     request<T>(path, { ...options, method: 'POST', json }),
+  put: <T>(path: string, json?: unknown, options?: Omit<RequestOptions, 'method' | 'json'>) =>
+    request<T>(path, { ...options, method: 'PUT', json }),
   patch: <T>(path: string, json?: unknown, options?: Omit<RequestOptions, 'method' | 'json'>) =>
     request<T>(path, { ...options, method: 'PATCH', json }),
   postForm: <T>(path: string, formData: FormData, options?: Omit<RequestOptions, 'method' | 'body'>) =>
