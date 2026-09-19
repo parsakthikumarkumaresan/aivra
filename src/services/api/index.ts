@@ -50,6 +50,59 @@ export type {
   AdminVoiceProjectSummary,
   AdminOrganizationMember,
 } from '@/services/api/admin-organizations.service'
+export { adminAgentsService } from '@/services/api/admin-agents.service'
+export type {
+  AdminVoiceAgentSummary,
+  AdminVoiceAgentList,
+  AdminVoiceAgentDetail,
+  AdminVoiceAgentVersionSummary,
+  AdminAgentRecentCall,
+  AdminAgentAction,
+} from '@/services/api/admin-agents.service'
+export { adminCallsService } from '@/services/api/admin-calls.service'
+export type {
+  AdminCallSummary,
+  AdminCallList,
+  AdminCallDetail,
+  AdminCallToolExecution,
+  AdminCallAnalysis,
+  AdminAnalytics,
+  AdminAnalyticsUsagePoint,
+  AdminAnalyticsCustomerUsage,
+} from '@/services/api/admin-calls.service'
+export { adminBillingService } from '@/services/api/admin-billing.service'
+export type { AdminSubscription, AdminInvoice } from '@/services/api/admin-billing.service'
+export { adminTelephonyService } from '@/services/api/admin-telephony.service'
+export type {
+  AdminTelephonyOverview,
+  AdminTelephonyProvider,
+  AdminPhoneNumber,
+  AdminSipTrunk,
+  AdminComplianceRecord,
+  AdminDndEntry,
+} from '@/services/api/admin-telephony.service'
+export { adminAuditService } from '@/services/api/admin-audit.service'
+export type { AdminAuditEvent, AdminAuditEventList } from '@/services/api/admin-audit.service'
+export { adminBusinessService } from '@/services/api/admin-business.service'
+export type {
+  AdminBusinessOverview,
+  AdminAiEmployeeAdoption,
+  AdminCustomerGrowthPoint,
+  AdminRevenueTrendPoint,
+  AdminRecentActivityItem,
+  AdminAiEmployeesLanding,
+  AdminAiEmployeeSummary,
+} from '@/services/api/admin-business.service'
+export { adminJaanBusinessService } from '@/services/api/admin-jaan-business.service'
+export type {
+  AdminJaanBusinessOverview,
+  AdminJaanCustomerRow,
+} from '@/services/api/admin-jaan-business.service'
+export { adminHrBusinessService } from '@/services/api/admin-hr-business.service'
+export type {
+  AdminHrBusinessOverview,
+  AdminHrCustomerRow,
+} from '@/services/api/admin-hr-business.service'
 
 // Jaan (Voice AI Workforce console) — voiceAgentBuilderService and
 // voiceService above are now real (agent CRUD/versioning/publish, provider

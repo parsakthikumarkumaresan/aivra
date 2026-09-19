@@ -26,7 +26,7 @@ export default function AdminDeploymentsPage() {
       />
 
       {projects.error ? (
-        <ErrorState onRetry={projects.refetch} />
+        <ErrorState description={projects.error.message} onRetry={projects.refetch} />
       ) : (
         <DataTable
           columns={[

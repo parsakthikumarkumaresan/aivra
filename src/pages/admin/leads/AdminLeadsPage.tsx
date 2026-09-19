@@ -96,7 +96,7 @@ export default function AdminLeadsPage() {
       </div>
 
       {result.error ? (
-        <ErrorState onRetry={result.refetch} />
+        <ErrorState description={result.error.message} onRetry={result.refetch} />
       ) : (
         <>
           <DataTable

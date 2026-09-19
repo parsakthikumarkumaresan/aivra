@@ -63,7 +63,7 @@ export default function AdminCustomersPage() {
       />
 
       {result.error ? (
-        <ErrorState onRetry={result.refetch} />
+        <ErrorState description={result.error.message} onRetry={result.refetch} />
       ) : (
         <>
           <DataTable
